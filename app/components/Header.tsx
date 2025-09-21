@@ -2,10 +2,12 @@
 
 import { Menu, X, ChevronDown } from "lucide-react";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [activeDropdown, setActiveDropdown] = React.useState<string | null>(null);
+  const router = useRouter();
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50 rounded-b-2xl">
@@ -17,7 +19,7 @@ function Header() {
               alt="Infinz Logo"
               className="cursor-pointer"
               style={{ height: "80px", width: "auto" }}
-              onClick={() => {}}
+              onClick={() => router.push('/')}
             />
           </div>
 
@@ -25,7 +27,7 @@ function Header() {
           <nav className="hidden md:flex space-x-8">
             {/* Home */}
             <button
-              onClick={() => {}}
+              onClick={() => router.push('/')}
               className="text-gray-600 hover:text-blue-600 transition-colors"
             >
               Home
@@ -44,7 +46,10 @@ function Header() {
               {activeDropdown === 'products' && (
                 <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
                   <button
-                    onClick={() => {}}
+                    onClick={() => {
+                      router.push('/personal-loan');
+                      setActiveDropdown(null);
+                    }}
                     className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600"
                   >
                     Personal Loan
@@ -178,7 +183,10 @@ function Header() {
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-4">
               <button
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => {
+                  router.push('/');
+                  setIsMenuOpen(false);
+                }}
                 className="text-gray-600 hover:text-blue-600 text-left"
               >
                 Home
@@ -196,7 +204,10 @@ function Header() {
                 {activeDropdown === 'products-mobile' && (
                   <div className="ml-4 mt-2 space-y-2">
                     <button
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => {
+                        router.push('/personal-loan');
+                        setIsMenuOpen(false);
+                      }}
                       className="text-gray-500 hover:text-blue-600 text-left block"
                     >
                       Personal Loan

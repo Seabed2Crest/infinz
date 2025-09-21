@@ -1,5 +1,7 @@
 import Hero from "./components/Hero";
 import LoanTypes from "./components/LoanTypes";
+import Products from "./components/Products";
+import WhyChoose from "./components/WhyChoose";
 import Stories from "./components/Stories";
 import Features from "./components/Features";
 import Comparison from "./components/Comparison";
@@ -15,6 +17,8 @@ export default function Home() {
     <>
       <Hero />
       <LoanTypes />
+      <Products />
+      <WhyChoose />
       <Stories />
       <Features />
       <Comparison />
