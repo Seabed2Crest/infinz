@@ -46,7 +46,11 @@ function useCounterAnimation(endValue: number, duration: number = 2000) {
   return { count, elementRef };
 }
 
-function LoanTypes() {
+interface LoanTypesProps {
+  onOpenModal: () => void;
+}
+
+function LoanTypes({ onOpenModal }: LoanTypesProps) {
   const trustYears = useCounterAnimation(7, 3500);
   const loanAmount = useCounterAnimation(100, 4000);
   const happyCustomers = useCounterAnimation(50, 3500);

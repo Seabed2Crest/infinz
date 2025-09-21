@@ -3,7 +3,11 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 
-function Products() {
+interface ProductsProps {
+  onOpenModal: () => void;
+}
+
+function Products({ onOpenModal }: ProductsProps) {
   return (
     <section id="products" className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,7 +23,10 @@ function Products() {
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {/* Personal Loan Card */}
-          <div className="group bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.15)] transition-all duration-500 overflow-hidden border border-gray-100 hover:border-teal-200 cursor-pointer transform hover:-translate-y-2 hover:rotate-1 perspective-1000">
+          <div 
+            onClick={onOpenModal}
+            className="group bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.15)] transition-all duration-500 overflow-hidden border border-gray-100 hover:border-teal-200 cursor-pointer transform hover:-translate-y-2 hover:rotate-1 perspective-1000"
+          >
             <div className="p-8 relative z-10 bg-gradient-to-br from-white to-gray-50/50">
               {/* Image */}
               <div className="w-20 h-20 rounded-2xl overflow-hidden mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-lg group-hover:shadow-xl">
@@ -71,7 +78,10 @@ function Products() {
           </div>
 
           {/* Business Loan Card */}
-          <div className="group bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.15)] transition-all duration-500 overflow-hidden border border-gray-100 hover:border-orange-200 cursor-pointer transform hover:-translate-y-2 hover:-rotate-1 perspective-1000">
+          <div 
+            onClick={() => window.open('/business-loan', '_self')}
+            className="group bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.15)] transition-all duration-500 overflow-hidden border border-gray-100 hover:border-orange-200 cursor-pointer transform hover:-translate-y-2 hover:-rotate-1 perspective-1000"
+          >
             <div className="p-8 relative z-10 bg-gradient-to-br from-white to-gray-50/50">
               {/* Image */}
               <div className="w-20 h-20 rounded-2xl overflow-hidden mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 shadow-lg group-hover:shadow-xl">

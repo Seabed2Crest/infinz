@@ -113,7 +113,11 @@ const colorClasses = {
   }
 };
 
-function WhyChoose() {
+interface WhyChooseProps {
+  onOpenModal: () => void;
+}
+
+function WhyChoose({ onOpenModal }: WhyChooseProps) {
   const { isInView, elementRef } = useInView(0.2);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 

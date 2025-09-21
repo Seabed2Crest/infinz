@@ -29,7 +29,11 @@ const heroSlides = [
   }
 ];
 
-function Hero () {
+interface HeroProps {
+  onOpenModal: () => void;
+}
+
+function Hero({ onOpenModal }: HeroProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -67,7 +71,7 @@ function Hero () {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
-                  onClick={() => {}}
+                  onClick={onOpenModal}
                   className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg inline-flex items-center justify-center"
                 >
                   {currentSlideData.buttonText}

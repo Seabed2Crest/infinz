@@ -7,7 +7,32 @@ import { useRouter } from "next/navigation";
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [activeDropdown, setActiveDropdown] = React.useState<string | null>(null);
+  const [hoverTimeout, setHoverTimeout] = React.useState<NodeJS.Timeout | null>(null);
   const router = useRouter();
+
+  const handleMouseEnter = (dropdown: string) => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+    setActiveDropdown(dropdown);
+  };
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 150); // Small delay to prevent accidental closing
+    setHoverTimeout(timeout);
+  };
+
+  // Cleanup timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+      }
+    };
+  }, [hoverTimeout]);
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50 rounded-b-2xl">
@@ -28,35 +53,38 @@ function Header() {
             {/* Home */}
             <button
               onClick={() => router.push('/')}
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
             >
               Home
             </button>
 
             {/* Products Dropdown */}
             <div className="relative"
-                 onMouseEnter={() => setActiveDropdown('products')}
-                 onMouseLeave={() => setActiveDropdown(null)}>
+                 onMouseEnter={() => handleMouseEnter('products')}
+                 onMouseLeave={handleMouseLeave}>
               <button
-                className="text-gray-600 hover:text-blue-600 transition-colors flex items-center"
+                className="text-gray-600 hover:text-blue-600 transition-colors flex items-center font-medium"
               >
                 Products
                 <ChevronDown className="ml-1 h-4 w-4" />
               </button>
               {activeDropdown === 'products' && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
+                <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
                   <button
                     onClick={() => {
                       router.push('/personal-loan');
                       setActiveDropdown(null);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                   >
                     Personal Loan
                   </button>
                   <button
-                    onClick={() => {}}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                    onClick={() => {
+                      router.push('/business-loan');
+                      setActiveDropdown(null);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                   >
                     Business Loan
                   </button>
@@ -66,25 +94,29 @@ function Header() {
 
             {/* Financial Tools Dropdown */}
             <div className="relative"
-                 onMouseEnter={() => setActiveDropdown('tools')}
-                 onMouseLeave={() => setActiveDropdown(null)}>
+                 onMouseEnter={() => handleMouseEnter('tools')}
+                 onMouseLeave={handleMouseLeave}>
               <button
-                className="text-gray-600 hover:text-blue-600 transition-colors flex items-center"
+                className="text-gray-600 hover:text-blue-600 transition-colors flex items-center font-medium"
               >
                 Financial Tools
                 <ChevronDown className="ml-1 h-4 w-4" />
               </button>
               {activeDropdown === 'tools' && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
+                <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
                   <button
-                    onClick={() => {}}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                    onClick={() => {
+                      setActiveDropdown(null);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                   >
                     Calculators
                   </button>
                   <button
-                    onClick={() => {}}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                    onClick={() => {
+                      setActiveDropdown(null);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                   >
                     Credit Score Check
                   </button>
@@ -94,31 +126,37 @@ function Header() {
 
             {/* Resources Dropdown */}
             <div className="relative"
-                 onMouseEnter={() => setActiveDropdown('resources')}
-                 onMouseLeave={() => setActiveDropdown(null)}>
+                 onMouseEnter={() => handleMouseEnter('resources')}
+                 onMouseLeave={handleMouseLeave}>
               <button
-                className="text-gray-600 hover:text-blue-600 transition-colors flex items-center"
+                className="text-gray-600 hover:text-blue-600 transition-colors flex items-center font-medium"
               >
                 Resources
                 <ChevronDown className="ml-1 h-4 w-4" />
               </button>
               {activeDropdown === 'resources' && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
+                <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
                   <button
-                    onClick={() => {}}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                    onClick={() => {
+                      setActiveDropdown(null);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                   >
                     Blogs
                   </button>
                   <button
-                    onClick={() => {}}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                    onClick={() => {
+                      setActiveDropdown(null);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                   >
                     Financial Directory
                   </button>
                   <button
-                    onClick={() => {}}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                    onClick={() => {
+                      setActiveDropdown(null);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                   >
                     News & Press Releases
                   </button>
@@ -129,7 +167,7 @@ function Header() {
             {/* About Us */}
             <button
               onClick={() => {}}
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
             >
               About Us
             </button>
@@ -137,7 +175,7 @@ function Header() {
             {/* Contact Us */}
             <button
               onClick={() => {}}
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
             >
               Contact Us
             </button>
@@ -213,7 +251,10 @@ function Header() {
                       Personal Loan
                     </button>
                     <button
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => {
+                        router.push('/business-loan');
+                        setIsMenuOpen(false);
+                      }}
                       className="text-gray-500 hover:text-blue-600 text-left block"
                     >
                       Business Loan

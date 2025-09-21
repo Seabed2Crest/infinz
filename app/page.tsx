@@ -1,8 +1,13 @@
+'use client';
+
+import { useState } from "react";
 import Hero from "./components/Hero";
 import LoanTypes from "./components/LoanTypes";
 import Products from "./components/Products";
 import WhyChoose from "./components/WhyChoose";
-import Stories from "./components/Stories";
+import CreditScore from "./components/CreditScore";
+import LoanSteps from "./components/LoanSteps";
+import OurLenders from "./components/OurLenders";
 import Features from "./components/Features";
 import Comparison from "./components/Comparison";
 import Steps from "./components/Steps";
@@ -11,23 +16,29 @@ import Faq from "./components/Faq";
 import Testimonials from "./components/Testimonials";
 import Blogs from "./components/Blogs";
 import Cta from "./components/Cta";
+import LoanApplicationModal from "./components/LoanApplicationModal";
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
-      <Hero />
-      <LoanTypes />
-      <Products />
-      <WhyChoose />
-      <Stories />
-      <Features />
-      <Comparison />
-      <Steps />
-      <Security />
-      <Faq />
-      <Testimonials />
-      <Blogs />
-      <Cta />
+      <Hero onOpenModal={() => setIsModalOpen(true)} />
+      <LoanTypes onOpenModal={() => setIsModalOpen(true)} />
+      <Products onOpenModal={() => setIsModalOpen(true)} />
+      <WhyChoose onOpenModal={() => setIsModalOpen(true)} />
+      <CreditScore onOpenModal={() => setIsModalOpen(true)} />
+      <LoanSteps onOpenModal={() => setIsModalOpen(true)} />
+      <OurLenders onOpenModal={() => setIsModalOpen(true)} />
+      <Testimonials onOpenModal={() => setIsModalOpen(true)} />
+      <Faq onOpenModal={() => setIsModalOpen(true)} />
+      {/* <Blogs /> */}
+      {/* <Cta /> */}
+      
+      <LoanApplicationModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </>
   );
 }
