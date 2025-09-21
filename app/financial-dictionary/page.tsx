@@ -5,8 +5,36 @@ import { Search, BookOpen, TrendingUp, DollarSign, CreditCard, Building2, Calcul
 import Image from "next/image";
 import LoanApplicationModal from "../components/LoanApplicationModal";
 
+// Type definitions
+interface FinancialTerm {
+  id: number;
+  term: string;
+  definition: string;
+  category: string;
+  example: string;
+  icon: string;
+}
+
+interface SearchAndFilterProps {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
+  isFilterOpen: boolean;
+  setIsFilterOpen: (open: boolean) => void;
+}
+
+interface TermsGridProps {
+  filteredTerms: FinancialTerm[];
+  onOpenModal: () => void;
+}
+
+interface CTASectionProps {
+  onOpenModal: () => void;
+}
+
 // Financial terms data
-const financialTerms = [
+const financialTerms: FinancialTerm[] = [
   {
     id: 1,
     term: "Annual Percentage Rate (APR)",
@@ -235,7 +263,7 @@ function DictionaryHero() {
 }
 
 // Search and Filter Section
-function SearchAndFilter({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, isFilterOpen, setIsFilterOpen }) {
+function SearchAndFilter({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, isFilterOpen, setIsFilterOpen }: SearchAndFilterProps) {
   return (
     <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -293,7 +321,7 @@ function SearchAndFilter({ searchTerm, setSearchTerm, selectedCategory, setSelec
 }
 
 // Terms Grid
-function TermsGrid({ filteredTerms, onOpenModal }) {
+function TermsGrid({ filteredTerms, onOpenModal }: TermsGridProps) {
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -307,7 +335,7 @@ function TermsGrid({ filteredTerms, onOpenModal }) {
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredTerms.map((term, index) => (
+          {filteredTerms.map((term: FinancialTerm, index: number) => (
             <div
               key={term.id}
               className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in-up"
@@ -407,7 +435,7 @@ function QuickStats() {
 }
 
 // CTA Section
-function CTASection({ onOpenModal }) {
+function CTASection({ onOpenModal }: CTASectionProps) {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -457,8 +485,8 @@ export default function FinancialDictionaryPage() {
 
   // Close filter dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isFilterOpen && !event.target.closest('.relative')) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isFilterOpen && !(event.target as Element).closest('.relative')) {
         setIsFilterOpen(false);
       }
     };
