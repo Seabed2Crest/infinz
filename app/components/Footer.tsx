@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { 
   Facebook, 
-  Twitter, 
   Instagram, 
   Linkedin, 
   Youtube,
@@ -139,11 +138,10 @@ function Footer() {
 
               {/* Social Media Icons */}
               <div className="flex gap-3">
-                <SocialIcon icon={Facebook} href="https://facebook.com/infinz" delay={0} />
-                <SocialIcon icon={Twitter} href="https://twitter.com/infinz" delay={100} />
-                <SocialIcon icon={Instagram} href="https://instagram.com/infinz" delay={200} />
-                <SocialIcon icon={Linkedin} href="https://linkedin.com/company/infinz" delay={300} />
-                <SocialIcon icon={Youtube} href="https://youtube.com/infinz" delay={400} />
+                <SocialIcon icon={Linkedin} href="https://in.linkedin.com/company/cashmateonline" delay={0} />
+                <SocialIcon icon={Facebook} href="https://www.facebook.com/cashmateonline/" delay={100} />
+                <SocialIcon icon={Instagram} href="https://www.instagram.com/cashmateonline/" delay={200} />
+                <SocialIcon icon={Youtube} href="https://youtube.com/@cash_mate?si=1rttniT_7h0_hg7E" delay={300} />
               </div>
             </div>
           </FooterColumn>
@@ -162,7 +160,7 @@ function Footer() {
 
           {/* Column 3: Financial Tools */}
           <FooterColumn title="Financial Tools" delay={200}>
-            <FooterLink onClick={() => {}}>
+            <FooterLink onClick={() => router.push('/calculator')}>
               <Calculator className="w-4 h-4" />
               EMI Calculator
             </FooterLink>
@@ -178,7 +176,7 @@ function Footer() {
 
           {/* Column 4: About Infinz */}
           <FooterColumn title="About Infinz" delay={300}>
-            <FooterLink onClick={() => {}}>
+            <FooterLink onClick={() => router.push('/about')}>
               <Users className="w-4 h-4" />
               About Us
             </FooterLink>
@@ -186,7 +184,7 @@ function Footer() {
               <Users className="w-4 h-4" />
               Career
             </FooterLink>
-            <FooterLink onClick={() => {}}>
+            <FooterLink onClick={() => router.push('/contact')}>
               <MessageCircle className="w-4 h-4" />
               Contact Us
             </FooterLink>
@@ -228,10 +226,9 @@ function Footer() {
                 <div>
                   <p className="text-gray-900 font-semibold mb-1">Head Office</p>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Infinz Financial Services Pvt. Ltd.<br />
-                    Tower A, Cyber City, Sector 5<br />
-                    Gurugram, Haryana 122002<br />
-                    India
+                    No S.1869, 1st H Main Rd, above Skinomy Clinic,<br />
+                    2nd Stage, Rajajinagar,<br />
+                    Bengaluru, Karnataka 560010
                   </p>
                 </div>
               </div>
@@ -246,7 +243,7 @@ function Footer() {
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-teal-600 flex-shrink-0" />
                 <div>
-                  <p className="text-gray-600 text-sm">+91 80 1234 5678</p>
+                  <p className="text-gray-600 text-sm">06366158631</p>
                 </div>
               </div>
             </div>

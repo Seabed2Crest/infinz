@@ -17,13 +17,18 @@ import Testimonials from "./components/Testimonials";
 import Blogs from "./components/Blogs";
 import Cta from "./components/Cta";
 import LoanApplicationModal from "./components/LoanApplicationModal";
+import LeadFormModal from "./components/LeadFormModal";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
 
   return (
     <>
-      <Hero onOpenModal={() => setIsModalOpen(true)} />
+      <Hero 
+        onOpenModal={() => setIsModalOpen(true)} 
+        onOpenLeadForm={() => setIsLeadFormOpen(true)} 
+      />
       <LoanTypes onOpenModal={() => setIsModalOpen(true)} />
       <Products onOpenModal={() => setIsModalOpen(true)} />
       <WhyChoose onOpenModal={() => setIsModalOpen(true)} />
@@ -35,9 +40,14 @@ export default function Home() {
       {/* <Blogs /> */}
       {/* <Cta /> */}
       
-      <LoanApplicationModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <LoanApplicationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+      
+      <LeadFormModal
+        isOpen={isLeadFormOpen}
+        onClose={() => setIsLeadFormOpen(false)}
       />
     </>
   );

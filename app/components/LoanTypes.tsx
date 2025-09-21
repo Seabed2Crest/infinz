@@ -58,11 +58,11 @@ function LoanTypes({ onOpenModal }: LoanTypesProps) {
   return (
     <section id="statistics" className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+        <div className="text-center mb-8 animate-fade-in-up">
+          <h2 className="text-3xl font-bold text-gray-900 mb-3 animate-slide-up">
             Trusted by Thousands
           </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto animate-slide-up animate-delay-200">
             Our track record speaks for itself - delivering exceptional financial solutions
           </p>
         </div>
@@ -71,7 +71,7 @@ function LoanTypes({ onOpenModal }: LoanTypesProps) {
           {/* 7 Years of Abiding Trust */}
           <div 
             ref={trustYears.elementRef}
-            className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl text-center border border-blue-200 hover:shadow-lg transition-all duration-300"
+            className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl text-center border border-blue-200 hover:shadow-lg transition-all duration-300 animate-bounce-in animate-delay-300"
           >
             <div className="text-4xl font-bold text-blue-600 mb-1">
               {trustYears.count}+
@@ -87,7 +87,7 @@ function LoanTypes({ onOpenModal }: LoanTypesProps) {
           {/* 100 Cr+ Loan Approved */}
           <div 
             ref={loanAmount.elementRef}
-            className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-2xl text-center border border-orange-200 hover:shadow-lg transition-all duration-300"
+            className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-2xl text-center border border-orange-200 hover:shadow-lg transition-all duration-300 animate-bounce-in animate-delay-400"
           >
             <div className="text-4xl font-bold text-orange-600 mb-1">
               ₹{loanAmount.count}Cr+
@@ -103,7 +103,7 @@ function LoanTypes({ onOpenModal }: LoanTypesProps) {
           {/* 50K Happy Customers */}
           <div 
             ref={happyCustomers.elementRef}
-            className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl text-center border border-green-200 hover:shadow-lg transition-all duration-300"
+            className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl text-center border border-green-200 hover:shadow-lg transition-all duration-300 animate-bounce-in animate-delay-500"
           >
             <div className="text-4xl font-bold text-green-600 mb-1">
               {happyCustomers.count}K+

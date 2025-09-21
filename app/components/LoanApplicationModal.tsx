@@ -214,9 +214,10 @@ function LoanApplicationModal({ isOpen, onClose }: LoanApplicationModalProps) {
           </div>
 
           {/* Right Side - Form */}
-          <div className="w-full md:w-3/5 p-8 overflow-y-auto">
+          <div className="w-full md:w-3/5 p-8 flex flex-col overflow-hidden">
             {currentStep === 'mobile' && (
-              <div className="space-y-6">
+              <div className="flex-1 overflow-y-auto pr-2">
+                <div className="space-y-6">
                 {/* Header */}
                 <div className="text-center">
                   <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -283,24 +284,30 @@ function LoanApplicationModal({ isOpen, onClose }: LoanApplicationModalProps) {
                   <p className="text-sm font-medium text-gray-700">Download Our Mobile App</p>
                   <div className="flex gap-3">
                     <button className="flex-1 flex items-center justify-center gap-2 bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors">
-                      <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
-                        <span className="text-black font-bold text-xs">🍎</span>
-                      </div>
+                      <img
+                        src="/apple.png"
+                        alt="Download on App Store"
+                        className="w-6 h-6"
+                      />
                       <span className="text-sm">Download on App Store</span>
                     </button>
                     <button className="flex-1 flex items-center justify-center gap-2 bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors">
-                      <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
-                        <span className="text-black font-bold text-xs">▶</span>
-                      </div>
+                      <img
+                        src="/playstore.png"
+                        alt="Download on Play Store"
+                        className="w-6 h-6"
+                      />
                       <span className="text-sm">Download on Play Store</span>
                     </button>
                   </div>
+                </div>
                 </div>
               </div>
             )}
 
             {currentStep === 'otp' && (
-              <div className="space-y-6">
+              <div className="flex-1 overflow-y-auto pr-2">
+                <div className="space-y-6">
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Mobile</h2>
                   <p className="text-gray-600">
@@ -354,11 +361,13 @@ function LoanApplicationModal({ isOpen, onClose }: LoanApplicationModalProps) {
                 >
                   {isLoading ? 'Verifying...' : 'Verify OTP'}
                 </button>
+                </div>
               </div>
             )}
 
             {currentStep === 'form' && (
-              <div className="space-y-6">
+              <div className="flex-1 overflow-y-auto pr-2">
+                <div className="space-y-6">
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">Complete Your Application</h2>
                   <p className="text-gray-600">Fill in your details to get instant approval</p>
@@ -461,6 +470,7 @@ function LoanApplicationModal({ isOpen, onClose }: LoanApplicationModalProps) {
                   {isLoading ? 'Submitting...' : 'Submit Application'}
                   {!isLoading && <ArrowRight className="w-5 h-5" />}
                 </button>
+                </div>
               </div>
             )}
 

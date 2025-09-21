@@ -31,9 +31,10 @@ const heroSlides = [
 
 interface HeroProps {
   onOpenModal: () => void;
+  onOpenLeadForm: () => void;
 }
 
-function Hero({ onOpenModal }: HeroProps) {
+function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -53,9 +54,9 @@ function Hero({ onOpenModal }: HeroProps) {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 lg:pt-12 pb-16">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+            <div className="space-y-8 animate-fade-in-up">
               <div className="space-y-6">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight transition-all duration-500">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight transition-all duration-500 animate-slide-up">
                   {currentSlideData.title}
                   <br />
                   with
@@ -64,14 +65,14 @@ function Hero({ onOpenModal }: HeroProps) {
                     <span className="absolute left-0 right-0 -bottom-2 h-2 bg-teal-200 rounded-full"></span>
                   </span>
                 </h1>
-                <p className="text-lg sm:text-xl text-gray-600 max-w-2xl transition-all duration-500">
+                <p className="text-lg sm:text-xl text-gray-600 max-w-2xl transition-all duration-500 animate-slide-up animate-delay-200">
                   {currentSlideData.description}
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animate-delay-300">
                 <button
-                  onClick={onOpenModal}
+                  onClick={onOpenLeadForm}
                   className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg inline-flex items-center justify-center"
                 >
                   {currentSlideData.buttonText}
@@ -79,9 +80,9 @@ function Hero({ onOpenModal }: HeroProps) {
                 </button>
               </div>
 
-              <div className="hidden sm:flex items-center gap-8 pt-2">
+              <div className="hidden sm:flex items-center gap-8 pt-2 animate-slide-up animate-delay-400">
                 {currentSlideData.stats.map((stat, index) => (
-                  <div key={index} className="transition-all duration-500">
+                  <div key={index} className="transition-all duration-500 animate-bounce-in" style={{ animationDelay: `${0.5 + index * 0.1}s` }}>
                     <div className="text-2xl font-bold text-teal-700">{stat.value}</div>
                     <div className="text-gray-600">{stat.label}</div>
                   </div>
@@ -89,24 +90,24 @@ function Hero({ onOpenModal }: HeroProps) {
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative animate-slide-right animate-delay-200">
               <div className="relative">
                 <div className="aspect-[4/3] w-full flex items-center justify-center">
                   <Lottie
                     play
                     loop
                     path="/lottie/Animation - financial.json"
-                    className="h-80 sm:h-96 lg:h-[520px] w-auto"
+                    className="h-80 sm:h-96 lg:h-[520px] w-auto animate-scale-in animate-delay-500"
                   />
                 </div>
 
-                <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur rounded-full shadow-md px-4 py-2 flex items-center gap-2">
+                <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur rounded-full shadow-md px-4 py-2 flex items-center gap-2 animate-bounce-in animate-delay-700">
                   <CheckCircle className="h-5 w-5 text-green-600" />
                   <span className="text-sm font-medium text-gray-800">Loan Approved</span>
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-center gap-2">
+              <div className="mt-6 flex items-center justify-center gap-2 animate-fade-in-up animate-delay-600">
                 {heroSlides.map((_, index) => (
                   <button
                     key={index}

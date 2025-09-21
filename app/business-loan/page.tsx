@@ -246,10 +246,10 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             </button>
 
             <button
-              onClick={() => {/* Navigate to credit score page */}}
+              onClick={() => window.open('/calculator', '_self')}
               className="w-full border-2 border-teal-600 text-teal-600 py-3 rounded-xl font-semibold hover:bg-teal-50 transition-colors"
             >
-              Check Credit Score
+              Advanced Calculator
             </button>
           </div>
 
