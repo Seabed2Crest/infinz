@@ -1,7 +1,7 @@
 {
   "/about/page": "app/about/page.js",
-  "/calculator/page": "app/calculator/page.js",
   "/page": "app/page.js",
+  "/calculator/page": "app/calculator/page.js",
   "/business-loan/page": "app/business-loan/page.js",
   "/personal-loan/page": "app/personal-loan/page.js"
 }
