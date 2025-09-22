@@ -1,4 +1,4 @@
-// File: C:\s2c\infinz\app\page.tsx
+// File: C:\seabed\infinz\app\page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
