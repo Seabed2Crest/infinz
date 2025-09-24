@@ -494,7 +494,7 @@ export default function FinancialDictionaryPage() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isFilterOpen]);
-
+ 
   return (
     <>
       <DictionaryHero />
@@ -510,7 +510,7 @@ export default function FinancialDictionaryPage() {
         filteredTerms={filteredTerms}
         onOpenModal={() => setIsModalOpen(true)}
       />
-      <QuickStats />
+      <QuickStats/>
       <CTASection onOpenModal={() => setIsModalOpen(true)} />
       
       <LoanApplicationModal
