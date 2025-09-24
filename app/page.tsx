@@ -30,7 +30,7 @@ export default function Home() {
         onOpenLeadForm={() => setIsLeadFormOpen(true)} 
       />
       <LoanTypes onOpenModal={() => setIsModalOpen(true)} />
-      <Products onOpenModal={() => setIsModalOpen(true)} />
+      <Products />
       <WhyChoose onOpenModal={() => setIsModalOpen(true)} />
       <CreditScore onOpenModal={() => setIsModalOpen(true)} />
       <LoanSteps onOpenModal={() => setIsModalOpen(true)} />
