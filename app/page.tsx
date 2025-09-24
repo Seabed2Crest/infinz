@@ -8,14 +8,8 @@ import WhyChoose from "./components/WhyChoose";
 import CreditScore from "./components/CreditScore";
 import LoanSteps from "./components/LoanSteps";
 import OurLenders from "./components/OurLenders";
-import Features from "./components/Features";
-import Comparison from "./components/Comparison";
-import Steps from "./components/Steps";
-import Security from "./components/Security";
 import Faq from "./components/Faq";
 import Testimonials from "./components/Testimonials";
-import Blogs from "./components/Blogs";
-import Cta from "./components/Cta";
 import LoanApplicationModal from "./components/LoanApplicationModal";
 import LeadFormModal from "./components/LeadFormModal";
 
