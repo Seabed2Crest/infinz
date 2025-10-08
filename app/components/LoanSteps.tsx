@@ -1,17 +1,27 @@
-'use client';
+"use client";
 
 import { useState, useEffect, useRef } from "react";
-import { 
-  Smartphone, 
-  User, 
-  Calculator, 
-  Shield, 
+import {
+  Smartphone,
+  User,
+  Calculator,
+  Shield,
   Banknote,
   CheckCircle,
   Clock,
   FileText,
   CreditCard,
-  Zap
+  Zap,
+  Lock,
+  Briefcase,
+  ArrowUpCircle,
+  Send,
+  Building2,
+  Phone,
+  ShieldCheck,
+  Upload,
+  BadgeCheck,
+  Target,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -56,17 +66,20 @@ function useTimelineProgress() {
             const windowHeight = window.innerHeight;
             const elementTop = rect.top;
             const elementHeight = rect.height;
-            
+
             // Calculate progress based on how much of the timeline is visible
             const visibleTop = Math.max(0, windowHeight - elementTop);
             const visibleHeight = Math.min(visibleTop, elementHeight);
-            const progressPercent = Math.min(100, (visibleHeight / elementHeight) * 100);
-            
+            const progressPercent = Math.min(
+              100,
+              (visibleHeight / elementHeight) * 100
+            );
+
             setProgress(progressPercent);
           }
         });
       },
-      { threshold: Array.from(Array(101).keys(), i => i / 100) }
+      { threshold: Array.from(Array(101).keys(), (i) => i / 100) }
     );
 
     if (timelineRef.current) {
@@ -79,6 +92,7 @@ function useTimelineProgress() {
   return { progress, timelineRef };
 }
 
+// Loan steps data with enhanced features including icons
 const loanSteps = [
   {
     id: 1,
@@ -87,7 +101,11 @@ const loanSteps = [
     icon: Smartphone,
     color: "blue",
     delay: 0,
-    features: ["OTP Verification", "Secure Process", "30 Seconds"]
+    features: [
+      { text: "OTP Verification", icon: ShieldCheck },
+      { text: "Secure Process", icon: Lock },
+      { text: "30 Seconds", icon: Clock },
+    ],
   },
   {
     id: 2,
@@ -96,35 +114,54 @@ const loanSteps = [
     icon: User,
     color: "green",
     delay: 300,
-    features: ["Personal Info", "Professional Details", "2 Minutes"]
+    features: [
+      { text: "Personal Info", icon: User },
+      { text: "Professional Details", icon: Briefcase },
+      { text: "2 Minutes", icon: Clock },
+    ],
   },
   {
     id: 3,
     title: "Fill-up Loan Requirement",
-    description: "Select your loan amount, tenure, and purpose from our flexible options",
+    description:
+      "Select your loan amount, tenure, and purpose from our flexible options",
     icon: Calculator,
     color: "purple",
     delay: 600,
-    features: ["Loan Amount", "Tenure Selection", "Purpose Details"]
+    features: [
+      { text: "Loan Amount", icon: Banknote },
+      { text: "Tenure Selection", icon: Target },
+      { text: "Purpose Details", icon: FileText },
+    ],
   },
   {
     id: 4,
     title: "Complete KYC",
-    description: "Upload documents digitally for instant verification and compliance",
+    description:
+      "Upload documents digitally for instant verification and compliance",
     icon: Shield,
     color: "orange",
     delay: 900,
-    features: ["Document Upload", "AI Verification", "Instant Process"]
+    features: [
+      { text: "Document Upload", icon: Upload },
+      { text: "AI Verification", icon: Zap },
+      { text: "Instant Process", icon: BadgeCheck },
+    ],
   },
   {
     id: 5,
     title: "Get Your Loan",
-    description: "Receive funds directly in your bank account within 24 hours of approval",
+    description:
+      "Receive funds directly in your bank account within 24 hours of approval",
     icon: Banknote,
     color: "teal",
     delay: 1200,
-    features: ["Direct Transfer", "24 Hours", "Bank Account"]
-  }
+    features: [
+      { text: "Direct Transfer", icon: Send },
+      { text: "24 Hours", icon: Clock },
+      { text: "Bank Account", icon: Building2 },
+    ],
+  },
 ];
 
 const colorClasses = {
@@ -134,7 +171,7 @@ const colorClasses = {
     border: "border-blue-300",
     text: "text-blue-600",
     shadow: "shadow-blue-500/25",
-    glow: "shadow-blue-500/40"
+    glow: "shadow-blue-500/40",
   },
   green: {
     bg: "from-green-400 to-green-600",
@@ -142,7 +179,7 @@ const colorClasses = {
     border: "border-green-300",
     text: "text-green-600",
     shadow: "shadow-green-500/25",
-    glow: "shadow-green-500/40"
+    glow: "shadow-green-500/40",
   },
   purple: {
     bg: "from-purple-400 to-purple-600",
@@ -150,7 +187,7 @@ const colorClasses = {
     border: "border-purple-300",
     text: "text-purple-600",
     shadow: "shadow-purple-500/25",
-    glow: "shadow-purple-500/40"
+    glow: "shadow-purple-500/40",
   },
   orange: {
     bg: "from-orange-400 to-orange-600",
@@ -158,7 +195,7 @@ const colorClasses = {
     border: "border-orange-300",
     text: "text-orange-600",
     shadow: "shadow-orange-500/25",
-    glow: "shadow-orange-500/40"
+    glow: "shadow-orange-500/40",
   },
   teal: {
     bg: "from-teal-400 to-teal-600",
@@ -166,11 +203,20 @@ const colorClasses = {
     border: "border-teal-300",
     text: "text-teal-600",
     shadow: "shadow-teal-500/25",
-    glow: "shadow-teal-500/40"
-  }
+    glow: "shadow-teal-500/40",
+  },
 };
 
-function StepCard({ step, index, isActive }: { step: any, index: number, isActive: boolean }) {
+// Step card component
+function StepCard({
+  step,
+  index,
+  isActive,
+}: {
+  step: any;
+  index: number;
+  isActive: boolean;
+}) {
   const { isInView, elementRef } = useStepInView(0.3);
   const [isHovered, setIsHovered] = useState(false);
   const IconComponent = step.icon;
@@ -180,7 +226,7 @@ function StepCard({ step, index, isActive }: { step: any, index: number, isActiv
     <div
       ref={elementRef}
       className={`relative flex items-center gap-8 transform transition-all duration-1000 ${
-        isInView ? 'translate-x-0 opacity-100' : 'translate-x-12 opacity-0'
+        isInView ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0"
       }`}
       style={{ transitionDelay: `${step.delay}ms` }}
       onMouseEnter={() => setIsHovered(true)}
@@ -188,102 +234,112 @@ function StepCard({ step, index, isActive }: { step: any, index: number, isActiv
     >
       {/* Timeline Dot */}
       <div className="relative z-10 flex-shrink-0">
-        <div className={`
+        <div
+          className={`
           w-16 h-16 rounded-full bg-gradient-to-br ${colors.bg} 
           flex items-center justify-center shadow-2xl transform transition-all duration-500
-          ${isHovered ? `scale-125 rotate-12 ${colors.glow}` : 'scale-100'}
-          ${isInView ? 'animate-pulse' : ''}
+          ${isHovered ? `scale-125 rotate-12 ${colors.glow}` : "scale-100"}
+          ${isInView ? "animate-pulse" : ""}
         `}
-        style={{
-          animationDuration: '2s',
-          animationDelay: `${step.delay + 500}ms`,
-          animationIterationCount: '3'
-        }}
+          style={{
+            animationDuration: "2s",
+            animationDelay: `${step.delay + 500}ms`,
+            animationIterationCount: "3",
+          }}
         >
           <IconComponent className="h-8 w-8 text-white" />
         </div>
-        
+
         {/* Step Number Badge */}
-        <div className={`
-          absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border-2 ${colors.border}
+        <div
+          className={`
+          absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border-2 ${
+            colors.border
+          }
           flex items-center justify-center text-xs font-bold ${colors.text}
           transform transition-all duration-300
-          ${isHovered ? 'scale-125' : 'scale-100'}
-        `}>
+          ${isHovered ? "scale-125" : "scale-100"}
+        `}
+        >
           {step.id}
         </div>
       </div>
 
       {/* Content Card */}
-      <div className={`
+      <div
+        className={`
         flex-1 bg-white rounded-3xl p-8 shadow-xl border-2 ${colors.border}
         transform transition-all duration-500 relative overflow-hidden
-        ${isHovered ? `scale-105 -translate-y-2 ${colors.glow} shadow-2xl` : 'hover:scale-102'}
-      `}>
+        ${
+          isHovered
+            ? `scale-105 -translate-y-2 ${colors.glow} shadow-2xl`
+            : "hover:scale-102"
+        }
+      `}
+      >
         {/* Background Pattern */}
-        <div className={`
+        <div
+          className={`
           absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${colors.light} 
           rounded-full blur-2xl opacity-30 transform transition-all duration-500
-          ${isHovered ? 'scale-150 opacity-50' : 'scale-100'}
-        `} />
+          ${isHovered ? "scale-150 opacity-50" : "scale-100"}
+        `}
+        />
 
         {/* Content */}
         <div className="relative z-10">
-          <h3 className={`text-2xl font-bold text-gray-900 mb-3 transform transition-all duration-300 ${
-            isHovered ? colors.text : ''
-          }`}>
+          <h3
+            className={`text-2xl font-bold text-gray-900 mb-3 transition-all duration-300 ${
+              isHovered ? colors.text : ""
+            }`}
+          >
             {step.title}
           </h3>
           <p className="text-gray-600 text-lg leading-relaxed mb-6">
             {step.description}
           </p>
 
-          {/* Features */}
+          {/* Features with Icons */}
           <div className="flex flex-wrap gap-3">
-            {step.features.map((feature: string, idx: number) => (
-              <div
-                key={idx}
-                className={`
-                  px-4 py-2 rounded-full bg-gradient-to-r ${colors.light} 
-                  text-sm font-medium ${colors.text} border ${colors.border}
-                  transform transition-all duration-300
-                  ${isHovered ? 'scale-105 -translate-y-1' : ''}
-                `}
-                style={{ transitionDelay: `${idx * 100}ms` }}
-              >
-                {feature}
-              </div>
-            ))}
+            {step.features.map((feature: any, idx: number) => {
+              const FeatureIcon = feature.icon;
+              return (
+                <div
+                  key={idx}
+                  className={`
+                    px-4 py-2 rounded-full bg-gradient-to-r ${colors.light} 
+                    text-sm font-medium ${colors.text} border ${colors.border}
+                    flex items-center gap-2
+                    transform transition-all duration-300
+                    ${isHovered ? "scale-105 -translate-y-1" : ""}
+                  `}
+                  style={{ transitionDelay: `${idx * 100}ms` }}
+                >
+                  <FeatureIcon className="h-4 w-4" />
+                  {feature.text}
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* 3D Floating Icons */}
-        {isHovered && (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <CheckCircle className={`absolute top-4 right-4 h-6 w-6 ${colors.text} animate-bounce opacity-70`} 
-                        style={{ animationDelay: '0s', animationDuration: '2s' }} />
-            <Clock className={`absolute bottom-4 right-8 h-5 w-5 ${colors.text} animate-bounce opacity-60`} 
-                   style={{ animationDelay: '0.5s', animationDuration: '2.5s' }} />
-            <Zap className={`absolute top-1/2 right-2 h-4 w-4 ${colors.text} animate-bounce opacity-50`} 
-                 style={{ animationDelay: '1s', animationDuration: '3s' }} />
-          </div>
-        )}
-
         {/* Progress Indicator */}
-        <div className={`
+        <div
+          className={`
           absolute bottom-0 left-0 h-1 bg-gradient-to-r ${colors.bg} 
           transform transition-all duration-1000 origin-left
-          ${isInView ? 'scale-x-100' : 'scale-x-0'}
+          ${isInView ? "scale-x-100" : "scale-x-0"}
         `}
-        style={{ transitionDelay: `${step.delay + 800}ms` }}
+          style={{ transitionDelay: `${step.delay + 800}ms` }}
         />
       </div>
     </div>
   );
 }
 
+// Main component
 interface LoanStepsProps {
-  onOpenModal: () => void;
+  onOpenModal?: () => void;
 }
 
 function LoanSteps({ onOpenModal }: LoanStepsProps) {
@@ -310,28 +366,46 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
   }, []);
 
   return (
-    <section id="loan-steps" className="py-20 bg-gradient-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden">
+    <section
+      id="loan-steps"
+      className="py-20 bg-gradient-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden"
+    >
       {/* Background Decorations */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-1/4 left-1/6 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/6 w-80 h-80 bg-purple-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-2/3 left-1/3 w-64 h-64 bg-teal-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+        <div
+          className="absolute bottom-1/4 right-1/6 w-80 h-80 bg-purple-500 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        />
+        <div
+          className="absolute top-2/3 left-1/3 w-64 h-64 bg-teal-500 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "4s" }}
+        />
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div ref={headerRef} className="text-center mb-20">
-          <h2 className={`text-4xl md:text-5xl font-bold text-gray-900 mb-6 transform transition-all duration-1000 ${
-            headerInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
-            Get a Loan Online in <span className="text-teal-600">5 Simple Steps</span>
-          </h2>
-          <p className={`text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed transform transition-all duration-1000 ${
-            headerInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}
-          style={{ transitionDelay: '200ms' }}
+          <h2
+            className={`text-4xl md:text-5xl font-bold text-gray-900 mb-6 transition-all duration-1000 ${
+              headerInView
+                ? "translate-y-0 opacity-100"
+                : "translate-y-8 opacity-0"
+            }`}
           >
-            Experience the fastest and most convenient way to secure your loan with our streamlined digital process that puts you in control
+            Get a Loan Online in{" "}
+            <span className="text-teal-600">5 Simple Steps</span>
+          </h2>
+          <p
+            className={`text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed transition-all duration-1000 ${
+              headerInView
+                ? "translate-y-0 opacity-100"
+                : "translate-y-8 opacity-0"
+            }`}
+            style={{ transitionDelay: "200ms" }}
+          >
+            Experience the fastest and most convenient way to secure your loan
+            with our streamlined digital process that puts you in control
           </p>
         </div>
 
@@ -339,7 +413,7 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
         <div ref={timelineRef} className="relative">
           {/* Animated Timeline Line */}
           <div className="absolute left-8 top-0 bottom-0 w-1 bg-gray-200 rounded-full">
-            <div 
+            <div
               className="w-full bg-gradient-to-b from-blue-500 via-purple-500 to-teal-500 rounded-full transition-all duration-1000 ease-out"
               style={{ height: `${progress}%` }}
             />
@@ -348,11 +422,11 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
           {/* Steps */}
           <div className="space-y-16">
             {loanSteps.map((step, index) => (
-              <StepCard 
-                key={step.id} 
-                step={step} 
+              <StepCard
+                key={step.id}
+                step={step}
                 index={index}
-                isActive={progress > (index * 20)}
+                isActive={progress > index * 20}
               />
             ))}
           </div>
@@ -360,26 +434,34 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
 
         {/* Bottom CTA */}
         <div className="text-center mt-20">
-          <div className={`transform transition-all duration-1000 ${
-            progress > 80 ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
-          }`}>
-            <button className="
+          <div
+            className={`transition-all duration-1000 ${
+              progress > 80
+                ? "translate-y-0 opacity-100 scale-100"
+                : "translate-y-8 opacity-0 scale-95"
+            }`}
+          >
+            <button
+              className="
               bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 text-white 
               px-12 py-6 rounded-3xl font-bold text-xl 
               hover:from-teal-700 hover:via-blue-700 hover:to-purple-700
               transform hover:scale-110 hover:-translate-y-2
               transition-all duration-500 shadow-2xl hover:shadow-3xl
               relative overflow-hidden group
-            " onClick={() => router.push('/personal-loan')}>
+            "
+              onClick={() => router.push("/personal-loan")}
+            >
               <span className="relative z-10 flex items-center gap-3">
                 Start Your Loan Journey
                 <Zap className="h-6 w-6 group-hover:animate-bounce" />
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
-            
+
             <p className="mt-6 text-gray-500 text-lg">
-              ⚡ Get approved in minutes • 🔒 100% secure process • 💰 Competitive rates
+              ⚡ Get approved in minutes • 🔒 100% secure process • 💰
+              Competitive rates
             </p>
           </div>
         </div>

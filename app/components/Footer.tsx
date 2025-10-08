@@ -268,17 +268,17 @@ function Footer() {
               <button className="text-gray-600 hover:text-teal-600 transition-colors">
                 Terms of Service
               </button>
-              <button className="text-gray-600 hover:text-teal-600 transition-colors">
+              {/* <button className="text-gray-600 hover:text-teal-600 transition-colors">
                 Cookie Policy
-              </button>
+              </button> */}
             </div>
           </div>
 
-          <div className="mt-4 text-center">
+          {/* <div className="mt-4 text-center">
             <p className="text-gray-500 text-xs">
               Licensed by Reserve Bank of India | CIN: U65999DL2020PTC123456
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

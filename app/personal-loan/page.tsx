@@ -48,7 +48,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
             </div>
 
             {/* CTA Section */}
-            <div className="space-y-6">
+            {/* <div className="space-y-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="tel"
@@ -60,7 +60,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                   onClick={onOpenModal}
                   className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
                 >
-                  Apply Now
+                  Apply Now1
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
               </div>
@@ -79,7 +79,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                   <span>Minimal Documentation</span>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Side - Lead Form */}
@@ -142,7 +142,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 onClick={onOpenModal}
                 className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
               >
-                Get Instant Quote
+                Get Instant Loan
               </button>
             </div>
 

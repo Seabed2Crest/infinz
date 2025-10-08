@@ -13,12 +13,12 @@ const faqData = [
   },
   {
     id: 2,
-    question: "Do you offer services in my City?",
+    question: "Do you offer services in my city?",
     answer: "Infinz is currently offering its personal loan services all over India, and business loan services only in Bengaluru and around locations within 150 KM."
   },
   {
     id: 3,
-    question: "What is my Loan Eligibility/How much can I borrow?",
+    question: "What is my loan eligibility / How much can I borrow?",
     answer: "Your loan eligibility depends on factors like your monthly income, credit score, employment history, and existing obligations. Generally, you can borrow 10-15 times your monthly salary, with loan amounts ranging from ₹10,000 to ₹1 crore. Use our eligibility calculator on the website for an instant assessment of your borrowing capacity."
   },
   {
@@ -241,7 +241,7 @@ function Faq({ onOpenModal }: FaqProps) {
         </div>
 
         {/* Bottom CTA */}
-        <div className={`text-center mt-16 transform transition-all duration-1000 ${
+        {/* <div className={`text-center mt-16 transform transition-all duration-1000 ${
           isInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
         }`}
         style={{ transitionDelay: '1200ms' }}
@@ -260,7 +260,7 @@ function Faq({ onOpenModal }: FaqProps) {
             <span className="relative z-10">Contact Support</span>
             <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );
