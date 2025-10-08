@@ -162,16 +162,16 @@ function Footer() {
           <FooterColumn title="Financial Tools" delay={200}>
             <FooterLink onClick={() => router.push('/calculator')}>
               <Calculator className="w-4 h-4" />
-              EMI Calculator
+              Calculators
             </FooterLink>
-            <FooterLink onClick={() => {}}>
+            {/* <FooterLink onClick={() => {}}>
               <Calculator className="w-4 h-4" />
               Eligibility Calculator
             </FooterLink>
             <FooterLink onClick={() => {}}>
               <CreditCard className="w-4 h-4" />
               Credit Score Check
-            </FooterLink>
+            </FooterLink> */}
           </FooterColumn>
 
           {/* Column 4: About Infinz */}
@@ -188,10 +188,10 @@ function Footer() {
               <MessageCircle className="w-4 h-4" />
               Contact Us
             </FooterLink>
-            <FooterLink onClick={() => {}}>
+            {/* <FooterLink onClick={() => {}}>
               <Users className="w-4 h-4" />
               Meet The Team
-            </FooterLink>
+            </FooterLink> */}
           </FooterColumn>
 
           {/* Column 5: Resources */}

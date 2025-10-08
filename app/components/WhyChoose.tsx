@@ -119,7 +119,6 @@ interface WhyChooseProps {
 
 function WhyChoose({ onOpenModal }: WhyChooseProps) {
   const { isInView, elementRef } = useInView(0.2);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
     <section id="why-choose" className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
@@ -153,14 +152,14 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
 
           {/* Milestones Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-4">
-            {milestones.map((milestone, index) => {
+            {milestones.map((milestone) => {
               const IconComponent = milestone.icon;
               const colors = colorClasses[milestone.color as keyof typeof colorClasses];
               
               return (
                 <div
                   key={milestone.id}
-                  className={`relative group cursor-pointer transform transition-all duration-1000 ease-out ${
+                  className={`relative transform transition-all duration-1000 ease-out ${
                     isInView 
                       ? 'translate-y-0 opacity-100 scale-100 rotate-0' 
                       : 'translate-y-16 opacity-0 scale-75 -rotate-12'
@@ -168,22 +167,18 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
                   style={{ 
                     transitionDelay: isInView ? `${milestone.delay}ms` : '0ms' 
                   }}
-                  onMouseEnter={() => setActiveIndex(index)}
-                  onMouseLeave={() => setActiveIndex(null)}
                 >
                   {/* Milestone Card */}
                   <div className={`
                     bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl 
                     transition-all duration-500 border-2 ${colors.border}
                     transform hover:-translate-y-2 hover:scale-105
-                    ${activeIndex === index ? `${colors.glow} shadow-2xl -translate-y-2 scale-105` : ''}
+                    ${isInView ? `${colors.glow}` : ''}
                   `}>
                     {/* Icon Container */}
                     <div className={`
                       w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${colors.bg}
                       flex items-center justify-center transform transition-all duration-700
-                      group-hover:scale-110 group-hover:rotate-6
-                      ${activeIndex === index ? 'scale-110 rotate-6' : ''}
                       ${isInView ? 'animate-bounce' : ''}
                     `}
                     style={{
@@ -227,8 +222,7 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
                     <div className={`
                       absolute -top-3 -right-3 w-8 h-8 rounded-full ${colors.accent}
                       flex items-center justify-center text-white font-bold text-sm
-                      transform transition-all duration-700 group-hover:scale-125
-                      ${activeIndex === index ? 'scale-125' : ''}
+                      transform transition-all duration-700
                       ${isInView ? 'scale-100 rotate-0' : 'scale-0 rotate-180'}
                     `}
                     style={{
@@ -249,19 +243,16 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
                     {/* Glow Effect */}
                     <div className={`
                       absolute inset-0 rounded-2xl bg-gradient-to-r ${colors.bg} opacity-0 
-                      group-hover:opacity-20 transition-opacity duration-300 pointer-events-none
-                      ${activeIndex === index ? 'opacity-20' : ''}
+                      hover:opacity-20 transition-opacity duration-300 pointer-events-none
                     `} />
                   </div>
 
                   {/* Connection Line for Mobile */}
-                  {index < milestones.length - 1 && (
+                  {milestone.id < milestones.length && (
                     <div className="lg:hidden flex justify-center mt-6 mb-2">
                       <div className={`
                         w-1 h-8 bg-gradient-to-b from-teal-500 to-orange-500 rounded-full
-                        transform transition-all duration-700 ${
-                          isInView ? 'scale-y-100' : 'scale-y-0'
-                        }
+                        transform transition-all duration-700 ${isInView ? 'scale-y-100' : 'scale-y-0'}
                       `}
                       style={{ 
                         transitionDelay: isInView ? `${milestone.delay + 200}ms` : '0ms' 
@@ -296,31 +287,6 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
           )}
         </div>
 
-        {/* Bottom CTA */}
-        <div className="text-center mt-16">
-          <div className={`
-            transform transition-all duration-1000 ${
-              isInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-            }
-          `}
-          style={{ transitionDelay: '1200ms' }}
-          >
-            <p className="text-lg text-gray-600 mb-6">
-              Ready to experience the Infinz difference?
-            </p>
-            <button className="
-              bg-gradient-to-r from-teal-600 to-orange-600 text-white 
-              px-8 py-4 rounded-2xl font-semibold text-lg 
-              hover:from-teal-700 hover:to-orange-700 
-              transform hover:scale-105 hover:-translate-y-1
-              transition-all duration-300 shadow-xl hover:shadow-2xl
-              relative overflow-hidden group
-            ">
-              <span className="relative z-10">Start Your Loan Journey</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </button>
-          </div>
-        </div>
       </div>
     </section>
   );

@@ -163,13 +163,13 @@ function Faq({ onOpenModal }: FaqProps) {
               →
             </span>
           </h2>
-          <p className={`text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed transform transition-all duration-1000 ${
+          {/* <p className={`text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed transform transition-all duration-1000 ${
             isInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
           style={{ transitionDelay: '200ms' }}
           >
             Get answers to all your questions about our loan services and application process
-          </p>
+          </p> */}
         </div>
 
         {/* Two Column Layout */}

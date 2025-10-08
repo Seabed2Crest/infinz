@@ -13,7 +13,6 @@ export default function LoanCardsSection() {
     return () => clearTimeout(timer);
   }, []);
 
-  
   const handlePersonalLoanClick = () => {
     router.push("/personal-loan");
   };
@@ -23,18 +22,18 @@ export default function LoanCardsSection() {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-teal-50 via-white to-blue-50 py-24 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-teal-50 via-white to-teal-50 py-24 overflow-hidden">
       {/* Decorative background blobs */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-teal-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center mb-20">
-          <h2 className="text-4xl font-extrabold text-gray-900 mb-6 bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
-            Loan Options Tailored for You
+          <h2 className="text-4xl font-extrabold text-gray-900 mb-6 bg-gradient-to-r from-teal-600 to-teal-700 bg-clip-text text-transparent">
+            Our Products
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Choose the right financial support for your needs — whether it’s for
@@ -57,11 +56,11 @@ export default function LoanCardsSection() {
             style={{ transitionDelay: "200ms" }}
           >
             {/* Glow border */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-teal-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 blur-xl transition duration-700"></div>
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-teal-500/10 to-teal-400/10 opacity-0 group-hover:opacity-100 blur-xl transition duration-700"></div>
 
             <div className="relative z-10 p-10">
               {/* Icon */}
-              <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
+              <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="w-10 h-10"
@@ -82,19 +81,12 @@ export default function LoanCardsSection() {
                     strokeLinejoin="round"
                   />
                   <line x1="3" y1="10" x2="21" y2="10" />
-
-                  {/* Rupee Symbol inside card */}
-                  {/* <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 13h4m-4-2h4c-1 2-2.5 3-4 5"
-                  /> */}
                 </svg>
               </div>
 
               {/* Title & Desc */}
               <div className="text-center mb-6">
-                <h3 className="text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                <h3 className="text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-teal-600 to-teal-700 bg-clip-text text-transparent">
                   Personal Loan
                 </h3>
                 <p className="text-lg text-gray-600 leading-relaxed">
@@ -103,31 +95,9 @@ export default function LoanCardsSection() {
                 </p>
               </div>
 
-              {/* Features */}
-              <div className="space-y-3 mb-8 text-left">
-                <div className="flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
-                  <span className="text-gray-700">
-                    Up to ₹5 Lakhs in 5 mins
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
-                  <span className="text-gray-700">
-                    Competitive interest rates
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
-                  <span className="text-gray-700">
-                    Flexible repayment terms
-                  </span>
-                </div>
-              </div>
-
               {/* CTA */}
               <div className="text-center">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-600 to-blue-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg group-hover:scale-105 transition-all duration-500 shadow-lg">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-600 to-teal-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg group-hover:scale-105 transition-all duration-500 shadow-lg">
                   Explore Personal Loan
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +123,7 @@ export default function LoanCardsSection() {
             onClick={handleBusinessLoanClick}
             onMouseEnter={() => setHoveredCard("business")}
             onMouseLeave={() => setHoveredCard(null)}
-            className={`group relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-700 overflow-hidden border border-transparent hover:border-blue-300/60 cursor-pointer transform hover:-translate-y-4 hover:rotate-1 perspective-1000 ${
+            className={`group relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-700 overflow-hidden border border-transparent hover:border-teal-300/60 cursor-pointer transform hover:-translate-y-4 hover:rotate-1 perspective-1000 ${
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-20"
@@ -161,11 +131,11 @@ export default function LoanCardsSection() {
             style={{ transitionDelay: "400ms" }}
           >
             {/* Glow border */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 blur-xl transition duration-700"></div>
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-teal-500/10 to-teal-400/10 opacity-0 group-hover:opacity-100 blur-xl transition duration-700"></div>
 
             <div className="relative z-10 p-10">
               {/* Icon */}
-              <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-teal-500 text-white shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-all duration-700">
+              <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg group-hover:scale-110 group-hover:-rotate-6 transition-all duration-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="w-10 h-10"
@@ -191,7 +161,7 @@ export default function LoanCardsSection() {
 
               {/* Title & Desc */}
               <div className="text-center mb-6">
-                <h3 className="text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+                <h3 className="text-3xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-teal-600 to-teal-700 bg-clip-text text-transparent">
                   Business Loan
                 </h3>
                 <p className="text-lg text-gray-600 leading-relaxed">
@@ -200,25 +170,9 @@ export default function LoanCardsSection() {
                 </p>
               </div>
 
-              {/* Features */}
-              <div className="space-y-3 mb-8 text-left">
-                <div className="flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                  <span className="text-gray-700">Loans up to ₹50 Lakhs</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                  <span className="text-gray-700">Fast approval process</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                  <span className="text-gray-700">Custom repayment plans</span>
-                </div>
-              </div>
-
               {/* CTA */}
               <div className="text-center">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-teal-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg group-hover:scale-105 transition-all duration-500 shadow-lg">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-600 to-teal-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg group-hover:scale-105 transition-all duration-500 shadow-lg">
                   Explore Business Loan
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

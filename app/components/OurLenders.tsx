@@ -9,80 +9,80 @@ const lenders = [
     id: 1,
     name: "HDFC Bank",
     logo: "🏦",
-    rating: 4.8,
-    loans: "50K+",
+    // rating: 4.8,
+    // loans: "50K+",
     color: "blue"
   },
   {
     id: 2,
     name: "ICICI Bank",
     logo: "🏛️",
-    rating: 4.7,
-    loans: "45K+",
+    // rating: 4.7,
+    // loans: "45K+",
     color: "orange"
   },
   {
     id: 3,
     name: "Axis Bank",
     logo: "🏢",
-    rating: 4.6,
-    loans: "40K+",
+    // rating: 4.6,
+    // loans: "40K+",
     color: "red"
   },
   {
     id: 4,
     name: "Bajaj Finserv",
     logo: "💳",
-    rating: 4.9,
-    loans: "60K+",
+    // rating: 4.9,
+    // loans: "60K+",
     color: "green"
   },
   {
     id: 5,
     name: "Kotak Bank",
     logo: "🏪",
-    rating: 4.5,
-    loans: "35K+",
+    // rating: 4.5,
+    // loans: "35K+",
     color: "purple"
   },
   {
     id: 6,
     name: "SBI Bank",
     logo: "🏦",
-    rating: 4.4,
-    loans: "80K+",
+    // rating: 4.4,
+    // loans: "80K+",
     color: "blue"
   },
   {
     id: 7,
     name: "YES Bank",
     logo: "🏛️",
-    rating: 4.3,
-    loans: "25K+",
+    // rating: 4.3,
+    // loans: "25K+",
     color: "teal"
   },
   {
     id: 8,
     name: "IndusInd Bank",
     logo: "🏢",
-    rating: 4.6,
-    loans: "30K+",
+    // rating: 4.6,
+    // loans: "30K+",
     color: "indigo"
   },
   {
     id: 9,
     name: "IDFC First",
     logo: "💼",
-    rating: 4.7,
-    loans: "28K+",
+    // rating: 4.7,
+    // loans: "28K+",
     color: "pink"
   },
   {
     id: 10,
     name: "Tata Capital",
     logo: "🏭",
-    rating: 4.5,
-    loans: "32K+",
+    // rating: 4.5,
+    // loans: "32K+",
     color: "yellow"
   }
 ];
@@ -141,7 +141,7 @@ function LenderCard({ lender, index }: { lender: any, index: number }) {
         </div>
 
         {/* Stats */}
-        <div className="flex justify-between items-center mb-4">
+        {/* <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 text-yellow-400 fill-current" />
             <span className="font-semibold text-gray-700">{lender.rating}</span>
@@ -151,10 +151,10 @@ function LenderCard({ lender, index }: { lender: any, index: number }) {
             <div className="font-bold text-gray-900">{lender.loans}</div>
             <div className="text-gray-500 text-sm">Loans Approved</div>
           </div>
-        </div>
+        </div> */}
 
         {/* Features */}
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <div className="flex items-center gap-1 bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
             <Shield className="h-3 w-3" />
             Secure
@@ -163,7 +163,7 @@ function LenderCard({ lender, index }: { lender: any, index: number }) {
             <Award className="h-3 w-3" />
             Verified
           </div>
-        </div>
+        </div> */}
 
         {/* Hover Effect Overlay */}
         {isHovered && (
@@ -308,7 +308,7 @@ function OurLenders({ onOpenModal }: OurLendersProps) {
         </div>
 
         {/* Stats Section */}
-        <div className={`mt-16 text-center transform transition-all duration-1000 ${
+        {/* <div className={`mt-16 text-center transform transition-all duration-1000 ${
           headerInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
         }`}
         style={{ transitionDelay: '400ms' }}
@@ -331,10 +331,10 @@ function OurLenders({ onOpenModal }: OurLendersProps) {
               <div className="text-gray-600">Success Rate</div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Trust Indicators */}
-        <div className={`mt-12 flex flex-wrap justify-center items-center gap-8 text-gray-500 transform transition-all duration-1000 ${
+        {/* <div className={`mt-12 flex flex-wrap justify-center items-center gap-8 text-gray-500 transform transition-all duration-1000 ${
           headerInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
         }`}
         style={{ transitionDelay: '600ms' }}
@@ -353,7 +353,7 @@ function OurLenders({ onOpenModal }: OurLendersProps) {
             <Award className="h-5 w-5" />
             <span>Industry Leading Rates</span>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

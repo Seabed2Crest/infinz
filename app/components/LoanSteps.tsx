@@ -13,6 +13,7 @@ import {
   CreditCard,
   Zap
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Custom hook for individual step visibility
 function useStepInView(threshold = 0.6) {
@@ -289,6 +290,7 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
   const { progress, timelineRef } = useTimelineProgress();
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerInView, setHeaderInView] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -368,7 +370,7 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
               transform hover:scale-110 hover:-translate-y-2
               transition-all duration-500 shadow-2xl hover:shadow-3xl
               relative overflow-hidden group
-            ">
+            " onClick={() => router.push('/personal-loan')}>
               <span className="relative z-10 flex items-center gap-3">
                 Start Your Loan Journey
                 <Zap className="h-6 w-6 group-hover:animate-bounce" />
