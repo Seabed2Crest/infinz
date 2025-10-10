@@ -1,16 +1,17 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import LoanApplicationModal from "../components/LoanApplicationModal";
 import Faq from "../components/Faq";
-import { 
-  Calculator, 
-  Clock, 
-  FileText, 
-  Percent, 
-  Calendar, 
-  Shield, 
-  CheckCircle, 
+import { useRouter } from "next/navigation";
+import {
+  Calculator,
+  Clock,
+  FileText,
+  Percent,
+  Calendar,
+  Shield,
+  CheckCircle,
   ArrowRight,
   TrendingUp,
   Building2,
@@ -21,8 +22,10 @@ import {
   Mail,
   Star,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
 } from "lucide-react";
+import Router from "next/router";
+import Link from "next/link";
 
 // Business Loan Hero Section
 function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
@@ -38,13 +41,14 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 <span className="text-teal-600">Instant Business Loans</span>
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Get up to ₹1 crore business funding at competitive rates starting from 12% per annum. 
-                Quick approval, minimal documentation, and funds in your account within 5 days.
+                Get up to ₹1 crore business funding at competitive rates
+                starting from 12% per annum. Quick approval, minimal
+                documentation, and funds in your account within 5 days.
               </p>
             </div>
 
             {/* CTA Section */}
-            <div className="space-y-6">
+            {/* <div className="space-y-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="tel"
@@ -75,18 +79,20 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                   <span>Minimal Documentation</span>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Side - Lead Form */}
           <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-              Get Instant Business Loan Quote
+              Get Instant Loan
             </h3>
-            
+
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Business Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Type
+                </label>
                 <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                   <option>Select Business Type</option>
                   <option>Manufacturing</option>
@@ -98,7 +104,9 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Annual Turnover</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Annual Turnover
+                </label>
                 <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                   <option>Select Turnover Range</option>
                   <option>₹2L - ₹10L</option>
@@ -110,7 +118,9 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Loan Amount Required</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Loan Amount Required
+                </label>
                 <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                   <option>Select Loan Amount</option>
                   <option>₹1L - ₹5L</option>
@@ -122,7 +132,9 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Mobile Number</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mobile Number
+                </label>
                 <input
                   type="tel"
                   placeholder="Enter mobile number"
@@ -157,8 +169,9 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
 
   const calculateEMI = () => {
     const monthlyRate = interestRate / 12 / 100;
-    const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenure)) / 
-                (Math.pow(1 + monthlyRate, tenure) - 1);
+    const emi =
+      (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenure)) /
+      (Math.pow(1 + monthlyRate, tenure) - 1);
     return Math.round(emi);
   };
 
@@ -173,92 +186,88 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             Business Loan Calculator
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Plan your business financing smartly with our EMI calculator. Adjust the loan amount, 
-            interest rate, and tenure to find the perfect repayment plan that suits you.
+            Plan your business financing smartly with our EMI calculator.
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Calculator Controls */}
           <div className="space-y-8">
+            {/* Loan Amount */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-4">
                 Loan Amount: ₹{loanAmount.toLocaleString()}
               </label>
               <input
                 type="range"
-                min="100000"
-                max="50000000"
-                step="50000"
+                min="50000"
+                max="5000000"
+                step="10000"
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(Number(e.target.value))}
                 className="w-full h-2 bg-teal-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="flex justify-between text-sm text-gray-500 mt-2">
-                <span>₹1L</span>
-                <span>₹5Cr</span>
+                <span>₹50K</span>
+                <span>₹50L</span>
               </div>
             </div>
 
+            {/* Interest Rate */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-4">
                 Interest Rate: {interestRate}% p.a.
               </label>
               <input
                 type="range"
-                min="15"
-                max="20"
+                min="13"
+                max="33"
                 step="0.1"
                 value={interestRate}
                 onChange={(e) => setInterestRate(Number(e.target.value))}
                 className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="flex justify-between text-sm text-gray-500 mt-2">
-                <span>15%</span>
-                <span>20%</span>
+                <span>13%</span>
+                <span>33%</span>
               </div>
             </div>
 
+            {/* EMI Tenure */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-4">
-                EMI Tenure: {tenure} months ({Math.round(tenure/12)} years)
+                EMI Tenure: {tenure} Months
               </label>
               <input
                 type="range"
                 min="12"
-                max="48"
+                max="60"
                 step="6"
                 value={tenure}
                 onChange={(e) => setTenure(Number(e.target.value))}
                 className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="flex justify-between text-sm text-gray-500 mt-2">
-                <span>1 Year</span>
-                <span>4 Years</span>
+                <span>12 Months</span>
+                <span>60 Months</span>
               </div>
             </div>
 
-            <button
-              onClick={onOpenModal}
-              className="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+            {/* Apply Now Button */}
+            <Link
+              href="/apply_now"
+              className="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
             >
               Apply Now
-            </button>
-
-            <button
-              onClick={() => window.open('/calculator', '_self')}
-              className="w-full border-2 border-teal-600 text-teal-600 py-3 rounded-xl font-semibold hover:bg-teal-50 transition-colors"
-            >
-              Advanced Calculator
-            </button>
+            </Link>
           </div>
 
-          {/* Amount Preview */}
+          {/* Loan Breakdown */}
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
               Your Loan Breakdown
             </h3>
-            
+
             <div className="space-y-6">
               <div className="text-center">
                 <div className="text-4xl font-bold text-teal-600 mb-2">
@@ -307,33 +316,34 @@ function FeaturesSection() {
     {
       icon: Clock,
       title: "Faster Approval",
-      description: "Instant pre-approval in 10 minutes with AI-powered assessment"
+      description:
+        "Instant pre-approval in 10 minutes with AI-powered assessment",
     },
     {
       icon: FileText,
       title: "Zero Paperwork",
-      description: "Complete digital process with minimal documentation"
+      description: "Complete digital process with minimal documentation",
     },
     {
       icon: Percent,
       title: "Lower Interest Rate",
-      description: "Competitive rates from 12% p.a. based on your profile"
+      description: "Competitive rates from 12% p.a. based on your profile",
     },
     {
       icon: Calendar,
       title: "Flexible Repayment",
-      description: "EMI tenure 12-84 months with prepayment options"
+      description: "EMI tenure 12-84 months with prepayment options",
     },
     {
       icon: TrendingUp,
       title: "Quick Disbursal",
-      description: "Funds in your account within 72 hours"
+      description: "Funds in your account within 72 hours",
     },
     {
       icon: Shield,
       title: "No Collateral",
-      description: "Unsecured loans up to ₹50 lakhs without a guarantor"
-    }
+      description: "Unsecured loans up to ₹50 lakhs without a guarantor",
+    },
   ];
 
   return (
@@ -344,14 +354,18 @@ function FeaturesSection() {
             Features & Benefits of Business Loan from Infinz
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Experience hassle-free business financing designed for modern entrepreneurs. 
-            Our digital-first approach ensures you get the capital you need without traditional banking complexities.
+            Experience hassle-free business financing designed for modern
+            entrepreneurs. Our digital-first approach ensures you get the
+            capital you need without traditional banking complexities.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-gray-100">
+            <div
+              key={index}
+              className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-gray-100"
+            >
               <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mb-6">
                 <feature.icon className="h-8 w-8 text-teal-600" />
               </div>
@@ -375,86 +389,102 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
     {
       number: "01",
       title: "Register with mobile number",
-      description: "Start your application with a simple mobile number verification"
+      description:
+        "Start your application with a simple mobile number verification",
     },
     {
-      number: "02", 
+      number: "02",
       title: "Verify personal details",
-      description: "Complete your personal information and KYC verification"
+      description: "Complete your personal information and KYC verification",
     },
     {
       number: "03",
       title: "Enter business details",
-      description: "Provide your business information and financial details"
+      description: "Provide your business information and financial details",
     },
     {
       number: "04",
       title: "Choose loan amount and tenure",
-      description: "Select your desired loan amount and EMI repayment period"
+      description: "Select your desired loan amount and EMI repayment period",
     },
     {
       number: "05",
       title: "Confirm bank details & receive funds",
-      description: "Verify bank account and receive loan amount in 3 days"
-    }
+      description: "Verify bank account and receive loan amount in 3 days",
+    },
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-br from-teal-50 to-teal-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             How to Apply for a Business Loan Online
           </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Get business funding in 5 simple steps through our digital process. 
-            No branch visits, no lengthy procedures - just quick, secure, and transparent lending.
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            Get business funding in 5 simple steps through our digital process.
+            No branch visits, no lengthy procedures - just quick, secure, and
+            transparent lending.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Steps */}
-          <div className="space-y-8">
-            {steps.map((step, index) => (
-              <div key={index} className="flex items-start gap-6">
-                <div className="flex-shrink-0 w-16 h-16 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
-                  {step.number}
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-gray-600">
-                    {step.description}
-                  </p>
-                </div>
+        {/* Card Section */}
+        <div
+          className="relative overflow-hidden rounded-3xl p-12 md:p-16 shadow-2xl text-white"
+          style={{
+            background:
+              "linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%)",
+          }}
+        >
+          <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
+            {/* Illustration */}
+            <div className="flex justify-center lg:justify-start">
+              <div className="relative  translate-y-2">
+                <div className="absolute inset-0 bg-white/10 rounded-3xl blur-3xl"></div>
+                <img
+                  src="/download.png"
+                  alt="Application Process Illustration"
+                  className="relative w-100 h-100 md:w-[30rem] md:h-[30rem] object-contain drop-shadow-2xl animate-float rounded-3xl"
+                />
               </div>
-            ))}
-            
-            <div className="pt-6">
-              <button
-                onClick={onOpenModal}
-                className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center"
-              >
-                Apply Now
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </button>
+            </div>
+
+            {/* Steps */}
+            <div className="space-y-6">
+              <div className="mb-8">
+                <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  Business Loan
+                </h3>
+                <h4 className="text-3xl md:text-4xl font-bold text-accent text-orange-500">
+                  Application Steps
+                </h4>
+              </div>
+
+              <div className="space-y-5">
+                {steps.map((step, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-[1.02]"
+                  >
+                    <CheckCircle className="h-6 w-6 text-accent flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h5 className="text-lg font-semibold text-white mb-1">
+                        {step.title}
+                      </h5>
+                      <p className="text-white/80 text-sm">
+                        {step.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Illustration */}
-          <div className="bg-white rounded-2xl p-8 shadow-xl">
-            <div className="text-center">
-              <Building2 className="h-32 w-32 text-teal-600 mx-auto mb-6" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Digital Application Process
-              </h3>
-              <p className="text-gray-600">
-                Complete your business loan application entirely online with our 
-                secure and user-friendly platform.
-              </p>
-            </div>
-          </div>
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
         </div>
       </div>
     </section>
@@ -469,7 +499,7 @@ function EligibilityCriteria({ onOpenModal }: { onOpenModal: () => void }) {
     { label: "Business Vintage", value: "Minimum 1 yr" },
     { label: "Business", value: "Registered & Licensed" },
     { label: "Yearly Turnover", value: "Minimum Rs. 200000" },
-    { label: "Credit Score", value: "700+" }
+    { label: "Credit Score", value: "700+" },
   ];
 
   return (
@@ -480,14 +510,17 @@ function EligibilityCriteria({ onOpenModal }: { onOpenModal: () => void }) {
             Business Loan Eligibility Criteria
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Simple eligibility requirements for instant business loan approval. 
+            Simple eligibility requirements for instant business loan approval.
             Check if you qualify for instant pre-approval.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {criteria.map((criterion, index) => (
-            <div key={index} className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300">
+            <div
+              key={index}
+              className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300"
+            >
               <div className="text-sm font-medium text-gray-500 mb-2">
                 {criterion.label}
               </div>
@@ -498,18 +531,19 @@ function EligibilityCriteria({ onOpenModal }: { onOpenModal: () => void }) {
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        {/* <div className="text-center mt-12">
           <button
             onClick={onOpenModal}
             className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
           >
             Check Your Eligibility
           </button>
-        </div>
+        </div> */}
 
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
-            <strong>Disclaimer:</strong> Business loan eligibility criteria may differ from bank to bank
+            <strong>Disclaimer:</strong> Business loan eligibility criteria may
+            differ from bank to bank
           </p>
         </div>
       </div>
@@ -520,13 +554,22 @@ function EligibilityCriteria({ onOpenModal }: { onOpenModal: () => void }) {
 // Documents Required Section
 function DocumentsRequired() {
   const documents = [
-    { name: "KYC Documents", description: "Aadhaar card & Selfie verification" },
+    {
+      name: "KYC Documents",
+      description: "Aadhaar card & Selfie verification",
+    },
     { name: "PAN Card", description: "Personal & Business PAN" },
     { name: "GST Document", description: "GST Registration & Returns" },
     { name: "ITR Document", description: "Last 2 years Income Tax Returns" },
-    { name: "Business Documents", description: "Company registration & licenses" },
+    {
+      name: "Business Documents",
+      description: "Company registration & licenses",
+    },
     { name: "Address Proof", description: "Company & Personal address proof" },
-    { name: "Bank Statement", description: "6 months business bank statements" }
+    {
+      name: "Bank Statement",
+      description: "6 months business bank statements",
+    },
   ];
 
   return (
@@ -537,23 +580,23 @@ function DocumentsRequired() {
             Documents Required for Business Loan
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Simple documentation process with digital upload facility. 
-            Keep these documents ready for quick loan processing and faster approval.
+            Simple documentation process with digital upload facility.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {documents.map((doc, index) => (
-            <div key={index} className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
+            <div
+              key={index}
+              className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
+            >
               <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mb-4">
                 <FileText className="h-6 w-6 text-teal-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {doc.name}
               </h3>
-              <p className="text-gray-600 text-sm">
-                {doc.description}
-              </p>
+              <p className="text-gray-600 text-sm">{doc.description}</p>
             </div>
           ))}
         </div>
@@ -565,12 +608,48 @@ function DocumentsRequired() {
 // Lender Comparison Section
 function LenderComparison() {
   const lenders = [
-    { name: "HDFC Bank", rate: "12.5%", amount: "₹1Cr", tenure: "7 years", rating: 4.8 },
-    { name: "ICICI Bank", rate: "13.0%", amount: "₹75L", tenure: "5 years", rating: 4.7 },
-    { name: "Bajaj Finserv", rate: "12.8%", amount: "₹50L", tenure: "4 years", rating: 4.6 },
-    { name: "Kotak Mahindra", rate: "13.2%", amount: "₹60L", tenure: "6 years", rating: 4.5 },
-    { name: "Axis Bank", rate: "13.5%", amount: "₹80L", tenure: "5 years", rating: 4.4 },
-    { name: "Yes Bank", rate: "14.0%", amount: "₹40L", tenure: "3 years", rating: 4.3 }
+    {
+      name: "HDFC Bank",
+      rate: "12.5%",
+      amount: "₹1Cr",
+      tenure: "7 years",
+      rating: 4.8,
+    },
+    {
+      name: "ICICI Bank",
+      rate: "13.0%",
+      amount: "₹75L",
+      tenure: "5 years",
+      rating: 4.7,
+    },
+    {
+      name: "Bajaj Finserv",
+      rate: "12.8%",
+      amount: "₹50L",
+      tenure: "4 years",
+      rating: 4.6,
+    },
+    {
+      name: "Kotak Mahindra",
+      rate: "13.2%",
+      amount: "₹60L",
+      tenure: "6 years",
+      rating: 4.5,
+    },
+    {
+      name: "Axis Bank",
+      rate: "13.5%",
+      amount: "₹80L",
+      tenure: "5 years",
+      rating: 4.4,
+    },
+    {
+      name: "Yes Bank",
+      rate: "14.0%",
+      amount: "₹40L",
+      tenure: "3 years",
+      rating: 4.3,
+    },
   ];
 
   return (
@@ -581,8 +660,7 @@ function LenderComparison() {
             Find the Best Business Loan Offer
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Compare business loan offers from 25+ top NBFCs and banks in India. 
-            Find the perfect match for your business needs with transparent rates and terms.
+            Compare business loan offers from 25+ top NBFCs and banks in India.
           </p>
         </div>
 
@@ -602,7 +680,10 @@ function LenderComparison() {
         {/* Lender Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lenders.map((lender, index) => (
-            <div key={index} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+            <div
+              key={index}
+              className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300"
+            >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">
                   {lender.name}
@@ -614,25 +695,27 @@ function LenderComparison() {
                   </span>
                 </div>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Interest Rate</span>
-                  <span className="font-semibold text-gray-900">{lender.rate}</span>
+                  <span className="font-semibold text-gray-900">
+                    {lender.rate}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Max Amount</span>
-                  <span className="font-semibold text-gray-900">{lender.amount}</span>
+                  <span className="font-semibold text-gray-900">
+                    {lender.amount}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Max Tenure</span>
-                  <span className="font-semibold text-gray-900">{lender.tenure}</span>
+                  <span className="font-semibold text-gray-900">
+                    {lender.tenure}
+                  </span>
                 </div>
               </div>
-              
-              <button className="w-full mt-6 bg-teal-600 text-white py-2 rounded-lg font-medium hover:bg-teal-700 transition-colors">
-                Apply Now
-              </button>
             </div>
           ))}
         </div>
@@ -640,7 +723,6 @@ function LenderComparison() {
     </section>
   );
 }
-
 
 // Main Business Loan Page
 export default function BusinessLoanPage() {
@@ -655,13 +737,11 @@ export default function BusinessLoanPage() {
       <EligibilityCriteria onOpenModal={() => setIsModalOpen(true)} />
       <DocumentsRequired />
       <LenderComparison />
-      <Faq onOpenModal={() => setIsModalOpen(true)} />
-      
-      <LoanApplicationModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <Faq topic="business-loan" />
+      <LoanApplicationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </>
   );
 }
-    

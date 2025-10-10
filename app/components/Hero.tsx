@@ -81,7 +81,13 @@ function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
 
             <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animate-delay-300">
               <button
-                onClick={() => router.push("/personal-loan")}
+                onClick={() => {
+                  if (currentSlide === 1) {
+                    router.push("/apply_now"); // 👈 second banner
+                  } else {
+                    router.push("/personal-loan"); // 👈 first banner (default)
+                  }
+                }}
                 className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 {currentSlideData.buttonText}
