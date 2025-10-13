@@ -748,7 +748,7 @@ function LoanOffersSection() {
     </section>
   );
 }
-export const personalLoanFaq = [
+const personalLoanFaq = [
   {
     id: 1,
     question: "What is a personal loan?",

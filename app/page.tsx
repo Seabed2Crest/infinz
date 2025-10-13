@@ -30,7 +30,7 @@ export default function Home() {
       <LoanSteps onOpenModal={() => setIsModalOpen(true)} />
       <OurLenders onOpenModal={() => setIsModalOpen(true)} />
       <Testimonials onOpenModal={() => setIsModalOpen(true)} />
-      <Faq onOpenModal={() => setIsModalOpen(true)} />
+      <Faq />
       {/* <Blogs /> */}
       {/* <Cta /> */}
       

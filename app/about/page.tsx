@@ -329,7 +329,7 @@ export default function AboutPage() {
       <WhatMakesUsDifferent />
       <FoundersNote />
       <OurAchievements />
-      <Faq onOpenModal={() => setIsModalOpen(true)} />
+      <Faq />
       <ContactCTA onOpenModal={() => setIsModalOpen(true)} />
       
       <LoanApplicationModal
