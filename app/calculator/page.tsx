@@ -1,9 +1,336 @@
 "use client";
 
 import { useState } from "react";
-import LoanApplicationModal from "../components/LoanApplicationModal";
-import { ArrowRight, CheckCircle, Clock, Info } from "lucide-react";
+import {
+  Calculator,
+  TrendingUp,
+  User,
+  Briefcase,
+  Info,
+  CheckCircle,
+  Clock,
+  ArrowRight,
+  FileText,
+  Percent,
+  Calendar,
+  Shield,
+  CreditCard,
+} from "lucide-react";
 import Link from "next/link";
+import Faq from "../components/Faq";
+
+// Loan Eligibility Calculator Component
+function LoanEligibilityCalculator({
+  onOpenModal,
+}: {
+  onOpenModal: () => void;
+}) {
+  const [activeTab, setActiveTab] = useState<"personal" | "business">(
+    "personal"
+  );
+
+  // Personal Loan Eligibility State
+  const [personalMonthlyIncome, setPersonalMonthlyIncome] = useState(25000);
+  const [personalMonthlyExpense, setPersonalMonthlyExpense] = useState(15000);
+  const [personalCreditScore, setPersonalCreditScore] = useState(750);
+
+  // Business Loan Eligibility State
+  const [businessYearlyTurnover, setBusinessYearlyTurnover] = useState(1000000);
+  const [businessMonthlyRevenue, setBusinessMonthlyRevenue] = useState(200000);
+  const [businessCreditScore, setBusinessCreditScore] = useState(700);
+
+  // Eligibility Calculation
+  const calculatePersonalLoanEligibility = () => {
+    const disposableIncome = personalMonthlyIncome - personalMonthlyExpense;
+    const eligibilityFactor =
+      personalCreditScore >= 750 ? 0.6 : personalCreditScore >= 650 ? 0.4 : 0.2;
+    const eligibleAmount = Math.min(
+      disposableIncome * 12 * eligibilityFactor,
+      5000000
+    );
+    return Math.max(12000, Math.round(eligibleAmount / 10000) * 10000);
+  };
+
+  const calculateBusinessLoanEligibility = () => {
+    const revenueFactor = businessMonthlyRevenue / 50000;
+    const creditFactor =
+      businessCreditScore >= 700 ? 0.8 : businessCreditScore >= 600 ? 0.5 : 0.3;
+    const eligibleAmount = Math.min(
+      businessYearlyTurnover * 0.5 * creditFactor,
+      5000000
+    );
+    return Math.max(50000, Math.round(eligibleAmount / 10000) * 10000);
+  };
+
+  // EMI Calculation for eligible amount
+  const calculateEMI = (amount: number, tenure: number) => {
+    const interestRate = activeTab === "personal" ? 12 : 15; // Sample interest rates
+    const monthlyRate = interestRate / 12 / 100;
+    const emi =
+      (amount * monthlyRate * Math.pow(1 + monthlyRate, tenure)) /
+      (Math.pow(1 + monthlyRate, tenure) - 1);
+    return Math.round(emi);
+  };
+
+  // Current values based on active tab
+  const eligibleAmount =
+    activeTab === "personal"
+      ? calculatePersonalLoanEligibility()
+      : calculateBusinessLoanEligibility();
+
+  const suggestedTenure = activeTab === "personal" ? 24 : 18;
+  const emiAmount = calculateEMI(eligibleAmount, suggestedTenure);
+
+  return (
+    <section
+      id="eligibility-calculator"
+      className="py-16 bg-gradient-to-br from-blue-50 via-white to-blue-50"
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Loan Eligibility Calculator
+          </h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            Check if you qualify for a loan and discover your eligible amount
+            instantly
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          {/* Calculator Card */}
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            {/* Tabs */}
+            <div className="flex mb-8">
+              <div className="inline-flex bg-gray-100 rounded-xl overflow-hidden">
+                <button
+                  onClick={() => setActiveTab("personal")}
+                  className={`px-6 py-3 font-semibold transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === "personal"
+                      ? "bg-teal-600 text-white"
+                      : "text-gray-700 hover:bg-teal-100"
+                  }`}
+                >
+                  <User className="h-4 w-4" />
+                  Personal Loan
+                </button>
+                <button
+                  onClick={() => setActiveTab("business")}
+                  className={`px-6 py-3 font-semibold transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === "business"
+                      ? "bg-teal-600 text-white"
+                      : "text-gray-700 hover:bg-teal-100"
+                  }`}
+                >
+                  <Briefcase className="h-4 w-4" />
+                  Business Loan
+                </button>
+              </div>
+            </div>
+
+            {/* Input Fields */}
+            <div className="space-y-6">
+              {activeTab === "personal" ? (
+                <>
+                  {/* Monthly Income */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Monthly Income: ₹{personalMonthlyIncome.toLocaleString()}
+                    </label>
+                    <input
+                      type="range"
+                      min={15000}
+                      max={500000}
+                      step={5000}
+                      value={personalMonthlyIncome}
+                      onChange={(e) =>
+                        setPersonalMonthlyIncome(Number(e.target.value))
+                      }
+                      className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-2">
+                      <span>₹15K</span>
+                      <span>₹5L</span>
+                    </div>
+                  </div>
+
+                  {/* Monthly Expense */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Monthly Expense: ₹
+                      {personalMonthlyExpense.toLocaleString()}
+                    </label>
+                    <input
+                      type="range"
+                      min={0}
+                      max={100000}
+                      step={5000}
+                      value={personalMonthlyExpense}
+                      onChange={(e) =>
+                        setPersonalMonthlyExpense(Number(e.target.value))
+                      }
+                      className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-2">
+                      <span>₹0</span>
+                      <span>₹1L</span>
+                    </div>
+                  </div>
+
+                  {/* Credit Score */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Credit Score: {personalCreditScore}
+                    </label>
+                    <input
+                      type="range"
+                      min={300}
+                      max={900}
+                      step={10}
+                      value={personalCreditScore}
+                      onChange={(e) =>
+                        setPersonalCreditScore(Number(e.target.value))
+                      }
+                      className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-2">
+                      <span>300</span>
+                      <span>900</span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Yearly Turnover */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Yearly Turnover: ₹
+                      {businessYearlyTurnover.toLocaleString()}
+                    </label>
+                    <input
+                      type="range"
+                      min={100000}
+                      max={10000000}
+                      step={100000}
+                      value={businessYearlyTurnover}
+                      onChange={(e) =>
+                        setBusinessYearlyTurnover(Number(e.target.value))
+                      }
+                      className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-2">
+                      <span>₹1L</span>
+                      <span>₹1Cr</span>
+                    </div>
+                  </div>
+
+                  {/* Monthly Revenue */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Monthly Revenue: ₹
+                      {businessMonthlyRevenue.toLocaleString()}
+                    </label>
+                    <input
+                      type="range"
+                      min={50000}
+                      max={2000000}
+                      step={50000}
+                      value={businessMonthlyRevenue}
+                      onChange={(e) =>
+                        setBusinessMonthlyRevenue(Number(e.target.value))
+                      }
+                      className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-2">
+                      <span>₹50K</span>
+                      <span>₹20L</span>
+                    </div>
+                  </div>
+
+                  {/* Credit Score */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Credit Score: {businessCreditScore}
+                    </label>
+                    <input
+                      type="range"
+                      min={300}
+                      max={900}
+                      step={10}
+                      value={businessCreditScore}
+                      onChange={(e) =>
+                        setBusinessCreditScore(Number(e.target.value))
+                      }
+                      className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-2">
+                      <span>300</span>
+                      <span>900</span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Results Card */}
+          <div className="bg-gradient-to-br from-teal-600 to-blue-700 rounded-2xl shadow-xl p-8 text-white">
+            <div className="text-center mb-8">
+              <Calculator className="h-12 w-12 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold mb-2">Eligibility Results</h3>
+              <p className="text-teal-100">Based on your financial profile</p>
+            </div>
+
+            <div className="space-y-6">
+              {/* Eligible Amount */}
+              <div className="text-center">
+                <p className="text-teal-200 mb-2">
+                  You are eligible for a loan of up to
+                </p>
+                <div className="text-4xl font-bold mb-2">
+                  ₹{eligibleAmount.toLocaleString()}
+                </div>
+              </div>
+
+              {/* Tenure & EMI */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-teal-500/20 rounded-xl p-4 text-center">
+                  <div className="text-sm text-teal-200 mb-1">Tenure</div>
+                  <div className="text-xl font-bold">
+                    {suggestedTenure} Months
+                  </div>
+                </div>
+                <div className="bg-blue-500/20 rounded-xl p-4 text-center">
+                  <div className="text-sm text-blue-200 mb-1">EMI Amount</div>
+                  <div className="text-xl font-bold">
+                    ₹{emiAmount.toLocaleString()}
+                  </div>
+                </div>
+              </div>
+
+              {/* Apply Button */}
+              <button
+                onClick={onOpenModal}
+                className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg"
+              >
+                Apply for Loan
+              </button>
+
+              {/* Additional Info */}
+              <div className="text-center text-sm text-teal-200">
+                <p>
+                  This is an estimated eligibility. Final approval subject to
+                  document verification.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 // EMI Calculator Component with Tabs
 function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
@@ -12,14 +339,14 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
   );
 
   // Personal Loan State
-  const [personalLoanAmount, setPersonalLoanAmount] = useState(12000);
-  const [personalInterestRate, setPersonalInterestRate] = useState(9.99);
-  const [personalTenure, setPersonalTenure] = useState(12);
+  const [personalLoanAmount, setPersonalLoanAmount] = useState(500000);
+  const [personalInterestRate, setPersonalInterestRate] = useState(10.5);
+  const [personalTenure, setPersonalTenure] = useState(36);
 
   // Business Loan State
-  const [businessLoanAmount, setBusinessLoanAmount] = useState(50000);
+  const [businessLoanAmount, setBusinessLoanAmount] = useState(500000);
   const [businessInterestRate, setBusinessInterestRate] = useState(13);
-  const [businessTenure, setBusinessTenure] = useState(12);
+  const [businessTenure, setBusinessTenure] = useState(24);
 
   // Tab-specific setter helpers
   const setLoanAmount = (val: number) =>
@@ -74,7 +401,10 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
         };
 
   return (
-    <section className="py-16 bg-gradient-to-br from-teal-50 via-white to-teal-50">
+    <section
+      id="emi-calculator"
+      className="py-16 bg-gradient-to-br from-teal-50 via-white to-teal-50"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -92,22 +422,24 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
           <div className="inline-flex bg-white shadow-md rounded-xl border border-gray-200 overflow-hidden">
             <button
               onClick={() => setActiveTab("personal")}
-              className={`px-6 py-3 font-semibold transition-all duration-200 ${
+              className={`px-6 py-3 font-semibold transition-all duration-200 flex items-center gap-2 ${
                 activeTab === "personal"
                   ? "bg-teal-600 text-white"
                   : "text-gray-700 hover:bg-teal-100"
               }`}
             >
+              <User className="h-4 w-4" />
               Personal Loan
             </button>
             <button
               onClick={() => setActiveTab("business")}
-              className={`px-6 py-3 font-semibold transition-all duration-200 ${
+              className={`px-6 py-3 font-semibold transition-all duration-200 flex items-center gap-2 ${
                 activeTab === "business"
                   ? "bg-teal-600 text-white"
                   : "text-gray-700 hover:bg-teal-100"
               }`}
             >
+              <Briefcase className="h-4 w-4" />
               Business Loan
             </button>
           </div>
@@ -184,6 +516,7 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
                 className="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 Apply Now
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </div>
           </div>
@@ -236,7 +569,124 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
   );
 }
 
-// Benefits Section
+// Information Section for Eligibility Calculator
+function EligibilityCalculatorInfo() {
+  return (
+    <section className="py-16 bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              What is an Eligibility Calculator?
+            </h2>
+            <p className="text-gray-600 mb-6">
+              This is an online tool that helps you determine the amount you are
+              eligible to borrow based on your financial profile including
+              income, expenses, credit score, and employment status.
+            </p>
+            <p className="text-gray-600 mb-8">
+              The loan eligibility check process gives you a clear idea of which
+              loan offers fit your profile, helping you make informed borrowing
+              decisions without affecting your credit score.
+            </p>
+
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <TrendingUp className="h-5 w-5 text-teal-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-gray-900">
+                    Income Assessment
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    Evaluates your repayment capacity based on income
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <User className="h-5 w-5 text-teal-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-gray-900">
+                    Credit Evaluation
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    Considers your credit history and score
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Info className="h-5 w-5 text-teal-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-gray-900">
+                    Instant Results
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    Get eligibility status in real-time
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Content - Calculator Parameters */}
+          <div className="bg-gray-50 rounded-2xl p-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">
+              Calculator Parameters
+            </h3>
+
+            <div className="space-y-6">
+              {/* Personal Loan Parameters */}
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Personal Loan
+                </h4>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex justify-between">
+                    <span>Loan Amount Range:</span>
+                    <span className="font-medium">₹12,000 - ₹1 Cr</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Interest Rate:</span>
+                    <span className="font-medium">9.99% - 28%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>EMI Tenure:</span>
+                    <span className="font-medium">12 - 84 Months</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Business Loan Parameters */}
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Briefcase className="h-4 w-4" />
+                  Business Loan
+                </h4>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex justify-between">
+                    <span>Loan Amount Range:</span>
+                    <span className="font-medium">₹50,000 - ₹50 L</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Interest Rate:</span>
+                    <span className="font-medium">13% - 33%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>EMI Tenure:</span>
+                    <span className="font-medium">12 - 60 Months</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Benefits Section for EMI Calculator
 function CalculatorBenefits() {
   const benefits = [
     {
@@ -287,18 +737,178 @@ function CalculatorBenefits() {
   );
 }
 
-// Main Calculator Page
+// Info Section Component for EMI Calculator
+function EMICalculatorInfo() {
+  return (
+    <section className="py-16 bg-white">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">
+          What is an EMI Calculator?
+        </h2>
+        <p className="text-gray-600 mb-8">
+          An EMI (Equated Monthly Installment) calculator is a digital tool that
+          helps you estimate your monthly loan repayments. By inputting the loan
+          amount, interest rate, and tenure, it calculates the fixed monthly
+          payment required to repay a loan within a specified tenure, making
+          loan planning easier and more transparent. This tool simplifies
+          financial planning by providing quick and accurate EMI values without
+          manual calculations.
+        </p>
+
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">
+          How to Calculate EMI?
+        </h2>
+        <p className="text-gray-600 mb-8">
+          An EMI calculator enables you to calculate the EMI by entering the
+          loan amount, tenure, and rate of interest. Here are the steps to
+          calculate EMI using an EMI calculator:
+        </p>
+        <ul className="list-disc list-inside text-gray-600 space-y-2 mb-8">
+          <li>
+            Enter the Loan Amount: Specify the principal amount you intend to
+            borrow.
+          </li>
+          <li>
+            Input the Interest Rate: Provide the annual interest rate offered by
+            the lender.
+          </li>
+          <li>
+            Select the Loan Tenure: Specify the loan tenure (duration) in
+            months.
+          </li>
+          <li>
+            Calculate: Click the calculate button to instantly get your monthly
+            EMI amount.
+          </li>
+        </ul>
+
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">
+          Formula for EMI Calculation
+        </h2>
+        <p className="text-gray-600 mb-4">
+          The EMI is determined using a widely accepted mathematical formula
+          that accounts for loan principal, interest rate, and tenure:
+        </p>
+        <pre className="bg-gray-100 p-4 rounded-lg mb-4 text-gray-800 overflow-x-auto">
+          EMI = [P × R × (1+R)^N] / [(1+R)^N - 1]
+        </pre>
+        <p className="text-gray-600 mb-8">
+          Where:
+          <br />P = Principal loan amount
+          <br />R = Monthly interest rate (annual rate divided by 12 and
+          converted to decimal)
+          <br />N = Number of monthly installments (loan tenure in months)
+        </p>
+
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">
+          Benefits of EMI Calculator
+        </h2>
+        <ul className="list-disc list-inside text-gray-600 space-y-2 mb-8">
+          <li>
+            Instant Calculations: Provides quick and accurate EMI figures in
+            real time, eliminating manual errors.
+          </li>
+          <li>
+            Effective Budget Planning: Helps borrowers manage monthly cash flows
+            effectively.
+          </li>
+          <li>
+            Loan Comparison: Enables comparison of loans with different rates,
+            tenures, and amounts.
+          </li>
+          <li>
+            Improved Decision-Making: Visualizes financial impact for informed
+            choices.
+          </li>
+          <li>
+            Transparency on Costs: Breaks down repayment into principal and
+            interest over time.
+          </li>
+          <li>
+            Flexibility to Experiment: Modify inputs to see how EMI changes with
+            rate or tenure adjustments.
+          </li>
+        </ul>
+
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">
+          Factors to Consider While Calculating EMIs
+        </h2>
+        <ul className="list-disc list-inside text-gray-600 space-y-2">
+          <li>Loan Amount: Higher loans increase EMI and total repayment.</li>
+          <li>
+            Interest Rate: Fixed or floating rates impact monthly and total
+            payments.
+          </li>
+          <li>
+            Loan Tenure: Longer tenure lowers monthly EMI but increases total
+            interest.
+          </li>
+          <li>
+            Processing Fees: Some lenders add fees upfront or include them in
+            EMI.
+          </li>
+          <li>
+            Prepayment: Early repayment can reduce principal and interest.
+          </li>
+          <li>
+            Repayment Schedule: Monthly or quarterly affects cash flow planning.
+          </li>
+          <li>
+            Lender's Policies: Interest compounding, penalties, and schedules
+            vary.
+          </li>
+          <li>
+            Credit Score: Better credit scores may secure lower interest rates.
+          </li>
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+// Navigation CTA Section
+function CalculatorNavigation() {
+  return (
+    <section className="py-12 bg-gradient-to-r from-teal-600 to-blue-700">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h3 className="text-2xl font-bold text-white mb-4">
+          Choose Your Calculator
+        </h3>
+        <p className="text-teal-100 mb-8">
+          Use our specialized calculators to plan your loan journey
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="#eligibility-calculator"
+            className="bg-white text-teal-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-200 shadow-lg"
+          >
+            Check Eligibility
+          </a>
+          <a
+            href="#emi-calculator"
+            className="bg-teal-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-teal-400 transition-all duration-200 shadow-lg border border-teal-400"
+          >
+            Calculate EMI
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Main Calculator Page Component
 export default function CalculatorPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
+      {/* <CalculatorNavigation /> */}
+      <LoanEligibilityCalculator onOpenModal={() => setIsModalOpen(true)} />
+      <EligibilityCalculatorInfo />
       <EMICalculator onOpenModal={() => setIsModalOpen(true)} />
       <CalculatorBenefits />
-      <LoanApplicationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      <EMICalculatorInfo />
+      <Faq topic="calculator" />
     </>
   );
 }

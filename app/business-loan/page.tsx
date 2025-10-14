@@ -1,34 +1,54 @@
 "use client";
-
 import { useState } from "react";
-import LoanApplicationModal from "../components/LoanApplicationModal";
-import Faq from "../components/Faq";
+import { BusinessService } from "../services/data.service";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Calculator,
+  Calendar,
+  CheckCircle,
   Clock,
   FileText,
   Percent,
-  Calendar,
   Shield,
-  CheckCircle,
-  ArrowRight,
-  TrendingUp,
-  Building2,
-  CreditCard,
-  Users,
-  MapPin,
-  Phone,
-  Mail,
   Star,
-  ChevronDown,
-  ChevronUp,
+  TrendingUp,
 } from "lucide-react";
-import Router from "next/router";
-import Link from "next/link";
+import Faq from "../components/Faq";
+import toast from "react-hot-toast";
 
-// Business Loan Hero Section
-function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
+function BusinessLoanHero() {
+  const [businessType, setBusinessType] = useState("");
+  const [turnover, setTurnover] = useState("");
+  const [loanAmount, setLoanAmount] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async () => {
+    if (!businessType || !turnover || !loanAmount || !mobileNumber) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const payload = { businessType, turnover, loanAmount, mobileNumber };
+      console.log("Payload:", payload);
+      const response = await BusinessService.createBusiness(payload);
+      console.log("Response:", response);
+
+      toast.success("Business application submitted successfully!");
+
+      // Redirect to apply_now page after successful API call
+      router.push("/apply_now");
+    } catch (error) {
+      console.error("Error creating business:", error);
+      toast.error("Failed to submit application");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="bg-gradient-to-br from-teal-50 via-white to-teal-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,40 +66,6 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 documentation, and funds in your account within 5 days.
               </p>
             </div>
-
-            {/* CTA Section */}
-            {/* <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <input
-                  type="tel"
-                  placeholder="Enter mobile number"
-                  className="flex-1 px-6 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent text-lg"
-                  maxLength={10}
-                />
-                <button
-                  onClick={onOpenModal}
-                  className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
-                >
-                  Apply Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </button>
-              </div>
-              
-              <div className="flex items-center gap-6 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <span>No Hidden Charges</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <span>Quick Approval</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <span>Minimal Documentation</span>
-                </div>
-              </div>
-            </div> */}
           </div>
 
           {/* Right Side - Lead Form */}
@@ -93,13 +79,17 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Business Type
                 </label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                  <option>Select Business Type</option>
-                  <option>Manufacturing</option>
-                  <option>Trading</option>
-                  <option>Services</option>
-                  <option>Retail</option>
-                  <option>Other</option>
+                <select
+                  value={businessType}
+                  onChange={(e) => setBusinessType(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select Business Type</option>
+                  <option value="Manufacturing">Manufacturing</option>
+                  <option value="Trading">Trading</option>
+                  <option value="Services">Services</option>
+                  <option value="Retail">Retail</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
 
@@ -107,13 +97,17 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Annual Turnover
                 </label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                  <option>Select Turnover Range</option>
-                  <option>₹2L - ₹10L</option>
-                  <option>₹10L - ₹50L</option>
-                  <option>₹50L - ₹1Cr</option>
-                  <option>₹1Cr - ₹5Cr</option>
-                  <option>Above ₹5Cr</option>
+                <select
+                  value={turnover}
+                  onChange={(e) => setTurnover(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select Turnover Range</option>
+                  <option value="₹2L - ₹10L">₹2L - ₹10L</option>
+                  <option value="₹10L - ₹50L">₹10L - ₹50L</option>
+                  <option value="₹50L - ₹1Cr">₹50L - ₹1Cr</option>
+                  <option value="₹1Cr - ₹5Cr">₹1Cr - ₹5Cr</option>
+                  <option value="Above ₹5Cr">Above ₹5Cr</option>
                 </select>
               </div>
 
@@ -121,13 +115,17 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Loan Amount Required
                 </label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                  <option>Select Loan Amount</option>
-                  <option>₹1L - ₹5L</option>
-                  <option>₹5L - ₹10L</option>
-                  <option>₹10L - ₹25L</option>
-                  <option>₹25L - ₹50L</option>
-                  <option>₹50L - ₹1Cr</option>
+                <select
+                  value={loanAmount}
+                  onChange={(e) => setLoanAmount(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select Loan Amount</option>
+                  <option value="₹1L - ₹5L">₹1L - ₹5L</option>
+                  <option value="₹5L - ₹10L">₹5L - ₹10L</option>
+                  <option value="₹10L - ₹25L">₹10L - ₹25L</option>
+                  <option value="₹25L - ₹50L">₹25L - ₹50L</option>
+                  <option value="₹50L - ₹1Cr">₹50L - ₹1Cr</option>
                 </select>
               </div>
 
@@ -138,16 +136,25 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 <input
                   type="tel"
                   placeholder="Enter mobile number"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   maxLength={10}
+                  value={mobileNumber}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Only allow numeric characters
+                    if (/^\d*$/.test(value)) {
+                      setMobileNumber(value);
+                    }
+                  }}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 />
               </div>
 
               <button
-                onClick={onOpenModal}
-                className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Get Instant Quote
+                {loading ? "Submitting..." : "Get Instant Quote"}
               </button>
             </div>
 
@@ -162,7 +169,7 @@ function BusinessLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
 }
 
 // EMI Calculator Section
-function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
+function EMICalculator() {
   const [loanAmount, setLoanAmount] = useState(1000000);
   const [interestRate, setInterestRate] = useState(15);
   const [tenure, setTenure] = useState(24);
@@ -384,7 +391,7 @@ function FeaturesSection() {
 }
 
 // Application Steps Section
-function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
+function ApplicationSteps() {
   const steps = [
     {
       number: "01",
@@ -492,7 +499,7 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
 }
 
 // Eligibility Criteria Section
-function EligibilityCriteria({ onOpenModal }: { onOpenModal: () => void }) {
+function EligibilityCriteria() {
   const criteria = [
     { label: "Nationality", value: "Indian" },
     { label: "Age", value: "Minimum 23 years - 60 years" },
@@ -530,15 +537,6 @@ function EligibilityCriteria({ onOpenModal }: { onOpenModal: () => void }) {
             </div>
           ))}
         </div>
-
-        {/* <div className="text-center mt-12">
-          <button
-            onClick={onOpenModal}
-            className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
-          >
-            Check Your Eligibility
-          </button>
-        </div> */}
 
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
@@ -726,22 +724,16 @@ function LenderComparison() {
 
 // Main Business Loan Page
 export default function BusinessLoanPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
     <>
-      <BusinessLoanHero onOpenModal={() => setIsModalOpen(true)} />
-      <EMICalculator onOpenModal={() => setIsModalOpen(true)} />
+      <BusinessLoanHero />
+      <EMICalculator />
       <FeaturesSection />
-      <ApplicationSteps onOpenModal={() => setIsModalOpen(true)} />
-      <EligibilityCriteria onOpenModal={() => setIsModalOpen(true)} />
+      <ApplicationSteps />
+      <EligibilityCriteria />
       <DocumentsRequired />
       <LenderComparison />
       <Faq topic="business-loan" />
-      <LoanApplicationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </>
   );
 }

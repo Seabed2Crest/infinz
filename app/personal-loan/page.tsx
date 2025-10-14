@@ -1,36 +1,86 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  PersonalLoanService,
+  CreatePersonalLoanPayload,
+} from "../services/data.service";
 import LoanApplicationModal from "../components/LoanApplicationModal";
 import Faq from "../components/Faq";
+import Link from "next/link";
 import {
-  Calculator,
+  Calendar,
+  CheckCircle,
   Clock,
   FileText,
   Percent,
-  Calendar,
   Shield,
-  CheckCircle,
-  ArrowRight,
-  TrendingUp,
-  User,
-  CreditCard,
-  Users,
-  MapPin,
-  Phone,
-  Mail,
   Star,
-  ChevronDown,
-  ChevronUp,
-  Briefcase,
-  Home,
-  Car,
-  Heart,
+  TrendingUp,
 } from "lucide-react";
-import Link from "next/link";
 
 // Personal Loan Hero Section
 function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
+  const router = useRouter();
+
+  const [formData, setFormData] = useState<CreatePersonalLoanPayload>({
+    loanPurpose: "",
+    monthlyIncome: "",
+    loanAmountRequired: "",
+    emiTenure: "",
+    mobileNumber: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  // Handle input changes
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle submit
+  const handleSubmit = async () => {
+    // Validate form
+    if (
+      !formData.loanPurpose ||
+      !formData.monthlyIncome ||
+      !formData.loanAmountRequired ||
+      !formData.emiTenure ||
+      !formData.mobileNumber
+    ) {
+      alert("⚠️ Please fill in all fields before submitting.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await PersonalLoanService.createPersonalLoan(formData);
+
+      // ✅ Check if API returned an _id to confirm success
+      if (response && response._id) {
+        alert("🎉 Personal loan request submitted successfully!");
+        // Give a small delay so alert shows before redirect
+        setTimeout(() => {
+          router.push("/apply_now");
+        }, 300);
+      } else {
+        console.error("Unexpected API response:", response);
+        alert("Something went wrong while submitting your request.");
+      }
+    } catch (error) {
+      console.error("❌ Error submitting loan:", error);
+      alert("Something went wrong while submitting your loan request.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,45 +93,11 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 <span className="text-teal-600">Minutes</span>
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Get instant approval on loans up to ₹50 lakhs with No hidden
+                Get instant approval on loans up to ₹50 lakhs with no hidden
                 charges, flexible repayment options, and funds in your account
                 within 24 hours.
               </p>
             </div>
-
-            {/* CTA Section */}
-            {/* <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <input
-                  type="tel"
-                  placeholder="Enter mobile number"
-                  className="flex-1 px-6 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent text-lg"
-                  maxLength={10}
-                />
-                <button
-                  onClick={onOpenModal}
-                  className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
-                >
-                  Apply Now1
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </button>
-              </div>
-              
-              <div className="flex items-center gap-6 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <span>No Hidden Charges</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <span>Instant Approval</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <span>Minimal Documentation</span>
-                </div>
-              </div>
-            </div> */}
           </div>
 
           {/* Right Side - Lead Form */}
@@ -91,12 +107,18 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
             </h3>
 
             <div className="space-y-4">
+              {/* Loan Purpose */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Loan Purpose
                 </label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent">
-                  <option>Select Loan Purpose</option>
+                <select
+                  name="loanPurpose"
+                  value={formData.loanPurpose}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                >
+                  <option value="">Select Loan Purpose</option>
                   <option>Debt Consolidation</option>
                   <option>Home Renovation</option>
                   <option>Medical Expenses</option>
@@ -107,12 +129,18 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 </select>
               </div>
 
+              {/* Monthly Income */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Monthly Income
                 </label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent">
-                  <option>Select Income Range</option>
+                <select
+                  name="monthlyIncome"
+                  value={formData.monthlyIncome}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                >
+                  <option value="">Select Income Range</option>
                   <option>₹15K - ₹30K</option>
                   <option>₹30K - ₹50K</option>
                   <option>₹50K - ₹75K</option>
@@ -121,12 +149,18 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 </select>
               </div>
 
+              {/* Loan Amount Required */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Loan Amount Required
                 </label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent">
-                  <option>Select Loan Amount</option>
+                <select
+                  name="loanAmountRequired"
+                  value={formData.loanAmountRequired}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                >
+                  <option value="">Select Loan Amount</option>
                   <option>₹50K - ₹1L</option>
                   <option>₹1L - ₹2L</option>
                   <option>₹2L - ₹5L</option>
@@ -136,13 +170,18 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 </select>
               </div>
 
-              {/* ✅ New EMI Tenure Field */}
+              {/* EMI Tenure */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   EMI Tenure
                 </label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent">
-                  <option>Select EMI Tenure</option>
+                <select
+                  name="emiTenure"
+                  value={formData.emiTenure}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                >
+                  <option value="">Select EMI Tenure</option>
                   <option>6 Months</option>
                   <option>12 Months</option>
                   <option>18 Months</option>
@@ -153,23 +192,31 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 </select>
               </div>
 
+              {/* Mobile Number */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Mobile Number
                 </label>
                 <input
                   type="tel"
+                  name="mobileNumber"
+                  value={formData.mobileNumber}
+                  onChange={handleChange}
                   placeholder="Enter mobile number"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   maxLength={10}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 />
               </div>
 
+              {/* Submit Button */}
               <button
-                onClick={onOpenModal}
-                className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
+                onClick={handleSubmit}
+                disabled={loading}
+                className={`w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors ${
+                  loading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
               >
-                Get Instant Loan
+                {loading ? "Submitting..." : "Get Instant Loan"}
               </button>
             </div>
 
