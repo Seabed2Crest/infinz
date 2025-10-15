@@ -121,7 +121,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
 
     try {
       console.log("Calling PersonalLoanService.createPersonalLoan...");
-      const response = await PersonalLoanService.createPersonalLoan(formData);
+      const response = await PersonalLoanService.createPersonalLoan(formData) as any;
       console.log("Full API Response:", response);
       console.log("Response type:", typeof response);
       console.log("Response keys:", response ? Object.keys(response) : "null");
@@ -211,7 +211,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
 
     console.log("🧪 Testing API with:", testData);
     try {
-      const response = await PersonalLoanService.createPersonalLoan(testData);
+      const response = await PersonalLoanService.createPersonalLoan(testData) as any;
       // console.log("✅ Test API Success - Full response:", response);
 
       // Analyze response structure
