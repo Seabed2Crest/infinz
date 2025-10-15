@@ -33,53 +33,207 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
   });
 
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  // Enhanced validation function
+  const validateForm = (): string[] => {
+    const errors: string[] = [];
+    const newFieldErrors: Record<string, string> = {};
+
+    // Check each field individually
+    if (!formData.loanPurpose?.trim()) {
+      errors.push("Loan Purpose");
+      newFieldErrors.loanPurpose = "Please select a loan purpose";
+    }
+
+    if (!formData.monthlyIncome?.trim()) {
+      errors.push("Monthly Income");
+      newFieldErrors.monthlyIncome = "Please select your monthly income range";
+    }
+
+    if (!formData.loanAmountRequired?.trim()) {
+      errors.push("Loan Amount Required");
+      newFieldErrors.loanAmountRequired = "Please select loan amount";
+    }
+
+    if (!formData.emiTenure?.trim()) {
+      errors.push("EMI Tenure");
+      newFieldErrors.emiTenure = "Please select EMI tenure";
+    }
+
+    if (!formData.mobileNumber?.trim()) {
+      errors.push("Mobile Number");
+      newFieldErrors.mobileNumber = "Please enter mobile number";
+    } else if (!/^\d{10}$/.test(formData.mobileNumber.trim())) {
+      errors.push("Mobile Number (must be 10 digits)");
+      newFieldErrors.mobileNumber = "Mobile number must be exactly 10 digits";
+    }
+
+    setFieldErrors(newFieldErrors);
+    return errors;
+  };
+
+  // Clear field error when user starts typing
+  const clearFieldError = (fieldName: string) => {
+    setFieldErrors((prev) => ({
+      ...prev,
+      [fieldName]: "",
+    }));
+  };
 
   // Handle input changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Clear error for this field when user starts typing
+    clearFieldError(name);
+
+    // For mobile number, only allow numbers and limit to 10 digits
+    if (name === "mobileNumber") {
+      const numbersOnly = value.replace(/\D/g, "").slice(0, 10);
+      setFormData((prev) => ({ ...prev, [name]: numbersOnly }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  // Handle submit
+  // Enhanced handle submit with better API response handling
   const handleSubmit = async () => {
+    console.log("Form Data before validation:", formData);
+
     // Validate form
-    if (
-      !formData.loanPurpose ||
-      !formData.monthlyIncome ||
-      !formData.loanAmountRequired ||
-      !formData.emiTenure ||
-      !formData.mobileNumber
-    ) {
-      alert("⚠️ Please fill in all fields before submitting.");
+    const validationErrors = validateForm();
+
+    if (validationErrors.length > 0) {
+      console.error("Validation failed for fields:", validationErrors);
+      alert(
+        `⚠️ Please fill in all fields correctly:\n• ${validationErrors.join(
+          "\n• "
+        )}`
+      );
       return;
     }
 
+    console.log("Form validation passed, submitting...");
     setLoading(true);
 
     try {
+      console.log("Calling PersonalLoanService.createPersonalLoan...");
       const response = await PersonalLoanService.createPersonalLoan(formData);
+      console.log("Full API Response:", response);
+      console.log("Response type:", typeof response);
+      console.log("Response keys:", response ? Object.keys(response) : "null");
 
-      // ✅ Check if API returned an _id to confirm success
-      if (response && response._id) {
-        alert("🎉 Personal loan request submitted successfully!");
+      // ✅ Enhanced success check - handle different response structures
+      const isSuccess =
+        response &&
+        (response._id || // MongoDB style
+          response._id || // Alternative ID field
+          response.success === true || // Success flag
+          response.status === "success" || // Status field
+          response.data?.id || // Nested data
+          response.message?.includes("success")); // Success message
+
+      if (isSuccess) {
+        console.log("✅ Loan submission successful");
+        // alert("🎉 Personal loan request submitted successfully!");
+
+        // Reset form
+        setFormData({
+          loanPurpose: "",
+          monthlyIncome: "",
+          loanAmountRequired: "",
+          emiTenure: "",
+          mobileNumber: "",
+        });
+        setFieldErrors({});
+
         // Give a small delay so alert shows before redirect
         setTimeout(() => {
           router.push("/apply_now");
         }, 300);
       } else {
-        console.error("Unexpected API response:", response);
-        alert("Something went wrong while submitting your request.");
+        console.warn("⚠️ Unexpected API response structure:", response);
+
+        // Check if it's an empty response
+        if (response && Object.keys(response).length === 0) {
+          console.error("❌ API returned empty object - possible server issue");
+          alert(
+            "We're experiencing technical issues. Please try again in a few moments."
+          );
+        } else {
+          // Check for error messages in response
+          const errorMessage =
+            response?.message || response?.error || "Please try again.";
+          alert(`Submission issue: ${errorMessage}`);
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("❌ Error submitting loan:", error);
-      alert("Something went wrong while submitting your loan request.");
+
+      // More specific error handling
+      if (error.response) {
+        // Server responded with error status
+        console.error("Server error response:", error.response);
+        alert(
+          `Server error: ${error.response.status} - ${
+            error.response.data?.message || "Please try again."
+          }`
+        );
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error("No response received:", error.request);
+        alert(
+          "No response from server. Please check your connection and try again."
+        );
+      } else {
+        // Other errors
+        alert(
+          "Something went wrong while submitting your loan request. Please try again."
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  // Test function to debug API - now with better error handling
+  const testAPICall = async () => {
+    const testData = {
+      loanPurpose: "Home Renovation",
+      monthlyIncome: "₹50K - ₹75K",
+      loanAmountRequired: "₹2L - ₹5L",
+      emiTenure: "36 Months",
+      mobileNumber: "9876543210",
+    };
+
+    console.log("🧪 Testing API with:", testData);
+    try {
+      const response = await PersonalLoanService.createPersonalLoan(testData);
+      // console.log("✅ Test API Success - Full response:", response);
+
+      // Analyze response structure
+      console.log("🔍 Response analysis:");
+      console.log(" - Type:", typeof response);
+      console.log(" - Is object:", typeof response === "object");
+      console.log(
+        " - Keys:",
+        response ? Object.keys(response) : "null/undefined"
+      );
+      console.log(" - Has _id:", response?._id);
+      console.log(" - Has id:", response?.id);
+      console.log(" - Has success:", response?.success);
+      console.log(" - Has status:", response?.status);
+      console.log(" - Has message:", response?.message);
+
+      return response;
+    } catch (error) {
+      console.error("❌ Test API Error:", error);
+      throw error;
+    }
+  };
 
   return (
     <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-16">
@@ -98,6 +252,22 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                 within 24 hours.
               </p>
             </div>
+
+            {/* Debug buttons - remove in production */}
+            {/* <div className="flex gap-2">
+              <button
+                onClick={testAPICall}
+                className="px-4 py-2 bg-orange-500 text-white text-sm rounded hover:bg-orange-600"
+              >
+                Test API
+              </button>
+              <button
+                onClick={() => console.log("Current formData:", formData)}
+                className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+              >
+                Log Form Data
+              </button>
+            </div> */}
           </div>
 
           {/* Right Side - Lead Form */}
@@ -110,102 +280,145 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
               {/* Loan Purpose */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Loan Purpose
+                  Loan Purpose *
                 </label>
                 <select
                   name="loanPurpose"
                   value={formData.loanPurpose}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                    fieldErrors.loanPurpose
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
                 >
                   <option value="">Select Loan Purpose</option>
-                  <option>Debt Consolidation</option>
-                  <option>Home Renovation</option>
-                  <option>Medical Expenses</option>
-                  <option>Travel</option>
-                  <option>Wedding</option>
-                  <option>Education</option>
-                  <option>Other</option>
+                  <option value="Debt Consolidation">Debt Consolidation</option>
+                  <option value="Home Renovation">Home Renovation</option>
+                  <option value="Medical Expenses">Medical Expenses</option>
+                  <option value="Travel">Travel</option>
+                  <option value="Wedding">Wedding</option>
+                  <option value="Education">Education</option>
+                  <option value="Other">Other</option>
                 </select>
+                {fieldErrors.loanPurpose && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {fieldErrors.loanPurpose}
+                  </p>
+                )}
               </div>
 
               {/* Monthly Income */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Monthly Income
+                  Monthly Income *
                 </label>
                 <select
                   name="monthlyIncome"
                   value={formData.monthlyIncome}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                    fieldErrors.monthlyIncome
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
                 >
                   <option value="">Select Income Range</option>
-                  <option>₹15K - ₹30K</option>
-                  <option>₹30K - ₹50K</option>
-                  <option>₹50K - ₹75K</option>
-                  <option>₹75K - ₹1L</option>
-                  <option>Above ₹1L</option>
+                  <option value="₹15K - ₹30K">₹15K - ₹30K</option>
+                  <option value="₹30K - ₹50K">₹30K - ₹50K</option>
+                  <option value="₹50K - ₹75K">₹50K - ₹75K</option>
+                  <option value="₹75K - ₹1L">₹75K - ₹1L</option>
+                  <option value="Above ₹1L">Above ₹1L</option>
                 </select>
+                {fieldErrors.monthlyIncome && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {fieldErrors.monthlyIncome}
+                  </p>
+                )}
               </div>
 
               {/* Loan Amount Required */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Loan Amount Required
+                  Loan Amount Required *
                 </label>
                 <select
                   name="loanAmountRequired"
                   value={formData.loanAmountRequired}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                    fieldErrors.loanAmountRequired
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
                 >
                   <option value="">Select Loan Amount</option>
-                  <option>₹50K - ₹1L</option>
-                  <option>₹1L - ₹2L</option>
-                  <option>₹2L - ₹5L</option>
-                  <option>₹5L - ₹10L</option>
-                  <option>₹10L - ₹20L</option>
-                  <option>Above ₹20L</option>
+                  <option value="₹50K - ₹1L">₹50K - ₹1L</option>
+                  <option value="₹1L - ₹2L">₹1L - ₹2L</option>
+                  <option value="₹2L - ₹5L">₹2L - ₹5L</option>
+                  <option value="₹5L - ₹10L">₹5L - ₹10L</option>
+                  <option value="₹10L - ₹20L">₹10L - ₹20L</option>
+                  <option value="Above ₹20L">Above ₹20L</option>
                 </select>
+                {fieldErrors.loanAmountRequired && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {fieldErrors.loanAmountRequired}
+                  </p>
+                )}
               </div>
 
               {/* EMI Tenure */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  EMI Tenure
+                  EMI Tenure *
                 </label>
                 <select
                   name="emiTenure"
                   value={formData.emiTenure}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                    fieldErrors.emiTenure ? "border-red-500" : "border-gray-300"
+                  }`}
                 >
                   <option value="">Select EMI Tenure</option>
-                  <option>6 Months</option>
-                  <option>12 Months</option>
-                  <option>18 Months</option>
-                  <option>24 Months</option>
-                  <option>36 Months</option>
-                  <option>48 Months</option>
-                  <option>60 Months</option>
+                  <option value="6 Months">6 Months</option>
+                  <option value="12 Months">12 Months</option>
+                  <option value="18 Months">18 Months</option>
+                  <option value="24 Months">24 Months</option>
+                  <option value="36 Months">36 Months</option>
+                  <option value="48 Months">48 Months</option>
+                  <option value="60 Months">60 Months</option>
                 </select>
+                {fieldErrors.emiTenure && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {fieldErrors.emiTenure}
+                  </p>
+                )}
               </div>
 
               {/* Mobile Number */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mobile Number
+                  Mobile Number *
                 </label>
                 <input
                   type="tel"
                   name="mobileNumber"
                   value={formData.mobileNumber}
                   onChange={handleChange}
-                  placeholder="Enter mobile number"
+                  placeholder="Enter 10-digit mobile number"
                   maxLength={10}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                    fieldErrors.mobileNumber
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
                 />
+                {fieldErrors.mobileNumber && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {fieldErrors.mobileNumber}
+                  </p>
+                )}
               </div>
 
               {/* Submit Button */}
@@ -230,7 +443,8 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
   );
 }
 
-// EMI Calculator Section
+// ... (rest of your components remain exactly the same - EMICalculator, FeaturesSection, ApplicationSteps, EligibilityCriteria, DocumentsRequired, LoanOffersSection, personalLoanFaq, and PersonalLoanPage)
+
 function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
   const [loanAmount, setLoanAmount] = useState(500000);
   const [interestRate, setInterestRate] = useState(10.5);
@@ -266,19 +480,33 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
           <div className="space-y-8">
             {/* Loan Amount */}
             <div>
-              <label className="block text-lg font-semibold text-gray-900 mb-4">
-                Loan Amount: ₹{loanAmount.toLocaleString()}
+              <label className="block text-lg font-semibold text-gray-900 mb-2">
+                Loan Amount:
               </label>
+              <div className="flex items-center gap-4 mb-2">
+                <input
+                  type="number"
+                  value={loanAmount}
+                  min={12000}
+                  max={10000000}
+                  step={1000}
+                  onChange={(e) => setLoanAmount(Number(e.target.value))}
+                  className="w-32 p-2 border rounded-lg text-gray-900"
+                />
+                <span className="text-gray-900 font-semibold">
+                  ₹{loanAmount.toLocaleString()}
+                </span>
+              </div>
               <input
                 type="range"
-                min="12000"
-                max="10000000"
-                step="1000"
+                min={12000}
+                max={10000000}
+                step={1000}
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(Number(e.target.value))}
                 className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>₹12K</span>
                 <span>₹1 Cr</span>
               </div>
@@ -286,19 +514,33 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
 
             {/* Interest Rate */}
             <div>
-              <label className="block text-lg font-semibold text-gray-900 mb-4">
-                Interest Rate: {interestRate}% p.a.
+              <label className="block text-lg font-semibold text-gray-900 mb-2">
+                Interest Rate (% p.a.):
               </label>
+              <div className="flex items-center gap-4 mb-2">
+                <input
+                  type="number"
+                  value={interestRate}
+                  min={9.99}
+                  max={28}
+                  step={0.1}
+                  onChange={(e) => setInterestRate(Number(e.target.value))}
+                  className="w-24 p-2 border rounded-lg text-gray-900"
+                />
+                <span className="text-gray-900 font-semibold">
+                  {interestRate}%
+                </span>
+              </div>
               <input
                 type="range"
-                min="9.99"
-                max="28"
-                step="0.1"
+                min={9.99}
+                max={28}
+                step={0.1}
                 value={interestRate}
                 onChange={(e) => setInterestRate(Number(e.target.value))}
                 className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>9.99%</span>
                 <span>28%</span>
               </div>
@@ -306,19 +548,33 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
 
             {/* EMI Tenure */}
             <div>
-              <label className="block text-lg font-semibold text-gray-900 mb-4">
-                EMI Tenure: {tenure} Months
+              <label className="block text-lg font-semibold text-gray-900 mb-2">
+                EMI Tenure (Months):
               </label>
+              <div className="flex items-center gap-4 mb-2">
+                <input
+                  type="number"
+                  value={tenure}
+                  min={12}
+                  max={84}
+                  step={1}
+                  onChange={(e) => setTenure(Number(e.target.value))}
+                  className="w-20 p-2 border rounded-lg text-gray-900"
+                />
+                <span className="text-gray-900 font-semibold">
+                  {tenure} Months
+                </span>
+              </div>
               <input
                 type="range"
-                min="12"
-                max="84"
-                step="6"
+                min={12}
+                max={84}
+                step={1}
                 value={tenure}
                 onChange={(e) => setTenure(Number(e.target.value))}
                 className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>12 Months</span>
                 <span>84 Months</span>
               </div>
@@ -463,25 +719,29 @@ function FeaturesSection() {
 function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
   const steps = [
     {
-      title: "Register Online",
+      title: "Register with Mobile Number",
       description:
-        "Complete your profile with basic details and verify your mobile number",
+        "Enter and verify your mobile number to sign up for the loan process",
     },
     {
-      title: "Upload Documents",
-      description: "Selfie, PAN Card, and Aadhaar Card",
+      title: "Verify Personal Details",
+      description:
+        "Submit your basic information like name, date of birth, and PAN card",
     },
     {
-      title: "Select Loan Amount",
-      description: "Choose your desired loan amount and tenure",
+      title: "Enter Employment Details",
+      description:
+        "Provide your income details so we can assess your loan eligibility",
     },
     {
-      title: "Instant Approval",
-      description: "Get approval within minutes based on your credit profile",
+      title: "Choose Loan Amount & Tenure",
+      description:
+        "Select how much you want to borrow and set your repayment period",
     },
     {
-      title: "Quick Disbursement",
-      description: "Receive funds in your bank account within 3 days",
+      title: "Confirm Bank Details & Receive Loan",
+      description:
+        "Add your bank account and get the approved loan credited in 3 days",
     },
   ];
 
@@ -522,15 +782,6 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
 
             {/* Steps */}
             <div className="space-y-6">
-              <div className="mb-8">
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  Personal Loan
-                </h3>
-                <h4 className="text-3xl md:text-4xl font-bold text-accent text-orange-500">
-                  Application Steps
-                </h4>
-              </div>
-
               <div className="space-y-5">
                 {steps.map((step, index) => (
                   <div
@@ -548,6 +799,14 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
                     </div>
                   </div>
                 ))}
+              </div>
+              <div className="mt-5 text-center">
+                <Link
+                  href="/apply_now"
+                  className="inline-block bg-teal-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-teal-600 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+                >
+                  Apply Now
+                </Link>
               </div>
             </div>
           </div>
@@ -599,21 +858,6 @@ function EligibilityCriteria({ onOpenModal }: { onOpenModal: () => void }) {
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <Link href="/calculator">
-            <button className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg">
-              Check Your Eligibility
-            </button>
-          </Link>
-        </div>
-
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            <strong>Disclaimer:</strong> Personal loan eligibility criteria may
-            differ from bank to bank
-          </p>
         </div>
       </div>
     </section>
@@ -676,52 +920,52 @@ function DocumentsRequired() {
   );
 }
 
-// Loan Offers Section
 function LoanOffersSection() {
-  const lenders = [
-    {
-      name: "HDFC Bank",
-      rate: "10.5%",
-      amount: "₹40L",
-      tenure: "7 years",
-      rating: 4.8,
-    },
-    {
-      name: "ICICI Bank",
-      rate: "10.8%",
-      amount: "₹35L",
-      tenure: "6 years",
-      rating: 4.7,
-    },
+  const initialLenders = [
+    { name: "HDFC Bank", rate: 10.5, amount: 4000000, tenure: 7, rating: 4.8 },
+    { name: "ICICI Bank", rate: 10.8, amount: 3500000, tenure: 6, rating: 4.7 },
     {
       name: "Bajaj Finserv",
-      rate: "11.2%",
-      amount: "₹30L",
-      tenure: "5 years",
+      rate: 11.2,
+      amount: 3000000,
+      tenure: 5,
       rating: 4.6,
     },
     {
       name: "Kotak Mahindra",
-      rate: "11.5%",
-      amount: "₹25L",
-      tenure: "5 years",
+      rate: 11.5,
+      amount: 2500000,
+      tenure: 5,
       rating: 4.5,
     },
-    {
-      name: "Axis Bank",
-      rate: "11.8%",
-      amount: "₹20L",
-      tenure: "4 years",
-      rating: 4.4,
-    },
-    {
-      name: "Yes Bank",
-      rate: "12.5%",
-      amount: "₹15L",
-      tenure: "3 years",
-      rating: 4.3,
-    },
+    { name: "Axis Bank", rate: 11.8, amount: 2000000, tenure: 4, rating: 4.4 },
+    { name: "Yes Bank", rate: 12.5, amount: 1500000, tenure: 3, rating: 4.3 },
   ];
+
+  const [lenders, setLenders] = useState(initialLenders);
+  const [activeFilter, setActiveFilter] = useState("rate"); // default active
+
+  const sortByLowestRate = () => {
+    setActiveFilter("rate");
+    setLenders([...lenders].sort((a, b) => a.rate - b.rate));
+  };
+
+  const sortByMaxAmount = () => {
+    setActiveFilter("maxAmount");
+    setLenders([...lenders].sort((a, b) => b.amount - a.amount));
+  };
+
+  const sortByMinAmount = () => {
+    setActiveFilter("minAmount");
+    setLenders([...lenders].sort((a, b) => a.amount - b.amount));
+  };
+
+  const formatAmount = (amt: number) => `₹${(amt / 100000).toFixed(0)}L`;
+
+  const getButtonClasses = (filterName: string) =>
+    filterName === activeFilter
+      ? "px-6 py-2 bg-teal-600 text-white rounded-lg font-medium"
+      : "px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50";
 
   return (
     <section className="py-16 bg-white">
@@ -738,13 +982,22 @@ function LoanOffersSection() {
 
         {/* Sort Options */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">
-          <button className="px-6 py-2 bg-teal-600 text-white rounded-lg font-medium">
+          <button
+            onClick={sortByLowestRate}
+            className={getButtonClasses("rate")}
+          >
             Lowest Interest Rate
           </button>
-          <button className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50">
+          <button
+            onClick={sortByMaxAmount}
+            className={getButtonClasses("maxAmount")}
+          >
             Max Loan Amount
           </button>
-          <button className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50">
+          <button
+            onClick={sortByMinAmount}
+            className={getButtonClasses("minAmount")}
+          >
             Min Loan Amount
           </button>
         </div>
@@ -772,19 +1025,19 @@ function LoanOffersSection() {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Interest Rate</span>
                   <span className="font-semibold text-gray-900">
-                    {lender.rate}
+                    {lender.rate}%
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Max Amount</span>
                   <span className="font-semibold text-gray-900">
-                    {lender.amount}
+                    {formatAmount(lender.amount)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Max Tenure</span>
                   <span className="font-semibold text-gray-900">
-                    {lender.tenure}
+                    {lender.tenure} years
                   </span>
                 </div>
               </div>
