@@ -11,7 +11,7 @@ interface FaqItemType {
 }
 
 interface FaqProps {
-  topic?: "home" | "business-loan" | "personal-loan";
+  topic?: "home" | "business-loan" | "personal-loan" | "calculator";
 }
 
 const faqTopics: Record<string, FaqItemType[]> = {
@@ -167,6 +167,44 @@ const faqTopics: Record<string, FaqItemType[]> = {
       question: "How much personal loan amount can I get based on my salary?",
       answer:
         "Generally, you can get a personal loan of 10-15 times your monthly salary, depending on your credit profile and existing obligations.",
+    },
+  ],
+  calculator: [
+    {
+      id: 1,
+      question: "How reliable is the EMI calculator's estimate?",
+      answer:
+        "EMI calculators provide highly accurate estimates based on input data but may not reflect last-minute lender fees or minor variations in interest computation.",
+    },
+    {
+      id: 2,
+      question: "Are EMIs fixed throughout the loan tenure?",
+      answer:
+        "For fixed interest rate loans, EMIs remain consistent. However, for loans with floating rates, EMIs may vary based on interest rate changes over time.",
+    },
+    {
+      id: 3,
+      question: "Do EMI calculators account for additional taxes and charges?",
+      answer:
+        "Generally, the EMIs calculated represent principal and interest repayment only. Additional charges such as taxes, insurance, or processing fees are usually separate.",
+    },
+    {
+      id: 4,
+      question: "What should I consider while choosing a loan tenure?",
+      answer:
+        "Opt for a loan tenure that balances monthly affordability with minimizing total interest paid. Longer tenure lowers EMI but increases total interest; shorter tenure increases EMI but reduces interest cost.",
+    },
+    {
+      id: 5,
+      question: "What happens if I fail to make an EMI payment?",
+      answer:
+        "If you fail to make an EMI payment on time, it could result in penalties and charges. Moreover, missing an EMI payment can affect your credit score.",
+    },
+    {
+      id: 6,
+      question: "What is the EMI for a 5 lakh loan for 5 years?",
+      answer:
+        "To calculate the 5 lakh loan EMI for 5 years, use the formula:\n\nEMI = [P × R × (1+R)^N] / [(1+R)^N – 1]\n\nFor a ₹5 lakh loan at 12% annual interest over 5 years:\n\n• Principal Amount = ₹5,00,000\n• Monthly Interest Rate = 1% (12% ÷ 12 ÷ 100)\n• Loan Tenure = 60 months\n\nEMI: ₹11,122.22/month\n\n*Disclaimer: The EMI displayed is for illustrative purposes only. Actual amounts may vary based on the applicable interest rate, loan tenure, and terms set by the lender.*",
     },
   ],
 };
