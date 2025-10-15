@@ -169,7 +169,7 @@ function BusinessLoanHero() {
 }
 
 // EMI Calculator Section
-function EMICalculator() {
+function BusinessLoanCalculator() {
   const [loanAmount, setLoanAmount] = useState(1000000);
   const [interestRate, setInterestRate] = useState(15);
   const [tenure, setTenure] = useState(24);
@@ -202,19 +202,33 @@ function EMICalculator() {
           <div className="space-y-8">
             {/* Loan Amount */}
             <div>
-              <label className="block text-lg font-semibold text-gray-900 mb-4">
-                Loan Amount: ₹{loanAmount.toLocaleString()}
+              <label className="block text-lg font-semibold text-gray-900 mb-2">
+                Loan Amount:
               </label>
+              <div className="flex items-center gap-4 mb-2">
+                <input
+                  type="number"
+                  value={loanAmount}
+                  min={50000}
+                  max={5000000}
+                  step={10000}
+                  onChange={(e) => setLoanAmount(Number(e.target.value))}
+                  className="w-32 p-2 border rounded-lg text-gray-900"
+                />
+                <span className="text-gray-900 font-semibold">
+                  ₹{loanAmount.toLocaleString()}
+                </span>
+              </div>
               <input
                 type="range"
-                min="50000"
-                max="5000000"
-                step="10000"
+                min={50000}
+                max={5000000}
+                step={10000}
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(Number(e.target.value))}
                 className="w-full h-2 bg-teal-200 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>₹50K</span>
                 <span>₹50L</span>
               </div>
@@ -222,19 +236,33 @@ function EMICalculator() {
 
             {/* Interest Rate */}
             <div>
-              <label className="block text-lg font-semibold text-gray-900 mb-4">
-                Interest Rate: {interestRate}% p.a.
+              <label className="block text-lg font-semibold text-gray-900 mb-2">
+                Interest Rate (% p.a.):
               </label>
+              <div className="flex items-center gap-4 mb-2">
+                <input
+                  type="number"
+                  value={interestRate}
+                  min={13}
+                  max={33}
+                  step={0.1}
+                  onChange={(e) => setInterestRate(Number(e.target.value))}
+                  className="w-24 p-2 border rounded-lg text-gray-900"
+                />
+                <span className="text-gray-900 font-semibold">
+                  {interestRate}%
+                </span>
+              </div>
               <input
                 type="range"
-                min="13"
-                max="33"
-                step="0.1"
+                min={13}
+                max={33}
+                step={0.1}
                 value={interestRate}
                 onChange={(e) => setInterestRate(Number(e.target.value))}
                 className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>13%</span>
                 <span>33%</span>
               </div>
@@ -242,19 +270,33 @@ function EMICalculator() {
 
             {/* EMI Tenure */}
             <div>
-              <label className="block text-lg font-semibold text-gray-900 mb-4">
-                EMI Tenure: {tenure} Months
+              <label className="block text-lg font-semibold text-gray-900 mb-2">
+                EMI Tenure (Months):
               </label>
+              <div className="flex items-center gap-4 mb-2">
+                <input
+                  type="number"
+                  value={tenure}
+                  min={12}
+                  max={60}
+                  step={1}
+                  onChange={(e) => setTenure(Number(e.target.value))}
+                  className="w-20 p-2 border rounded-lg text-gray-900"
+                />
+                <span className="text-gray-900 font-semibold">
+                  {tenure} Months
+                </span>
+              </div>
               <input
                 type="range"
-                min="12"
-                max="60"
-                step="6"
+                min={12}
+                max={60}
+                step={1}
                 value={tenure}
                 onChange={(e) => setTenure(Number(e.target.value))}
                 className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>12 Months</span>
                 <span>60 Months</span>
               </div>
@@ -391,33 +433,32 @@ function FeaturesSection() {
 }
 
 // Application Steps Section
-function ApplicationSteps() {
+function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
   const steps = [
     {
-      number: "01",
-      title: "Register with mobile number",
+      title: "Register with Mobile Number",
       description:
-        "Start your application with a simple mobile number verification",
+        "Enter and verify your mobile number to sign up for the loan process",
     },
     {
-      number: "02",
-      title: "Verify personal details",
-      description: "Complete your personal information and KYC verification",
+      title: "Verify Personal Details",
+      description:
+        "Submit your basic information like name, date of birth, and PAN card",
     },
     {
-      number: "03",
-      title: "Enter business details",
-      description: "Provide your business information and financial details",
+      title: "Enter Employment Details",
+      description:
+        "Provide your income details so we can assess your loan eligibility",
     },
     {
-      number: "04",
-      title: "Choose loan amount and tenure",
-      description: "Select your desired loan amount and EMI repayment period",
+      title: "Choose Loan Amount & Tenure",
+      description:
+        "Select how much you want to borrow and set your repayment period",
     },
     {
-      number: "05",
-      title: "Confirm bank details & receive funds",
-      description: "Verify bank account and receive loan amount in 3 days",
+      title: "Confirm Bank Details & Receive Loan",
+      description:
+        "Add your bank account and get the approved loan credited in 3 days",
     },
   ];
 
@@ -431,7 +472,7 @@ function ApplicationSteps() {
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Get business funding in 5 simple steps through our digital process.
-            No branch visits, no lengthy procedures - just quick, secure, and
+            No branch visits, no lengthy procedures – just quick, secure, and
             transparent lending.
           </p>
         </div>
@@ -447,7 +488,7 @@ function ApplicationSteps() {
           <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
             {/* Illustration */}
             <div className="flex justify-center lg:justify-start">
-              <div className="relative  translate-y-2">
+              <div className="relative translate-y-2">
                 <div className="absolute inset-0 bg-white/10 rounded-3xl blur-3xl"></div>
                 <img
                   src="/download.png"
@@ -459,20 +500,11 @@ function ApplicationSteps() {
 
             {/* Steps */}
             <div className="space-y-6">
-              <div className="mb-8">
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  Business Loan
-                </h3>
-                <h4 className="text-3xl md:text-4xl font-bold text-accent text-orange-500">
-                  Application Steps
-                </h4>
-              </div>
-
               <div className="space-y-5">
                 {steps.map((step, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-[1.02]"
+                    className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-[1.02]"
                   >
                     <CheckCircle className="h-6 w-6 text-accent flex-shrink-0 mt-0.5" />
                     <div>
@@ -485,6 +517,15 @@ function ApplicationSteps() {
                     </div>
                   </div>
                 ))}
+
+                <div className="mt-5 text-center">
+                  <Link
+                    href="/apply_now"
+                    className="inline-block bg-teal-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+                  >
+                    Apply Now
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -497,7 +538,6 @@ function ApplicationSteps() {
     </section>
   );
 }
-
 // Eligibility Criteria Section
 function EligibilityCriteria() {
   const criteria = [
@@ -605,50 +645,50 @@ function DocumentsRequired() {
 
 // Lender Comparison Section
 function LenderComparison() {
-  const lenders = [
-    {
-      name: "HDFC Bank",
-      rate: "12.5%",
-      amount: "₹1Cr",
-      tenure: "7 years",
-      rating: 4.8,
-    },
-    {
-      name: "ICICI Bank",
-      rate: "13.0%",
-      amount: "₹75L",
-      tenure: "5 years",
-      rating: 4.7,
-    },
+  const lendersData = [
+    { name: "HDFC Bank", rate: 12.5, amount: 10000000, tenure: 7, rating: 4.8 },
+    { name: "ICICI Bank", rate: 13.0, amount: 7500000, tenure: 5, rating: 4.7 },
     {
       name: "Bajaj Finserv",
-      rate: "12.8%",
-      amount: "₹50L",
-      tenure: "4 years",
+      rate: 12.8,
+      amount: 5000000,
+      tenure: 4,
       rating: 4.6,
     },
     {
       name: "Kotak Mahindra",
-      rate: "13.2%",
-      amount: "₹60L",
-      tenure: "6 years",
+      rate: 13.2,
+      amount: 6000000,
+      tenure: 6,
       rating: 4.5,
     },
-    {
-      name: "Axis Bank",
-      rate: "13.5%",
-      amount: "₹80L",
-      tenure: "5 years",
-      rating: 4.4,
-    },
-    {
-      name: "Yes Bank",
-      rate: "14.0%",
-      amount: "₹40L",
-      tenure: "3 years",
-      rating: 4.3,
-    },
+    { name: "Axis Bank", rate: 13.5, amount: 8000000, tenure: 5, rating: 4.4 },
+    { name: "Yes Bank", rate: 14.0, amount: 4000000, tenure: 3, rating: 4.3 },
   ];
+
+  const [activeFilter, setActiveFilter] = useState("Lowest Interest Rate");
+  const [lenders, setLenders] = useState(lendersData);
+
+  const filters = [
+    "Lowest Interest Rate",
+    "Max Loan Amount",
+    "Min Loan Amount",
+  ];
+
+  const handleFilterClick = (filter: string) => {
+    setActiveFilter(filter);
+    let sorted: typeof lendersData = [];
+
+    if (filter === "Lowest Interest Rate") {
+      sorted = [...lendersData].sort((a, b) => a.rate - b.rate);
+    } else if (filter === "Max Loan Amount") {
+      sorted = [...lendersData].sort((a, b) => b.amount - a.amount);
+    } else if (filter === "Min Loan Amount") {
+      sorted = [...lendersData].sort((a, b) => a.amount - b.amount);
+    }
+
+    setLenders(sorted);
+  };
 
   return (
     <section className="py-16 bg-white">
@@ -664,15 +704,19 @@ function LenderComparison() {
 
         {/* Sort Options */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">
-          <button className="px-6 py-2 bg-teal-600 text-white rounded-lg font-medium">
-            Lowest Interest Rate
-          </button>
-          <button className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50">
-            Max Loan Amount
-          </button>
-          <button className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50">
-            Min Loan Amount
-          </button>
+          {filters.map((filter) => (
+            <button
+              key={filter}
+              onClick={() => handleFilterClick(filter)}
+              className={`px-6 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                activeFilter === filter
+                  ? "bg-teal-600 text-white"
+                  : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
         </div>
 
         {/* Lender Cards */}
@@ -698,19 +742,19 @@ function LenderComparison() {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Interest Rate</span>
                   <span className="font-semibold text-gray-900">
-                    {lender.rate}
+                    {lender.rate}%
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Max Amount</span>
                   <span className="font-semibold text-gray-900">
-                    {lender.amount}
+                    ₹{(lender.amount / 100000).toLocaleString()}L
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Max Tenure</span>
                   <span className="font-semibold text-gray-900">
-                    {lender.tenure}
+                    {lender.tenure} years
                   </span>
                 </div>
               </div>
@@ -727,9 +771,9 @@ export default function BusinessLoanPage() {
   return (
     <>
       <BusinessLoanHero />
-      <EMICalculator />
+      <BusinessLoanCalculator />
       <FeaturesSection />
-      <ApplicationSteps />
+      <ApplicationSteps onOpenModal={() => {}} />
       <EligibilityCriteria />
       <DocumentsRequired />
       <LenderComparison />
