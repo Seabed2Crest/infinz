@@ -486,22 +486,17 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             {/* Loan Amount */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-2">
-                Loan Amount:
+                Loan Amount (₹)
               </label>
-              <div className="flex items-center gap-4 mb-2">
-                <input
-                  type="number"
-                  value={loanAmount}
-                  min={12000}
-                  max={10000000}
-                  step={1000}
-                  onChange={(e) => setLoanAmount(Number(e.target.value))}
-                  className="w-32 p-2 border rounded-lg text-gray-900"
-                />
-                <span className="text-gray-900 font-semibold">
-                  ₹{loanAmount.toLocaleString()}
-                </span>
-              </div>
+              <input
+                type="number"
+                value={loanAmount}
+                min={12000}
+                max={10000000}
+                step={1000}
+                onChange={(e) => setLoanAmount(Number(e.target.value))}
+                className="w-40 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={12000}
@@ -520,22 +515,17 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             {/* Interest Rate */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-2">
-                Interest Rate (% p.a.):
+                Interest Rate (% p.a.)
               </label>
-              <div className="flex items-center gap-4 mb-2">
-                <input
-                  type="number"
-                  value={interestRate}
-                  min={9.99}
-                  max={28}
-                  step={0.1}
-                  onChange={(e) => setInterestRate(Number(e.target.value))}
-                  className="w-24 p-2 border rounded-lg text-gray-900"
-                />
-                <span className="text-gray-900 font-semibold">
-                  {interestRate}%
-                </span>
-              </div>
+              <input
+                type="number"
+                value={interestRate}
+                min={9.99}
+                max={28}
+                step={0.1}
+                onChange={(e) => setInterestRate(Number(e.target.value))}
+                className="w-28 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={9.99}
@@ -554,22 +544,17 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             {/* EMI Tenure */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-2">
-                EMI Tenure (Months):
+                EMI Tenure (Months)
               </label>
-              <div className="flex items-center gap-4 mb-2">
-                <input
-                  type="number"
-                  value={tenure}
-                  min={12}
-                  max={84}
-                  step={1}
-                  onChange={(e) => setTenure(Number(e.target.value))}
-                  className="w-20 p-2 border rounded-lg text-gray-900"
-                />
-                <span className="text-gray-900 font-semibold">
-                  {tenure} Months
-                </span>
-              </div>
+              <input
+                type="number"
+                value={tenure}
+                min={12}
+                max={84}
+                step={1}
+                onChange={(e) => setTenure(Number(e.target.value))}
+                className="w-24 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={12}

@@ -56,3 +56,39 @@ export const PersonalLoanService = {
     },
 };
 
+//leads form
+export interface LoanFormData {
+    name: string;
+    city: string;
+    pincode: string;
+    loanType: string;
+    amount: string;
+    tenure: string;
+    mobileNumber: string;
+}
+
+export interface LoanResponse {
+    success: boolean;
+    message: string;
+    data?: any;
+}
+
+export const leadFrom = {
+    createLoan: async (formData: LoanFormData): Promise<LoanResponse> => {
+        try {
+            const res = await http.post(API_ROUTES.LEAD_FORM.CREATE, formData); // <-- FIXED
+
+            return {
+                success: true,
+                message: res.data.message,
+                data: res.data.data,
+            };
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response?.data?.error || err.message || "Something went wrong",
+            };
+        }
+    },
+};
+
