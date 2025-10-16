@@ -11,4 +11,9 @@ export const API_ROUTES = {
     PERSONAL_LOAN: {
         CREATE: "/api/v1/personal-loan/create",
     },
+    
+    //LEAD FORM ROUTE
+    LEAD_FORM:{
+        CREATE: "/api/v1/leads/create"
+    },
 };

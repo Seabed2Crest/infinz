@@ -50,7 +50,7 @@ export default function CreditBanner({ onOpenModal }: CreditBannerProps) {
           }`}
         >
           <Image
-            src="/mobileImage.png"
+            src="/mobilepic.png"
             alt="Credit Score App"
             width={200}
             height={200}

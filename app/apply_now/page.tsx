@@ -15,6 +15,7 @@ import {
   User,
   VerifyOtpResponse,
 } from "../services/otp.service";
+import { leadFrom, LoanFormData, LoanResponse } from "../services/data.service";
 
 export default function ApplyNowPage() {
   const [step, setStep] = useState<"mobile" | "otp" | "form" | "success">(
@@ -36,22 +37,17 @@ export default function ApplyNowPage() {
     tenure: "",
   });
 
+  // --- Mobile OTP Handlers ---
   const handleMobileSubmit = async () => {
     if (mobile.length === 10) {
       setLoading(true);
       setError("");
       try {
         const response = await OtpService.sendOtp(mobile);
-        if (response.success) {
-          setStep("otp");
-        } else {
-          setError(response.message || "Failed to send OTP");
-        }
+        if (response.success) setStep("otp");
+        else setError(response.message || "Failed to send OTP");
       } catch (err: any) {
-        setError(
-          err.response?.data?.message || "An error occurred while sending OTP"
-        );
-        console.error("OTP sending error:", err);
+        setError(err.response?.data?.message || "Error sending OTP");
       } finally {
         setLoading(false);
       }
@@ -63,15 +59,10 @@ export default function ApplyNowPage() {
       setOtpLoading(true);
       setError("");
       try {
-        const payload = {
-          phoneNumber: mobile,
-          otp: otp,
-        };
-
+        const payload = { phoneNumber: mobile, otp };
         const response: VerifyOtpResponse = await OtpService.verifyOtp(payload);
 
         if (response.success) {
-          // Save user data and token
           setUserData(response.data.user);
           setToken(response.data.token);
 
@@ -83,116 +74,82 @@ export default function ApplyNowPage() {
           }));
 
           setStep("form");
-        } else {
-          setError(response.message || "Invalid OTP");
-        }
+        } else setError(response.message || "Invalid OTP");
       } catch (err: any) {
-        setError(
-          err.response?.data?.message || "An error occurred while verifying OTP"
-        );
-        console.error("OTP verification error:", err);
+        setError(err.response?.data?.message || "Error verifying OTP");
       } finally {
         setOtpLoading(false);
       }
     }
   };
 
-  const handleFormSubmit = () => {
-    // Here you can use the token for authenticated loan application
-    console.log("User Data:", userData);
-    console.log("Token:", token);
-    console.log("Form Data:", formData);
+  // --- Form Submission to Backend ---
+  const handleFormSubmit = async () => {
+    const payload: LoanFormData = { ...formData, mobileNumber: mobile };
 
-    setStep("success");
-  };
-
-  // Handle Enter key press for mobile submission
-  const handleMobileKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && mobile.length === 10) {
-      handleMobileSubmit();
+    try {
+      const response: LoanResponse = await leadFrom.createLoan(payload);
+      if (response.success) {
+        console.log("Loan submitted:", response.data);
+        setStep("success");
+      } else {
+        setError(response.message);
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to submit loan application");
     }
   };
 
-  // Handle Enter key press for OTP submission
-  const handleOtpKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && otp.length === 6) {
-      handleOtpSubmit();
-    }
-  };
-
-  // Handle OTP input change with proper backspace support
+  // --- OTP Input Handlers ---
   const handleOtpChange = (index: number, value: string) => {
     const numericValue = value.replace(/\D/g, "");
-
     if (numericValue || value === "") {
       const newOtp = otp.split("");
-
-      // If backspace (empty value) and we're not on the first input
       if (value === "" && index > 0) {
         newOtp[index] = "";
-        const updatedOtp = newOtp.join("");
-        setOtp(updatedOtp);
-
-        // Focus previous input on backspace
+        setOtp(newOtp.join(""));
         const prevInput =
           document.querySelectorAll<HTMLInputElement>('input[type="text"]')[
             index - 1
           ];
         prevInput?.focus();
-      }
-      // If entering a digit
-      else if (numericValue) {
+      } else if (numericValue) {
         newOtp[index] = numericValue;
-        const updatedOtp = newOtp.join("");
-        setOtp(updatedOtp);
-
-        // Auto-focus next input if available
-        if (index < 5 && numericValue) {
+        setOtp(newOtp.join(""));
+        if (index < 5) {
           const nextInput =
             document.querySelectorAll<HTMLInputElement>('input[type="text"]')[
               index + 1
             ];
           nextInput?.focus();
         }
-
-        // Auto-submit when all 6 digits are entered
-        if (updatedOtp.length === 6) {
-          handleOtpSubmit();
-        }
+        if (newOtp.join("").length === 6) handleOtpSubmit();
       }
     }
   };
 
-  // Handle backspace key specifically
   const handleOtpKeyDown = (
     index: number,
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Backspace") {
       e.preventDefault();
-
-      // If current input is empty and not first input, focus previous
+      const newOtp = otp.split("");
       if (!otp[index] && index > 0) {
+        newOtp[index - 1] = "";
+        setOtp(newOtp.join(""));
         const prevInput =
           document.querySelectorAll<HTMLInputElement>('input[type="text"]')[
             index - 1
           ];
         prevInput?.focus();
-        // Also clear the previous input
-        const newOtp = otp.split("");
-        newOtp[index - 1] = "";
-        setOtp(newOtp.join(""));
-      }
-      // If current input has value, clear it
-      else if (otp[index]) {
-        const newOtp = otp.split("");
+      } else if (otp[index]) {
         newOtp[index] = "";
         setOtp(newOtp.join(""));
       }
     }
   };
 
-  // Handle paste event for OTP
   const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pastedData = e.clipboardData
@@ -201,11 +158,19 @@ export default function ApplyNowPage() {
       .slice(0, 6);
     if (pastedData.length === 6) {
       setOtp(pastedData);
-      // Auto-submit after paste
       setTimeout(() => handleOtpSubmit(), 100);
     }
   };
 
+  const handleMobileKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && mobile.length === 10) handleMobileSubmit();
+  };
+
+  const handleOtpKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && otp.length === 6) handleOtpSubmit();
+  };
+
+  // --- Render UI ---
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-100 flex items-center justify-center px-4 py-12">
       <div className="bg-white shadow-2xl rounded-3xl w-full max-w-5xl overflow-hidden grid md:grid-cols-2">
@@ -224,7 +189,6 @@ export default function ApplyNowPage() {
           <p className="text-lg mb-8 text-center opacity-90">
             Flexible EMIs, Instant Approvals
           </p>
-
           <div className="grid grid-cols-2 gap-4 w-full max-w-xs">
             {[
               { icon: Clock, label: "Faster Approval" },
@@ -245,12 +209,12 @@ export default function ApplyNowPage() {
 
         {/* Right Section */}
         <div className="p-8 md:p-10 flex flex-col justify-center">
+          {/* --- MOBILE STEP --- */}
           {step === "mobile" && (
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">
                 Get an instant loan up to ₹1Cr with flexible EMI
               </h2>
-
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -261,8 +225,8 @@ export default function ApplyNowPage() {
                     maxLength={10}
                     value={mobile}
                     onChange={(e) => {
-                      setMobile(e.target.value.replace(/\D/g, "")); // Only allow numbers
-                      setError(""); // Clear error when user types
+                      setMobile(e.target.value.replace(/\D/g, ""));
+                      setError("");
                     }}
                     onKeyPress={handleMobileKeyPress}
                     placeholder="Enter mobile number"
@@ -272,66 +236,18 @@ export default function ApplyNowPage() {
                     <p className="text-red-500 text-sm mt-2">{error}</p>
                   )}
                 </div>
-
                 <button
                   onClick={handleMobileSubmit}
                   disabled={mobile.length !== 10 || loading}
                   className="w-full py-3 bg-teal-600 text-white rounded-xl font-semibold hover:bg-teal-700 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
                 >
-                  {loading ? (
-                    <>
-                      <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Sending OTP...
-                    </>
-                  ) : (
-                    "Apply Loan"
-                  )}
+                  {loading ? "Sending OTP..." : "Apply Loan"}
                 </button>
-
-                <div className="text-center mt-4">
-                  <p className="text-sm text-gray-600 mb-2">Download Our App</p>
-                  <div className="flex gap-3 justify-center">
-                    <a href="https://apps.apple.com" target="_blank">
-                      <Image
-                        src="/apple.png"
-                        alt="App Store"
-                        width={120}
-                        height={40}
-                      />
-                    </a>
-                    <a href="https://play.google.com" target="_blank">
-                      <Image
-                        src="/playstore.png"
-                        alt="Play Store"
-                        width={120}
-                        height={40}
-                      />
-                    </a>
-                  </div>
-                </div>
               </div>
             </>
           )}
 
+          {/* --- OTP STEP --- */}
           {step === "otp" && (
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">
@@ -350,13 +266,11 @@ export default function ApplyNowPage() {
                   Change
                 </button>
               </p>
-
               {error && (
                 <p className="text-red-500 text-sm text-center mb-4 bg-red-50 py-2 rounded-lg">
                   {error}
                 </p>
               )}
-
               <div className="flex justify-center gap-2 mb-6">
                 {[...Array(6)].map((_, i) => (
                   <input
@@ -375,60 +289,22 @@ export default function ApplyNowPage() {
                   />
                 ))}
               </div>
-
               <button
                 onClick={handleOtpSubmit}
                 disabled={otp.length !== 6 || otpLoading}
                 className="w-full py-3 bg-teal-600 text-white rounded-xl font-semibold hover:bg-teal-700 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                {otpLoading ? (
-                  <>
-                    <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Verifying...
-                  </>
-                ) : (
-                  "Confirm OTP"
-                )}
+                {otpLoading ? "Verifying..." : "Confirm OTP"}
               </button>
-
-              <p className="text-center text-sm text-gray-600 mt-4">
-                Didn't receive OTP?{" "}
-                <button
-                  onClick={handleMobileSubmit}
-                  disabled={loading}
-                  className="text-teal-600 hover:text-teal-700 font-medium disabled:text-gray-400"
-                >
-                  Resend OTP
-                </button>
-              </p>
             </>
           )}
 
+          {/* --- FORM STEP --- */}
           {step === "form" && (
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
                 Complete Your Loan Application
               </h2>
-
               {userData && (
                 <div className="mb-6 p-4 bg-teal-50 rounded-xl">
                   <p className="text-teal-700 text-sm">
@@ -437,7 +313,6 @@ export default function ApplyNowPage() {
                   </p>
                 </div>
               )}
-
               <div className="space-y-4">
                 {["name", "city", "pincode", "amount", "tenure"].map(
                   (field) => (
@@ -492,9 +367,13 @@ export default function ApplyNowPage() {
               >
                 Submit Application
               </button>
+              {error && (
+                <p className="text-red-500 text-sm mt-2 text-center">{error}</p>
+              )}
             </>
           )}
 
+          {/* --- SUCCESS STEP --- */}
           {step === "success" && (
             <div className="text-center py-12">
               <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">

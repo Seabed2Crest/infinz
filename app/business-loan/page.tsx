@@ -203,22 +203,17 @@ function BusinessLoanCalculator() {
             {/* Loan Amount */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-2">
-                Loan Amount:
+                Loan Amount (₹)
               </label>
-              <div className="flex items-center gap-4 mb-2">
-                <input
-                  type="number"
-                  value={loanAmount}
-                  min={50000}
-                  max={5000000}
-                  step={10000}
-                  onChange={(e) => setLoanAmount(Number(e.target.value))}
-                  className="w-32 p-2 border rounded-lg text-gray-900"
-                />
-                <span className="text-gray-900 font-semibold">
-                  ₹{loanAmount.toLocaleString()}
-                </span>
-              </div>
+              <input
+                type="number"
+                value={loanAmount}
+                min={50000}
+                max={5000000}
+                step={10000}
+                onChange={(e) => setLoanAmount(Number(e.target.value))}
+                className="w-40 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={50000}
@@ -237,22 +232,17 @@ function BusinessLoanCalculator() {
             {/* Interest Rate */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-2">
-                Interest Rate (% p.a.):
+                Interest Rate (% p.a.)
               </label>
-              <div className="flex items-center gap-4 mb-2">
-                <input
-                  type="number"
-                  value={interestRate}
-                  min={13}
-                  max={33}
-                  step={0.1}
-                  onChange={(e) => setInterestRate(Number(e.target.value))}
-                  className="w-24 p-2 border rounded-lg text-gray-900"
-                />
-                <span className="text-gray-900 font-semibold">
-                  {interestRate}%
-                </span>
-              </div>
+              <input
+                type="number"
+                value={interestRate}
+                min={13}
+                max={33}
+                step={0.1}
+                onChange={(e) => setInterestRate(Number(e.target.value))}
+                className="w-28 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={13}
@@ -271,22 +261,17 @@ function BusinessLoanCalculator() {
             {/* EMI Tenure */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-2">
-                EMI Tenure (Months):
+                EMI Tenure (Months)
               </label>
-              <div className="flex items-center gap-4 mb-2">
-                <input
-                  type="number"
-                  value={tenure}
-                  min={12}
-                  max={60}
-                  step={1}
-                  onChange={(e) => setTenure(Number(e.target.value))}
-                  className="w-20 p-2 border rounded-lg text-gray-900"
-                />
-                <span className="text-gray-900 font-semibold">
-                  {tenure} Months
-                </span>
-              </div>
+              <input
+                type="number"
+                value={tenure}
+                min={12}
+                max={60}
+                step={1}
+                onChange={(e) => setTenure(Number(e.target.value))}
+                className="w-24 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={12}
@@ -302,13 +287,28 @@ function BusinessLoanCalculator() {
               </div>
             </div>
 
-            {/* Apply Now Button */}
-            <Link
-              href="/apply_now"
-              className="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
-            >
-              Apply Now
-            </Link>
+            {/* Apply Now Button - Centered in the middle column */}
+            <div className="flex justify-center items-center">
+              <Link
+                href="/apply_now"
+                className="bg-teal-600 text-white py-4 px-12 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+              >
+                Apply Now
+                <svg
+                  className="w-5 h-5 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
+                </svg>
+              </Link>
+            </div>
           </div>
 
           {/* Loan Breakdown */}
@@ -436,31 +436,30 @@ function FeaturesSection() {
 function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
   const steps = [
     {
-      title: "Register with Mobile Number",
-      description:
-        "Enter and verify your mobile number to sign up for the loan process",
+      title: "Registered with Mobile Number",
+      description: "Enter and verify your mobile number to sign up.",
     },
     {
       title: "Verify Personal Details",
       description:
-        "Submit your basic information like name, date of birth, and PAN card",
+        "Submit your basic information, such as name, date of birth, and PAN card.",
     },
     {
-      title: "Enter Employment Details",
+      title: "Enter Business Details",
       description:
-        "Provide your income details so we can assess your loan eligibility",
+        "Provide your yearly turnover and ITR details to assess your loan eligibility.",
     },
     {
-      title: "Choose Loan Amount & Tenure",
+      title: "Choose Desired Loan Amount & EMI Tenure",
       description:
-        "Select how much you want to borrow and set your repayment period",
+        "Select how much you want to borrow and set a repayment period.",
     },
     {
-      title: "Confirm Bank Details & Receive Loan",
-      description:
-        "Add your bank account and get the approved loan credited in 3 days",
+      title: "Confirm Bank Details & Receive Loan Amount in 3 Days",
+      description: "Add your bank account and get the approved loan credited.",
     },
   ];
+
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50">

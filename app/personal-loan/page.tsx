@@ -127,14 +127,17 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
       console.log("Response keys:", response ? Object.keys(response) : "null");
 
       // ✅ Enhanced success check - handle different response structures
+      // Use type assertion to handle unknown response structure
+      const responseData = response as any;
+
       const isSuccess =
-        response &&
-        (response._id || // MongoDB style
-          response._id || // Alternative ID field
-          response.success === true || // Success flag
-          response.status === "success" || // Status field
-          response.data?.id || // Nested data
-          response.message?.includes("success")); // Success message
+        responseData &&
+        (responseData._id || // MongoDB style
+          responseData.id || // Alternative ID field
+          responseData.success === true || // Success flag
+          responseData.status === "success" || // Status field
+          responseData.data?.id || // Nested data
+          responseData.message?.includes("success")); // Success message
 
       if (isSuccess) {
         console.log("✅ Loan submission successful");
@@ -164,9 +167,10 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
             "We're experiencing technical issues. Please try again in a few moments."
           );
         } else {
-          // Check for error messages in response
+          // Check for error messages in response with type assertion
+          const errorData = response as any;
           const errorMessage =
-            response?.message || response?.error || "Please try again.";
+            errorData?.message || errorData?.error || "Please try again.";
           alert(`Submission issue: ${errorMessage}`);
         }
       }
@@ -211,8 +215,9 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
 
     console.log("🧪 Testing API with:", testData);
     try {
-      const response = await PersonalLoanService.createPersonalLoan(testData) as any;
-      // console.log("✅ Test API Success - Full response:", response);
+      const response = await PersonalLoanService.createPersonalLoan(testData);
+      // Use type assertion for debugging
+      const responseData = response as any;
 
       // Analyze response structure
       console.log("🔍 Response analysis:");
@@ -222,11 +227,11 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
         " - Keys:",
         response ? Object.keys(response) : "null/undefined"
       );
-      console.log(" - Has _id:", response?._id);
-      console.log(" - Has id:", response?.id);
-      console.log(" - Has success:", response?.success);
-      console.log(" - Has status:", response?.status);
-      console.log(" - Has message:", response?.message);
+      console.log(" - Has _id:", responseData?._id);
+      console.log(" - Has id:", responseData?.id);
+      console.log(" - Has success:", responseData?.success);
+      console.log(" - Has status:", responseData?.status);
+      console.log(" - Has message:", responseData?.message);
 
       return response;
     } catch (error) {
@@ -481,22 +486,17 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             {/* Loan Amount */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-2">
-                Loan Amount:
+                Loan Amount (₹)
               </label>
-              <div className="flex items-center gap-4 mb-2">
-                <input
-                  type="number"
-                  value={loanAmount}
-                  min={12000}
-                  max={10000000}
-                  step={1000}
-                  onChange={(e) => setLoanAmount(Number(e.target.value))}
-                  className="w-32 p-2 border rounded-lg text-gray-900"
-                />
-                <span className="text-gray-900 font-semibold">
-                  ₹{loanAmount.toLocaleString()}
-                </span>
-              </div>
+              <input
+                type="number"
+                value={loanAmount}
+                min={12000}
+                max={10000000}
+                step={1000}
+                onChange={(e) => setLoanAmount(Number(e.target.value))}
+                className="w-40 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={12000}
@@ -515,22 +515,17 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             {/* Interest Rate */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-2">
-                Interest Rate (% p.a.):
+                Interest Rate (% p.a.)
               </label>
-              <div className="flex items-center gap-4 mb-2">
-                <input
-                  type="number"
-                  value={interestRate}
-                  min={9.99}
-                  max={28}
-                  step={0.1}
-                  onChange={(e) => setInterestRate(Number(e.target.value))}
-                  className="w-24 p-2 border rounded-lg text-gray-900"
-                />
-                <span className="text-gray-900 font-semibold">
-                  {interestRate}%
-                </span>
-              </div>
+              <input
+                type="number"
+                value={interestRate}
+                min={9.99}
+                max={28}
+                step={0.1}
+                onChange={(e) => setInterestRate(Number(e.target.value))}
+                className="w-28 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={9.99}
@@ -549,22 +544,17 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             {/* EMI Tenure */}
             <div>
               <label className="block text-lg font-semibold text-gray-900 mb-2">
-                EMI Tenure (Months):
+                EMI Tenure (Months)
               </label>
-              <div className="flex items-center gap-4 mb-2">
-                <input
-                  type="number"
-                  value={tenure}
-                  min={12}
-                  max={84}
-                  step={1}
-                  onChange={(e) => setTenure(Number(e.target.value))}
-                  className="w-20 p-2 border rounded-lg text-gray-900"
-                />
-                <span className="text-gray-900 font-semibold">
-                  {tenure} Months
-                </span>
-              </div>
+              <input
+                type="number"
+                value={tenure}
+                min={12}
+                max={84}
+                step={1}
+                onChange={(e) => setTenure(Number(e.target.value))}
+                className="w-24 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={12}

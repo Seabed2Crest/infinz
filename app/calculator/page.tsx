@@ -210,9 +210,9 @@ function LoanEligibilityCalculator({
                     </label>
                     <input
                       type="range"
-                      min={100000}
-                      max={10000000}
-                      step={100000}
+                      min={200000} // 2 Lakh
+                      max={50000000} // 5 Crore
+                      step={100000} // 1 Lakh step
                       value={businessYearlyTurnover}
                       onChange={(e) =>
                         setBusinessYearlyTurnover(Number(e.target.value))
@@ -220,8 +220,8 @@ function LoanEligibilityCalculator({
                       className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
                     />
                     <div className="flex justify-between text-xs text-gray-500 mt-2">
-                      <span>₹1L</span>
-                      <span>₹1Cr</span>
+                      <span>₹2L</span>
+                      <span>₹5Cr</span>
                     </div>
                   </div>
 
@@ -234,7 +234,7 @@ function LoanEligibilityCalculator({
                     <input
                       type="range"
                       min={50000}
-                      max={2000000}
+                      max={40000000}
                       step={50000}
                       value={businessMonthlyRevenue}
                       onChange={(e) =>
@@ -244,7 +244,7 @@ function LoanEligibilityCalculator({
                     />
                     <div className="flex justify-between text-xs text-gray-500 mt-2">
                       <span>₹50K</span>
-                      <span>₹20L</span>
+                      <span>₹4Cr</span>
                     </div>
                   </div>
 
@@ -310,12 +310,12 @@ function LoanEligibilityCalculator({
               </div>
 
               {/* Apply Button */}
-              <button
-                onClick={onOpenModal}
-                className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg"
+              <Link
+                href="/apply_now"
+                className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 Apply for Loan
-              </button>
+              </Link>
 
               {/* Additional Info */}
               <div className="text-center text-sm text-teal-200">
@@ -451,9 +451,18 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
           <div className="space-y-8">
             {/* Loan Amount */}
             <div>
-              <label className="block text-lg font-semibold text-gray-900 mb-4">
-                Loan Amount: ₹{loanAmount.toLocaleString()}
+              <label className="block text-lg font-semibold text-gray-900 mb-2">
+                Loan Amount (₹)
               </label>
+              <input
+                type="number"
+                value={loanAmount}
+                min={params.minAmount}
+                max={params.maxAmount}
+                step={1000}
+                onChange={(e) => setLoanAmount(Number(e.target.value))}
+                className="w-48 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={params.minAmount}
@@ -463,7 +472,7 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
                 onChange={(e) => setLoanAmount(Number(e.target.value))}
                 className="w-full h-2 bg-teal-200 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>₹{params.minAmount.toLocaleString()}</span>
                 <span>₹{params.maxAmount.toLocaleString()}</span>
               </div>
@@ -471,19 +480,28 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
 
             {/* Interest Rate */}
             <div>
-              <label className="block text-lg font-semibold text-gray-900 mb-4">
-                Interest Rate: {interestRate}% p.a.
+              <label className="block text-lg font-semibold text-gray-900 mb-2">
+                Interest Rate (% p.a.)
               </label>
+              <input
+                type="number"
+                value={interestRate}
+                min={params.minRate}
+                max={params.maxRate}
+                step={0.1}
+                onChange={(e) => setInterestRate(Number(e.target.value))}
+                className="w-32 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={params.minRate}
                 max={params.maxRate}
-                step={0.01}
+                step={0.1}
                 value={interestRate}
                 onChange={(e) => setInterestRate(Number(e.target.value))}
                 className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>{params.minRate}%</span>
                 <span>{params.maxRate}%</span>
               </div>
@@ -491,29 +509,38 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
 
             {/* Tenure */}
             <div>
-              <label className="block text-lg font-semibold text-gray-900 mb-4">
-                EMI Tenure: {tenure} Months
+              <label className="block text-lg font-semibold text-gray-900 mb-2">
+                EMI Tenure (Months)
               </label>
+              <input
+                type="number"
+                value={tenure}
+                min={params.minTenure}
+                max={params.maxTenure}
+                step={1}
+                onChange={(e) => setTenure(Number(e.target.value))}
+                className="w-28 p-2 border rounded-lg text-gray-900 font-semibold mb-3"
+              />
               <input
                 type="range"
                 min={params.minTenure}
                 max={params.maxTenure}
-                step={6}
+                step={1}
                 value={tenure}
                 onChange={(e) => setTenure(Number(e.target.value))}
                 className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
+              <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>{params.minTenure} Months</span>
                 <span>{params.maxTenure} Months</span>
               </div>
             </div>
 
             {/* Apply Button */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex justify-center items-center">
               <Link
                 href="/apply_now"
-                className="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+                className="bg-teal-600 text-white py-4 px-12 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 Apply Now
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -581,17 +608,23 @@ function EligibilityCalculatorInfo() {
               What is an Eligibility Calculator?
             </h2>
             <p className="text-gray-600 mb-6">
-              This is an online tool that helps you determine the amount you are
-              eligible to borrow based on your financial profile including
-              income, expenses, credit score, and employment status.
+              An eligibility calculator is an online tool that helps individuals
+              and businesses assess their qualification for a loan before
+              applying. By entering key financial details such as income,
+              employment history, existing debts, business turnover, or loan
+              tenure, users can estimate the amount they are likely to be
+              eligible to borrow.
             </p>
             <p className="text-gray-600 mb-8">
-              The loan eligibility check process gives you a clear idea of which
-              loan offers fit your profile, helping you make informed borrowing
-              decisions without affecting your credit score.
+              This quick and convenient assessment helps borrowers plan
+              effectively, avoid rejections, and choose suitable loan options
+              with confidence. Eligibility calculators for personal or business
+              loans also highlight benefits like competitive interest rates,
+              flexible loan amounts, and seamless processing, enabling better
+              financial decision-making.
             </p>
 
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <TrendingUp className="h-5 w-5 text-teal-600 mt-1 flex-shrink-0" />
                 <div>
@@ -625,59 +658,75 @@ function EligibilityCalculatorInfo() {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
-          {/* Right Content - Calculator Parameters */}
-          <div className="bg-gray-50 rounded-2xl p-8">
+          {/* Right Content - Eligibility Highlights */}
+          <div className="bg-gradient-to-br from-teal-50 to-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <h3 className="text-xl font-bold text-gray-900 mb-6">
-              Calculator Parameters
+              Why Use an Eligibility Calculator?
             </h3>
 
-            <div className="space-y-6">
-              {/* Personal Loan Parameters */}
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  Personal Loan
-                </h4>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex justify-between">
-                    <span>Loan Amount Range:</span>
-                    <span className="font-medium">₹12,000 - ₹1 Cr</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Interest Rate:</span>
-                    <span className="font-medium">9.99% - 28%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>EMI Tenure:</span>
-                    <span className="font-medium">12 - 84 Months</span>
-                  </div>
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="flex items-start gap-3">
+                <TrendingUp className="h-6 w-6 text-teal-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold text-gray-900">
+                    Financial Clarity
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    Understand exactly how much you can borrow — before
+                    applying.
+                  </p>
                 </div>
               </div>
 
-              {/* Business Loan Parameters */}
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Briefcase className="h-4 w-4" />
-                  Business Loan
-                </h4>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex justify-between">
-                    <span>Loan Amount Range:</span>
-                    <span className="font-medium">₹50,000 - ₹50 L</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Interest Rate:</span>
-                    <span className="font-medium">13% - 33%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>EMI Tenure:</span>
-                    <span className="font-medium">12 - 60 Months</span>
-                  </div>
+              <div className="flex items-start gap-3">
+                <User className="h-6 w-6 text-teal-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold text-gray-900">
+                    Personalized Insights
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    Tailored eligibility results based on your income and credit
+                    score.
+                  </p>
                 </div>
               </div>
+
+              <div className="flex items-start gap-3">
+                <Briefcase className="h-6 w-6 text-teal-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold text-gray-900">
+                    Business Evaluation
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    Get business loan insights based on turnover and monthly
+                    revenue.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Info className="h-6 w-6 text-teal-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold text-gray-900">
+                    Instant Results
+                  </h4>
+                  <p className="text-gray-600 text-sm">
+                    No waiting, no paperwork — see your eligibility within
+                    seconds.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 p-4 bg-white border border-gray-100 rounded-xl">
+              <p className="text-gray-700 text-sm leading-relaxed">
+                💡 <span className="font-semibold">Pro Tip:</span> Knowing your
+                eligibility beforehand boosts your approval chances and helps
+                you apply smarter.
+              </p>
             </div>
           </div>
         </div>
@@ -765,20 +814,20 @@ function EMICalculatorInfo() {
         </p>
         <ul className="list-disc list-inside text-gray-600 space-y-2 mb-8">
           <li>
-            Enter the Loan Amount: Specify the principal amount you intend to
-            borrow.
+            <b> Enter the Loan Amount: </b>Specify the principal amount you
+            intend to borrow.
           </li>
           <li>
-            Input the Interest Rate: Provide the annual interest rate offered by
-            the lender.
+            <b>Input the Interest Rate:</b> Provide the annual interest rate
+            offered by the lender.
           </li>
           <li>
-            Select the Loan Tenure: Specify the loan tenure (duration) in
-            months.
+            <b> Select the Loan Tenure:</b> Specify the loan tenure (duration)
+            in months.
           </li>
           <li>
-            Calculate: Click the calculate button to instantly get your monthly
-            EMI amount.
+            <b> Calculate:</b> Click the calculate button to instantly get your
+            monthly EMI amount.
           </li>
         </ul>
 
@@ -805,28 +854,28 @@ function EMICalculatorInfo() {
         </h2>
         <ul className="list-disc list-inside text-gray-600 space-y-2 mb-8">
           <li>
-            Instant Calculations: Provides quick and accurate EMI figures in
-            real time, eliminating manual errors.
+            <b>Instant Calculations:</b> Provides quick and accurate EMI figures
+            in real time, eliminating manual errors.
           </li>
           <li>
-            Effective Budget Planning: Helps borrowers manage monthly cash flows
-            effectively.
+            <b>Effective Budget Planning:</b> Helps borrowers manage monthly
+            cash flows effectively.
           </li>
           <li>
-            Loan Comparison: Enables comparison of loans with different rates,
-            tenures, and amounts.
+            <b>Loan Comparison:</b> Enables comparison of loans with different
+            rates, tenures, and amounts.
           </li>
           <li>
-            Improved Decision-Making: Visualizes financial impact for informed
-            choices.
+            <b>Improved Decision-Making:</b> Visualizes financial impact for
+            informed choices.
           </li>
           <li>
-            Transparency on Costs: Breaks down repayment into principal and
-            interest over time.
+            <b>Transparency on Costs: </b>Breaks down repayment into principal
+            and interest over time.
           </li>
           <li>
-            Flexibility to Experiment: Modify inputs to see how EMI changes with
-            rate or tenure adjustments.
+            <b>Flexibility to Experiment:</b> Modify inputs to see how EMI
+            changes with rate or tenure adjustments.
           </li>
         </ul>
 
@@ -834,31 +883,36 @@ function EMICalculatorInfo() {
           Factors to Consider While Calculating EMIs
         </h2>
         <ul className="list-disc list-inside text-gray-600 space-y-2">
-          <li>Loan Amount: Higher loans increase EMI and total repayment.</li>
           <li>
-            Interest Rate: Fixed or floating rates impact monthly and total
-            payments.
+            <b>Loan Amount:</b> Higher loans increase EMI and total repayment.
           </li>
           <li>
-            Loan Tenure: Longer tenure lowers monthly EMI but increases total
+            <b>Interest Rate:</b> Fixed or floating rates impact monthly and
+            total payments.
+          </li>
+          <li>
+            <b> Loan Tenure: </b>Longer tenure lowers monthly EMI but increases
+            total interest.
+          </li>
+          <li>
+            <b>Processing Fees:</b> Some lenders add fees upfront or include
+            them in EMI.
+          </li>
+          <li>
+            <b>Prepayment:</b> Early repayment can reduce principal and
             interest.
           </li>
           <li>
-            Processing Fees: Some lenders add fees upfront or include them in
-            EMI.
+            <b>Repayment Schedule: </b> Monthly or quarterly affects cash flow
+            planning.
           </li>
           <li>
-            Prepayment: Early repayment can reduce principal and interest.
+            <b>Lender's Policies:</b> Interest compounding, penalties, and
+            schedules vary.
           </li>
           <li>
-            Repayment Schedule: Monthly or quarterly affects cash flow planning.
-          </li>
-          <li>
-            Lender's Policies: Interest compounding, penalties, and schedules
-            vary.
-          </li>
-          <li>
-            Credit Score: Better credit scores may secure lower interest rates.
+            <b>Credit Score:</b> Better credit scores may secure lower interest
+            rates.
           </li>
         </ul>
       </div>

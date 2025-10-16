@@ -298,55 +298,67 @@ function Testimonials({ onOpenModal }: TestimonialsProps) {
   };
 
   return (
-    <section id="testimonials" className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+    <section
+      id="testimonials"
+      className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden"
+    >
       {/* Background Decorations */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-purple-500 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div ref={elementRef} className="text-center mb-16">
-          <h2 className={`text-4xl md:text-5xl font-bold text-gray-900 mb-6 transform transition-all duration-1000 ${
-            isInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
+          <h2
+            className={`text-4xl md:text-5xl font-bold text-gray-900 mb-6 transform transition-all duration-1000 ${
+              isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
+          >
             What Our <span className="text-teal-600">Customers</span> Say
           </h2>
-          <p className={`text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed transform transition-all duration-1000 ${
-            isInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}
-          style={{ transitionDelay: '200ms' }}
+          <p
+            className={`text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed transform transition-all duration-1000 ${
+              isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
+            style={{ transitionDelay: "200ms" }}
           >
-            Real people, real savings. See how Infinz helped our customers find better loan deals and achieve their financial goals
+            Real people, real savings. See how Infinz helped our customers find
+            better loan deals and achieve their financial goals
           </p>
         </div>
 
         {/* Navigation Buttons */}
         <div className="flex justify-center gap-4 mb-8">
           <button
-            onClick={() => scroll('left')}
+            onClick={() => scroll("left")}
             disabled={!canScrollLeft}
             className={`
               w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200
               flex items-center justify-center transition-all duration-300
-              ${canScrollLeft 
-                ? 'hover:bg-teal-50 hover:border-teal-200 text-gray-700 hover:text-teal-600' 
-                : 'text-gray-300 cursor-not-allowed'
+              ${
+                canScrollLeft
+                  ? "hover:bg-teal-50 hover:border-teal-200 text-gray-700 hover:text-teal-600"
+                  : "text-gray-300 cursor-not-allowed"
               }
             `}
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button
-            onClick={() => scroll('right')}
+            onClick={() => scroll("right")}
             disabled={!canScrollRight}
             className={`
               w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200
               flex items-center justify-center transition-all duration-300
-              ${canScrollRight 
-                ? 'hover:bg-teal-50 hover:border-teal-200 text-gray-700 hover:text-teal-600' 
-                : 'text-gray-300 cursor-not-allowed'
+              ${
+                canScrollRight
+                  ? "hover:bg-teal-50 hover:border-teal-200 text-gray-700 hover:text-teal-600"
+                  : "text-gray-300 cursor-not-allowed"
               }
             `}
           >
@@ -364,16 +376,16 @@ function Testimonials({ onOpenModal }: TestimonialsProps) {
           <div
             ref={scrollRef}
             className="flex gap-8 overflow-x-auto scrollbar-hide pb-4"
-            style={{ 
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              scrollBehavior: 'smooth'
+            style={{
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              scrollBehavior: "smooth",
             }}
           >
             {testimonials.map((testimonial, index) => (
-              <TestimonialCard 
-                key={testimonial.id} 
-                testimonial={testimonial} 
+              <TestimonialCard
+                key={testimonial.id}
+                testimonial={testimonial}
                 index={index}
                 isVisible={isInView}
               />
@@ -382,10 +394,11 @@ function Testimonials({ onOpenModal }: TestimonialsProps) {
         </div>
 
         {/* Bottom Stats */}
-        <div className={`mt-16 text-center transform transition-all duration-1000 ${
-          isInView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-        }`}
-        style={{ transitionDelay: '800ms' }}
+        <div
+          className={`mt-16 text-center transform transition-all duration-1000 ${
+            isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+          style={{ transitionDelay: "800ms" }}
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             <div>
@@ -397,8 +410,10 @@ function Testimonials({ onOpenModal }: TestimonialsProps) {
               <div className="text-gray-600">Average Rating</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-green-600 mb-2">₹500Cr+</div>
-              <div className="text-gray-600">Total Savings</div>
+              <div className="text-3xl font-bold text-green-600 mb-2">
+                ₹500Cr+
+              </div>
+              <div className="text-gray-600">Total Disbursements</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-purple-600 mb-2">98%</div>
