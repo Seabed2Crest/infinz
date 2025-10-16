@@ -113,6 +113,24 @@ function BusinessLoanHero() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                  EMI Tenure
+                </label>
+                <select
+                  // value={tenure}
+                  // onChange={(e) => setTenure(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select Tenure</option>
+                  <option value="6 Months">6 Months</option>
+                  <option value="12 Months">12 Months (1 Year)</option>
+                  <option value="24 Months">24 Months (2 Years)</option>
+                  <option value="36 Months">36 Months (3 Years)</option>
+                  <option value="48 Months">48 Months (4 Years)</option>
+                  <option value="60 Months">60 Months (5 Years)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Loan Amount Required
                 </label>
                 <select
@@ -154,7 +172,7 @@ function BusinessLoanHero() {
                 disabled={loading}
                 className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? "Submitting..." : "Get Instant Quote"}
+                {loading ? "Submitting..." : "Get Instant Loan"}
               </button>
             </div>
 
@@ -459,7 +477,6 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
       description: "Add your bank account and get the approved loan credited.",
     },
   ];
-
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50">

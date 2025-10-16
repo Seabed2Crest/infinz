@@ -11,12 +11,7 @@ const lenders = [
   { id: 5, name: "Kotak Bank", logo: "/logos/kotak.png", color: "purple" },
   { id: 6, name: "SBI Bank", logo: "/logos/SBI.webp", color: "blue" },
   { id: 7, name: "YES Bank", logo: "/logos/YES.png", color: "teal" },
-  {
-    id: 8,
-    name: "IndusInd Bank",
-    logo: "/logos/IndusInd.png",
-    color: "indigo",
-  },
+  { id: 8, name: "IndusInd Bank", logo: "/logos/IndusInd.png", color: "indigo" },
   { id: 9, name: "IDFC First", logo: "/logos/IDFC.png", color: "pink" },
   { id: 10, name: "Tata Capital", logo: "/logos/Tata.png", color: "yellow" },
 ];
@@ -61,10 +56,10 @@ function LenderCard({ lender, index }: { lender: any; index: number }) {
       {/* Content */}
       <div className="relative z-10">
         <div className="flex items-center gap-4 mb-4">
+          {/* Removed colored background behind logo */}
           <div
             className={`
-              w-16 h-16 rounded-xl bg-gradient-to-br ${colorClass} 
-              flex items-center justify-center shadow-lg
+              w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow-lg
               transform transition-all duration-300
               ${isHovered ? "scale-110 rotate-6" : ""}
             `}
@@ -73,7 +68,7 @@ function LenderCard({ lender, index }: { lender: any; index: number }) {
               src={!imgError ? lender.logo : "/logos/default.png"}
               alt={`${lender.name} logo`}
               onError={() => setImgError(true)}
-              className="w-12 h-12 object-contain rounded-lg"
+              className="w-12 h-12 object-contain"
             />
           </div>
           <div>
@@ -118,35 +113,47 @@ function OurLenders({ onOpenModal }: OurLendersProps) {
     return () => observer.disconnect();
   }, []);
 
-  // Auto-scroll effect
-  useEffect(() => {
+  // Auto-scroll effect (slower)
+useEffect(() => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
 
     let scrollPosition = 0;
-    const scrollSpeed = 1;
+    const scrollSpeed = 0.6; // ⬅️ reduced speed (was 1)
     const cardWidth = 320;
     const totalWidth = lenders.length * cardWidth;
+    let animation: number;
+    let isScrolling = false;
 
     const scroll = () => {
+      if (!isScrolling) return;
       scrollPosition += scrollSpeed;
       if (scrollPosition >= totalWidth) scrollPosition = 0;
-      scrollContainer.scrollLeft = scrollPosition;
-      requestAnimationFrame(scroll);
+      if (scrollContainer) scrollContainer.scrollLeft = scrollPosition;
+      animation = requestAnimationFrame(scroll);
     };
 
-    let animation = requestAnimationFrame(scroll);
+    const startScrolling = () => {
+      if (!isScrolling) {
+        isScrolling = true;
+        animation = requestAnimationFrame(scroll);
+      }
+    };
 
-    const handleMouseEnter = () => cancelAnimationFrame(animation);
-    const handleMouseLeave = () => (animation = requestAnimationFrame(scroll));
+    const stopScrolling = () => {
+      isScrolling = false;
+      if (animation) cancelAnimationFrame(animation);
+    };
 
-    scrollContainer.addEventListener("mouseenter", handleMouseEnter);
-    scrollContainer.addEventListener("mouseleave", handleMouseLeave);
+    startScrolling();
+
+    scrollContainer.addEventListener("mouseenter", stopScrolling);
+    scrollContainer.addEventListener("mouseleave", startScrolling);
 
     return () => {
-      cancelAnimationFrame(animation);
-      scrollContainer.removeEventListener("mouseenter", handleMouseEnter);
-      scrollContainer.removeEventListener("mouseleave", handleMouseLeave);
+      stopScrolling();
+      scrollContainer.removeEventListener("mouseenter", stopScrolling);
+      scrollContainer.removeEventListener("mouseleave", startScrolling);
     };
   }, []);
 

@@ -601,7 +601,7 @@ function EligibilityCalculatorInfo() {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-1 gap-12 items-center">
           {/* Left Content */}
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
@@ -662,7 +662,7 @@ function EligibilityCalculatorInfo() {
           </div>
 
           {/* Right Content - Eligibility Highlights */}
-          <div className="bg-gradient-to-br from-teal-50 to-white rounded-2xl p-8 shadow-sm border border-gray-100">
+          {/* <div className="bg-gradient-to-br from-teal-50 to-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <h3 className="text-xl font-bold text-gray-900 mb-6">
               Why Use an Eligibility Calculator?
             </h3>
@@ -728,7 +728,7 @@ function EligibilityCalculatorInfo() {
                 you apply smarter.
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

@@ -16,8 +16,6 @@ import {
   MessageCircle,
   Clock
 } from "lucide-react";
-import LoanApplicationModal from "../components/LoanApplicationModal";
-import LeadFormModal from "../components/LeadFormModal";
 
 // Hero Section
 function ContactHero() {
@@ -39,7 +37,7 @@ function ContactHero() {
 }
 
 // Contact Information Section
-function ContactInfo({ onOpenModal }: { onOpenModal: () => void }) {
+function ContactInfo({ onOpenModal }) {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -92,6 +90,20 @@ function ContactInfo({ onOpenModal }: { onOpenModal: () => void }) {
                       <p className="text-gray-600">www.infinz.com</p>
                     </div>
                   </div>
+
+                   {/* Google Maps Embed */}
+                <div className="mb-6 rounded-xl overflow-hidden shadow-lg">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.5448892!2d77.5516!3d12.9996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU5JzU4LjYiTiA3N8KwMzMnMDUuOCJF!5e0!3m2!1sen!2sin!4v1234567890"
+                    width="100%"
+                    height="250"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Office Location"
+                  />
+                </div>
                 </div>
               </div>
             </div>
@@ -167,6 +179,7 @@ function ContactInfo({ onOpenModal }: { onOpenModal: () => void }) {
                 
                 <button
                   onClick={onOpenModal}
+                  type="button"
                   className="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center justify-center"
                 >
                   Submit
@@ -303,7 +316,7 @@ function ConnectWithUs() {
 }
 
 // Quick Actions Section
-function QuickActions({ onOpenModal, onOpenLeadForm }: { onOpenModal: () => void; onOpenLeadForm: () => void }) {
+function QuickActions({ onOpenModal, onOpenLeadForm }) {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -391,15 +404,36 @@ export default function ContactPage() {
         onOpenLeadForm={() => setIsLeadFormOpen(true)} 
       />
       
-      <LoanApplicationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      {/* Modal placeholders - replace with your actual modal components */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
+            <h3 className="text-2xl font-bold mb-4">Loan Application Modal</h3>
+            <p className="text-gray-600 mb-4">Replace this with your LoanApplicationModal component</p>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       
-      <LeadFormModal
-        isOpen={isLeadFormOpen}
-        onClose={() => setIsLeadFormOpen(false)}
-      />
+      {isLeadFormOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
+            <h3 className="text-2xl font-bold mb-4">Lead Form Modal</h3>
+            <p className="text-gray-600 mb-4">Replace this with your LeadFormModal component</p>
+            <button
+              onClick={() => setIsLeadFormOpen(false)}
+              className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
