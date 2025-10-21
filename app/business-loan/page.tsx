@@ -50,7 +50,7 @@ function BusinessLoanHero() {
   };
 
   return (
-    <section className="bg-gradient-to-br from-teal-50 via-white to-teal-50 py-16">
+    <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
@@ -58,7 +58,7 @@ function BusinessLoanHero() {
             <div className="space-y-6">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                 Fuel Your Business Growth with{" "}
-                <span className="text-teal-600">Instant Business Loans</span>
+                <span className="text-blue-600">Instant Business Loans</span>
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed">
                 Get up to ₹1 crore business funding at competitive rates
@@ -163,14 +163,14 @@ function BusinessLoanHero() {
                       setMobileNumber(value);
                     }
                   }}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Submitting..." : "Get Instant Loan"}
               </button>
@@ -239,7 +239,7 @@ function BusinessLoanCalculator() {
                 step={10000}
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(Number(e.target.value))}
-                className="w-full h-2 bg-teal-200 rounded-lg appearance-none cursor-pointer slider"
+                className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>₹50K</span>
@@ -309,22 +309,9 @@ function BusinessLoanCalculator() {
             <div className="flex justify-center items-center">
               <Link
                 href="/apply_now"
-                className="bg-teal-600 text-white py-4 px-12 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+                className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 Apply Now
-                <svg
-                  className="w-5 h-5 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  />
-                </svg>
               </Link>
             </div>
           </div>
@@ -337,7 +324,7 @@ function BusinessLoanCalculator() {
 
             <div className="space-y-6">
               <div className="text-center">
-                <div className="text-4xl font-bold text-teal-600 mb-2">
+                <div className="text-4xl font-bold text-blue-600 mb-2">
                   ₹{calculateEMI().toLocaleString()}
                 </div>
                 <div className="text-gray-600">Monthly EMI</div>
@@ -433,8 +420,8 @@ function FeaturesSection() {
               key={index}
               className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
-              <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mb-6">
-                <feature.icon className="h-8 w-8 text-teal-600" />
+              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                <feature.icon className="h-8 w-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {feature.title}
@@ -522,7 +509,7 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
                     key={index}
                     className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-[1.02]"
                   >
-                    <CheckCircle className="h-6 w-6 text-accent flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-6 w-6 text-blue-400 flex-shrink-0 mt-0.5" />
                     <div>
                       <h5 className="text-lg font-semibold text-white mb-1">
                         {step.title}
@@ -533,17 +520,18 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
                     </div>
                   </div>
                 ))}
-
-                <div className="mt-5 text-center">
-                  <Link
-                    href="/apply_now"
-                    className="inline-block bg-teal-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
-                  >
-                    Apply Now
-                  </Link>
-                </div>
               </div>
             </div>
+          </div>
+
+          {/* Centered CTA Button */}
+          <div className="text-center mt-12">
+            <Link
+              href="/apply_now"
+              className="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+            >
+              Check Eligibility Now
+            </Link>
           </div>
 
           {/* Decorative elements */}
@@ -644,8 +632,8 @@ function DocumentsRequired() {
               key={index}
               className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
-              <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mb-4">
-                <FileText className="h-6 w-6 text-teal-600" />
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                <FileText className="h-6 w-6 text-blue-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {doc.name}
@@ -682,25 +670,26 @@ function LenderComparison() {
     { name: "Yes Bank", rate: 14.0, amount: 4000000, tenure: 3, rating: 4.3 },
   ];
 
-  const [activeFilter, setActiveFilter] = useState("Lowest Interest Rate");
+  const [activeFilter, setActiveFilter] = useState("Max Loan Amount");
   const [lenders, setLenders] = useState(lendersData);
 
+  // Changed order - Lowest Interest Rate moved to last
   const filters = [
-    "Lowest Interest Rate",
     "Max Loan Amount",
     "Min Loan Amount",
+    "Lowest Interest Rate",
   ];
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
     let sorted: typeof lendersData = [];
 
-    if (filter === "Lowest Interest Rate") {
-      sorted = [...lendersData].sort((a, b) => a.rate - b.rate);
-    } else if (filter === "Max Loan Amount") {
+    if (filter === "Max Loan Amount") {
       sorted = [...lendersData].sort((a, b) => b.amount - a.amount);
     } else if (filter === "Min Loan Amount") {
       sorted = [...lendersData].sort((a, b) => a.amount - b.amount);
+    } else if (filter === "Lowest Interest Rate") {
+      sorted = [...lendersData].sort((a, b) => a.rate - b.rate);
     }
 
     setLenders(sorted);
@@ -718,7 +707,7 @@ function LenderComparison() {
           </p>
         </div>
 
-        {/* Sort Options */}
+        {/* Sort Options - Lowest Interest Rate moved to last */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">
           {filters.map((filter) => (
             <button
@@ -726,7 +715,7 @@ function LenderComparison() {
               onClick={() => handleFilterClick(filter)}
               className={`px-6 py-2 rounded-lg font-medium transition-colors duration-200 ${
                 activeFilter === filter
-                  ? "bg-teal-600 text-white"
+                  ? "bg-blue-600 text-white"
                   : "border border-gray-300 text-gray-700 hover:bg-gray-50"
               }`}
             >

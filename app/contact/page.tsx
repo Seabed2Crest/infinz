@@ -20,7 +20,7 @@ import {
 // Hero Section
 function ContactHero() {
   return (
-    <section className="bg-gradient-to-br from-teal-50 via-white to-teal-50 py-16">
+    <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 animate-slide-up">
@@ -61,7 +61,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-4">
-                    <MapPin className="w-6 h-6 text-teal-600 mt-1 flex-shrink-0" />
+                    <MapPin className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" />
                     <div>
                       <p className="text-gray-900 font-semibold mb-1">
                         Address
@@ -77,7 +77,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <Phone className="w-6 h-6 text-teal-600 flex-shrink-0" />
+                    <Phone className="w-6 h-6 text-blue-600 flex-shrink-0" />
                     <div>
                       <p className="text-gray-900 font-semibold mb-1">Phone</p>
                       <p className="text-gray-600">06366158631</p>
@@ -85,7 +85,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <Mail className="w-6 h-6 text-teal-600 flex-shrink-0" />
+                    <Mail className="w-6 h-6 text-blue-600 flex-shrink-0" />
                     <div>
                       <p className="text-gray-900 font-semibold mb-1">Email</p>
                       <p className="text-gray-600">support@infinz.com</p>
@@ -93,7 +93,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <Globe className="w-6 h-6 text-teal-600 flex-shrink-0" />
+                    <Globe className="w-6 h-6 text-blue-600 flex-shrink-0" />
                     <div>
                       <p className="text-gray-900 font-semibold mb-1">
                         Website
@@ -122,7 +122,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
 
           {/* Contact Form */}
           <div className="animate-slide-right">
-            <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl p-8">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Get Expert Advice - Free Consultation
               </h3>
@@ -135,7 +135,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -147,7 +147,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                   <input
                     type="tel"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="Enter your mobile number"
                   />
                 </div>
@@ -159,7 +159,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                   <input
                     type="email"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="Enter your email address"
                   />
                 </div>
@@ -171,7 +171,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="What's this about?"
                   />
                 </div>
@@ -183,7 +183,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                   <textarea
                     required
                     rows={4}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
                     placeholder="Tell us how we can help you..."
                   />
                 </div>
@@ -191,16 +191,18 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                 <button
                   onClick={onOpenModal}
                   type="button"
-                  className="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center justify-center"
+                  className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center justify-center"
                 >
                   Submit
                   <Send className="ml-2 h-5 w-5" />
                 </button>
 
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <Clock className="w-4 h-4 text-teal-600" />
+                  <Clock className="w-4 h-4 text-blue-600" />
                   <span>
+                    
                     Our team will respond within 2 hours during business hours
+                  
                   </span>
                 </div>
               </form>
@@ -352,8 +354,8 @@ function QuickActions({ onOpenModal, onOpenLeadForm }: QuickActionsProps) {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl p-8 text-center hover:shadow-lg transition-all duration-300 animate-bounce-in">
-            <div className="w-16 h-16 bg-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 text-center hover:shadow-lg transition-all duration-300 animate-bounce-in">
+            <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <MessageCircle className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-4">
@@ -364,7 +366,7 @@ function QuickActions({ onOpenModal, onOpenLeadForm }: QuickActionsProps) {
             </p>
             <button
               onClick={onOpenLeadForm}
-              className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors"
+              className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
             >
               Apply Now
             </button>
@@ -461,3 +463,4 @@ export default function ContactPage() {
     </>
   );
 }
+
