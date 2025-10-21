@@ -56,7 +56,7 @@ function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
   return (
     <section
       id="hero"
-      className="bg-gradient-to-br from-teal-50 via-white to-teal-50"
+      className="bg-gradient-to-br from-blue-50 via-white to-blue-50"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 lg:pt-12 pb-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -67,11 +67,11 @@ function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
                 {currentSlideData.title}
                 <br />
                 <span className="relative inline-block ml-2">
-                  <span className="text-teal-600">
+                  <span className="text-blue-600">
                     {" "}
                     {currentSlideData.subtitle}
                   </span>
-                  <span className="absolute left-0 right-0 -bottom-2 h-2 bg-teal-200 rounded-full"></span>
+                  <span className="absolute left-0 right-0 -bottom-2 h-2 bg-blue-200 rounded-full"></span>
                 </span>
               </h1>
               <p className="text-lg sm:text-xl text-gray-600 max-w-2xl transition-all duration-500 animate-slide-up animate-delay-200">
@@ -88,7 +88,7 @@ function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
                     router.push("/personal-loan"); // 👈 first banner (default)
                   }
                 }}
-                className="bg-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+                className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 {currentSlideData.buttonText}
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -102,7 +102,7 @@ function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
                   className="transition-all duration-500 animate-bounce-in"
                   style={{ animationDelay: `${0.5 + index * 0.1}s` }}
                 >
-                  <div className="text-2xl font-bold text-teal-700">
+                  <div className="text-2xl font-bold text-blue-700">
                     {stat.value}
                   </div>
                   <div className="text-gray-600">{stat.label}</div>
@@ -139,7 +139,7 @@ function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
                   onClick={() => setCurrentSlide(index)}
                   className={`h-2 rounded-full transition-all duration-300 ${
                     currentSlide === index
-                      ? "w-6 bg-teal-600"
+                      ? "w-6 bg-blue-600"
                       : "w-2 bg-gray-300 hover:bg-gray-400"
                   }`}
                 />

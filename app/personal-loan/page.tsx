@@ -249,7 +249,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
             <div className="space-y-6">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                 Smart Personal Loans - From Application to Approval in{" "}
-                <span className="text-teal-600">Minutes</span>
+                <span className="text-blue-600">Minutes</span>
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed">
                 Get instant approval on loans up to ₹50 lakhs with no hidden
@@ -291,7 +291,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                   name="loanPurpose"
                   value={formData.loanPurpose}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     fieldErrors.loanPurpose
                       ? "border-red-500"
                       : "border-gray-300"
@@ -322,7 +322,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                   name="monthlyIncome"
                   value={formData.monthlyIncome}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     fieldErrors.monthlyIncome
                       ? "border-red-500"
                       : "border-gray-300"
@@ -351,7 +351,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                   name="loanAmountRequired"
                   value={formData.loanAmountRequired}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     fieldErrors.loanAmountRequired
                       ? "border-red-500"
                       : "border-gray-300"
@@ -381,7 +381,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                   name="emiTenure"
                   value={formData.emiTenure}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     fieldErrors.emiTenure ? "border-red-500" : "border-gray-300"
                   }`}
                 >
@@ -413,7 +413,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
                   onChange={handleChange}
                   placeholder="Enter 10-digit mobile number"
                   maxLength={10}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     fieldErrors.mobileNumber
                       ? "border-red-500"
                       : "border-gray-300"
@@ -430,7 +430,7 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className={`w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors ${
+                className={`w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors ${
                   loading ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >
@@ -447,8 +447,6 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
     </section>
   );
 }
-
-// ... (rest of your components remain exactly the same - EMICalculator, FeaturesSection, ApplicationSteps, EligibilityCriteria, DocumentsRequired, LoanOffersSection, personalLoanFaq, and PersonalLoanPage)
 
 function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
   const [loanAmount, setLoanAmount] = useState(500000);
@@ -573,7 +571,7 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             {/* Apply Now Button */}
             <Link
               href="/apply_now"
-              className="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+              className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
             >
               Apply Now
             </Link>
@@ -587,7 +585,7 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
 
             <div className="space-y-6">
               <div className="text-center">
-                <div className="text-4xl font-bold text-teal-600 mb-2">
+                <div className="text-4xl font-bold text-blue-600 mb-2">
                   ₹{calculateEMI().toLocaleString()}
                 </div>
                 <div className="text-gray-600">Monthly EMI</div>
@@ -689,7 +687,7 @@ function FeaturesSection() {
               className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
               <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
-                <feature.icon className="h-8 w-8 text-teal-600" />
+                <feature.icon className="h-8 w-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {feature.title}
@@ -778,7 +776,7 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
                     key={index}
                     className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-[1.02]"
                   >
-                    <CheckCircle className="h-6 w-6 text-accent flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-6 w-6 text-blue-400 flex-shrink-0 mt-0.5" />
                     <div>
                       <h5 className="text-lg font-semibold text-white mb-1">
                         {step.title}
@@ -790,15 +788,17 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
                   </div>
                 ))}
               </div>
-              <div className="mt-5 text-center">
-                <Link
-                  href="/apply_now"
-                  className="inline-block bg-teal-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-teal-600 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
-                >
-                  Apply Now
-                </Link>
-              </div>
             </div>
+          </div>
+
+          {/* Centered CTA Button */}
+          <div className="text-center mt-12">
+            <Link
+              href="/apply_now"
+              className="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+            >
+              Check Eligibility Now
+            </Link>
           </div>
 
           {/* Decorative elements */}
@@ -896,7 +896,7 @@ function DocumentsRequired() {
               className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <FileText className="h-6 w-6 text-teal-600" />
+                <FileText className="h-6 w-6 text-blue-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {doc.name}
@@ -933,12 +933,7 @@ function LoanOffersSection() {
   ];
 
   const [lenders, setLenders] = useState(initialLenders);
-  const [activeFilter, setActiveFilter] = useState("rate"); // default active
-
-  const sortByLowestRate = () => {
-    setActiveFilter("rate");
-    setLenders([...lenders].sort((a, b) => a.rate - b.rate));
-  };
+  const [activeFilter, setActiveFilter] = useState("maxAmount"); // default active changed to maxAmount
 
   const sortByMaxAmount = () => {
     setActiveFilter("maxAmount");
@@ -950,11 +945,16 @@ function LoanOffersSection() {
     setLenders([...lenders].sort((a, b) => a.amount - b.amount));
   };
 
+  const sortByLowestRate = () => {
+    setActiveFilter("rate");
+    setLenders([...lenders].sort((a, b) => a.rate - b.rate));
+  };
+
   const formatAmount = (amt: number) => `₹${(amt / 100000).toFixed(0)}L`;
 
   const getButtonClasses = (filterName: string) =>
     filterName === activeFilter
-      ? "px-6 py-2 bg-teal-600 text-white rounded-lg font-medium"
+      ? "px-6 py-2 bg-blue-600 text-white rounded-lg font-medium"
       : "px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50";
 
   return (
@@ -970,14 +970,8 @@ function LoanOffersSection() {
           </p>
         </div>
 
-        {/* Sort Options */}
+        {/* Sort Options - Lowest Interest Rate moved to last */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">
-          <button
-            onClick={sortByLowestRate}
-            className={getButtonClasses("rate")}
-          >
-            Lowest Interest Rate
-          </button>
           <button
             onClick={sortByMaxAmount}
             className={getButtonClasses("maxAmount")}
@@ -989,6 +983,12 @@ function LoanOffersSection() {
             className={getButtonClasses("minAmount")}
           >
             Min Loan Amount
+          </button>
+          <button
+            onClick={sortByLowestRate}
+            className={getButtonClasses("rate")}
+          >
+            Lowest Interest Rate
           </button>
         </div>
 

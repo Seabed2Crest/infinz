@@ -39,7 +39,7 @@ function Header() {
   }, [hoverTimeout]);
 
   return (
-    <header className="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 rounded-b-2xl border-b border-teal-100 transition-all duration-300 hover:shadow-xl">
+    <header className="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 rounded-b-2xl border-b border-blue-100 transition-all duration-300 hover:shadow-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-2">
           <div className="flex items-center">
@@ -57,7 +57,7 @@ function Header() {
             {/* Home */}
             <button
               onClick={() => router.push("/")}
-              className="text-gray-600 hover:text-teal-600 transition-all duration-300 font-medium transform hover:scale-105"
+              className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-medium transform hover:scale-105"
             >
               Home
             </button>
@@ -68,7 +68,7 @@ function Header() {
               onMouseEnter={() => handleMouseEnter("products")}
               onMouseLeave={handleMouseLeave}
             >
-              <button className="text-gray-600 hover:text-teal-600 transition-all duration-300 flex items-center font-medium transform hover:scale-105 group">
+              <button className="text-gray-600 hover:text-blue-600 transition-all duration-300 flex items-center font-medium transform hover:scale-105 group">
                 Products
                 <ChevronDown className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
               </button>
@@ -79,7 +79,7 @@ function Header() {
                       router.push("/personal-loan");
                       setActiveDropdown(null);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-teal-50 hover:text-teal-600 transition-all duration-300 transform hover:translate-x-1"
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300 transform hover:translate-x-1"
                   >
                     Personal Loan
                   </button>
@@ -88,7 +88,7 @@ function Header() {
                       router.push("/business-loan");
                       setActiveDropdown(null);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-teal-50 hover:text-teal-600 transition-all duration-300 transform hover:translate-x-1"
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300 transform hover:translate-x-1"
                   >
                     Business Loan
                   </button>
@@ -100,7 +100,7 @@ function Header() {
               onClick={() => {
                 router.push("/calculator");
               }}
-              className="text-gray-600 hover:text-teal-600 transition-all duration-300 font-medium transform hover:scale-105"
+              className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-medium transform hover:scale-105"
             >
               Calculators
             </button>
@@ -110,7 +110,7 @@ function Header() {
                  onMouseEnter={() => handleMouseEnter('tools')}
                  onMouseLeave={handleMouseLeave}>
               <button
-                className="text-gray-600 hover:text-teal-600 transition-all duration-300 flex items-center font-medium transform hover:scale-105 group"
+                className="text-gray-600 hover:text-blue-600 transition-all duration-300 flex items-center font-medium transform hover:scale-105 group"
               >
                 Financial Tools
                 <ChevronDown className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
@@ -122,7 +122,7 @@ function Header() {
                       router.push('/calculator');
                       setActiveDropdown(null);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-teal-50 hover:text-teal-600 transition-all duration-300 transform hover:translate-x-1"
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300 transform hover:translate-x-1"
                   >
                     Calculators
                   </button>
@@ -130,7 +130,7 @@ function Header() {
                     onClick={() => {
                       setActiveDropdown(null);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-teal-50 hover:text-teal-600 transition-all duration-300 transform hover:translate-x-1"
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300 transform hover:translate-x-1"
                   >
                     Credit Score Check
                   </button>
@@ -144,7 +144,7 @@ function Header() {
               onMouseEnter={() => handleMouseEnter("resources")}
               onMouseLeave={handleMouseLeave}
             >
-              <button className="text-gray-600 hover:text-teal-600 transition-all duration-300 flex items-center font-medium transform hover:scale-105 group">
+              <button className="text-gray-600 hover:text-blue-600 transition-all duration-300 flex items-center font-medium transform hover:scale-105 group">
                 Resources
                 <ChevronDown className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
               </button>
@@ -154,7 +154,7 @@ function Header() {
                     onClick={() => {
                       setActiveDropdown(null);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-teal-50 hover:text-teal-600 transition-all duration-300 transform hover:translate-x-1"
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300 transform hover:translate-x-1"
                   >
                     Blogs
                   </button>
@@ -163,7 +163,7 @@ function Header() {
                       router.push("/financial-dictionary");
                       setActiveDropdown(null);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-teal-50 hover:text-teal-600 transition-all duration-300 transform hover:translate-x-1"
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300 transform hover:translate-x-1"
                   >
                     Financial Dictionary
                   </button>
@@ -171,7 +171,7 @@ function Header() {
                     onClick={() => {
                       setActiveDropdown(null);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-teal-50 hover:text-teal-600 transition-all duration-300 transform hover:translate-x-1"
+                    className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300 transform hover:translate-x-1"
                   >
                     News & Press Releases
                   </button>
@@ -182,7 +182,7 @@ function Header() {
             {/* About Us */}
             <button
               onClick={() => router.push("/about")}
-              className="text-gray-600 hover:text-teal-600 transition-all duration-300 font-medium transform hover:scale-105"
+              className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-medium transform hover:scale-105"
             >
               About Us
             </button>
@@ -190,7 +190,7 @@ function Header() {
             {/* Contact Us */}
             <button
               onClick={() => router.push("/contact")}
-              className="text-gray-600 hover:text-teal-600 transition-all duration-300 font-medium transform hover:scale-105"
+              className="text-gray-600 hover:text-blue-600 transition-all duration-300 font-medium transform hover:scale-105"
             >
               Contact Us
             </button>
@@ -247,7 +247,7 @@ function Header() {
                   router.push("/");
                   setIsMenuOpen(false);
                 }}
-                className="text-gray-600 hover:text-teal-600 text-left transition-all duration-300 transform hover:scale-105"
+                className="text-gray-600 hover:text-blue-600 text-left transition-all duration-300 transform hover:scale-105"
               >
                 Home
               </button>
@@ -262,7 +262,7 @@ function Header() {
                         : "products-mobile"
                     )
                   }
-                  className="text-gray-600 hover:text-teal-600 text-left flex items-center justify-between w-full transition-all duration-300 transform hover:scale-105"
+                  className="text-gray-600 hover:text-blue-600 text-left flex items-center justify-between w-full transition-all duration-300 transform hover:scale-105"
                 >
                   Products
                   <ChevronDown
@@ -278,7 +278,7 @@ function Header() {
                         router.push("/personal-loan");
                         setIsMenuOpen(false);
                       }}
-                      className="text-gray-500 hover:text-teal-600 text-left block transition-all duration-300 transform hover:translate-x-1"
+                      className="text-gray-500 hover:text-blue-600 text-left block transition-all duration-300 transform hover:translate-x-1"
                     >
                       Personal Loan
                     </button>
@@ -287,7 +287,7 @@ function Header() {
                         router.push("/business-loan");
                         setIsMenuOpen(false);
                       }}
-                      className="text-gray-500 hover:text-teal-600 text-left block transition-all duration-300 transform hover:translate-x-1"
+                      className="text-gray-500 hover:text-blue-600 text-left block transition-all duration-300 transform hover:translate-x-1"
                     >
                       Business Loan
                     </button>
@@ -303,7 +303,7 @@ function Header() {
                       activeDropdown === "tools-mobile" ? null : "tools-mobile"
                     )
                   }
-                  className="text-gray-600 hover:text-teal-600 text-left flex items-center justify-between w-full transition-all duration-300 transform hover:scale-105"
+                  className="text-gray-600 hover:text-blue-600 text-left flex items-center justify-between w-full transition-all duration-300 transform hover:scale-105"
                 >
                   Financial Tools
                   <ChevronDown
@@ -319,13 +319,13 @@ function Header() {
                         router.push("/calculator");
                         setIsMenuOpen(false);
                       }}
-                      className="text-gray-500 hover:text-teal-600 text-left block transition-all duration-300 transform hover:translate-x-1"
+                      className="text-gray-500 hover:text-blue-600 text-left block transition-all duration-300 transform hover:translate-x-1"
                     >
                       Calculators
                     </button>
                     <button
                       onClick={() => setIsMenuOpen(false)}
-                      className="text-gray-500 hover:text-teal-600 text-left block transition-all duration-300 transform hover:translate-x-1"
+                      className="text-gray-500 hover:text-blue-600 text-left block transition-all duration-300 transform hover:translate-x-1"
                     >
                       Credit Score Check
                     </button>
@@ -343,7 +343,7 @@ function Header() {
                         : "resources-mobile"
                     )
                   }
-                  className="text-gray-600 hover:text-teal-600 text-left flex items-center justify-between w-full transition-all duration-300 transform hover:scale-105"
+                  className="text-gray-600 hover:text-blue-600 text-left flex items-center justify-between w-full transition-all duration-300 transform hover:scale-105"
                 >
                   Resources
                   <ChevronDown
@@ -356,7 +356,7 @@ function Header() {
                   <div className="ml-4 mt-2 space-y-2">
                     <button
                       onClick={() => setIsMenuOpen(false)}
-                      className="text-gray-500 hover:text-teal-600 text-left block transition-all duration-300 transform hover:translate-x-1"
+                      className="text-gray-500 hover:text-blue-600 text-left block transition-all duration-300 transform hover:translate-x-1"
                     >
                       Blogs
                     </button>
@@ -365,13 +365,13 @@ function Header() {
                         router.push("/financial-dictionary");
                         setIsMenuOpen(false);
                       }}
-                      className="text-gray-500 hover:text-teal-600 text-left block transition-all duration-300 transform hover:translate-x-1"
+                      className="text-gray-500 hover:text-blue-600 text-left block transition-all duration-300 transform hover:translate-x-1"
                     >
                       Financial Dictionary
                     </button>
                     <button
                       onClick={() => setIsMenuOpen(false)}
-                      className="text-gray-500 hover:text-teal-600 text-left block transition-all duration-300 transform hover:translate-x-1"
+                      className="text-gray-500 hover:text-blue-600 text-left block transition-all duration-300 transform hover:translate-x-1"
                     >
                       News & Press Releases
                     </button>
@@ -384,7 +384,7 @@ function Header() {
                   router.push("/about");
                   setIsMenuOpen(false);
                 }}
-                className="text-gray-600 hover:text-teal-600 text-left transition-all duration-300 transform hover:scale-105"
+                className="text-gray-600 hover:text-blue-600 text-left transition-all duration-300 transform hover:scale-105"
               >
                 About Us
               </button>
@@ -393,7 +393,7 @@ function Header() {
                   router.push("/contact");
                   setIsMenuOpen(false);
                 }}
-                className="text-gray-600 hover:text-teal-600 text-left transition-all duration-300 transform hover:scale-105"
+                className="text-gray-600 hover:text-blue-600 text-left transition-all duration-300 transform hover:scale-105"
               >
                 Contact Us
               </button>

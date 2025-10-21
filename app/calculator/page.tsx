@@ -108,8 +108,8 @@ function LoanEligibilityCalculator({
                   onClick={() => setActiveTab("personal")}
                   className={`px-6 py-3 font-semibold transition-all duration-200 flex items-center gap-2 ${
                     activeTab === "personal"
-                      ? "bg-teal-600 text-white"
-                      : "text-gray-700 hover:bg-teal-100"
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-700 hover:bg-blue-100"
                   }`}
                 >
                   <User className="h-4 w-4" />
@@ -119,8 +119,8 @@ function LoanEligibilityCalculator({
                   onClick={() => setActiveTab("business")}
                   className={`px-6 py-3 font-semibold transition-all duration-200 flex items-center gap-2 ${
                     activeTab === "business"
-                      ? "bg-teal-600 text-white"
-                      : "text-gray-700 hover:bg-teal-100"
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-700 hover:bg-blue-100"
                   }`}
                 >
                   <Briefcase className="h-4 w-4" />
@@ -275,17 +275,17 @@ function LoanEligibilityCalculator({
           </div>
 
           {/* Results Card */}
-          <div className="bg-gradient-to-br from-teal-600 to-blue-700 rounded-2xl shadow-xl p-8 text-white">
+          <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl shadow-xl p-8 text-white">
             <div className="text-center mb-8">
               <Calculator className="h-12 w-12 mx-auto mb-4" />
               <h3 className="text-2xl font-bold mb-2">Eligibility Results</h3>
-              <p className="text-teal-100">Based on your financial profile</p>
+              <p className="text-blue-100">Based on your financial profile</p>
             </div>
 
             <div className="space-y-6">
               {/* Eligible Amount */}
               <div className="text-center">
-                <p className="text-teal-200 mb-2">
+                <p className="text-blue-200 mb-2">
                   You are eligible for a loan of up to
                 </p>
                 <div className="text-4xl font-bold mb-2">
@@ -295,8 +295,8 @@ function LoanEligibilityCalculator({
 
               {/* Tenure & EMI */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-teal-500/20 rounded-xl p-4 text-center">
-                  <div className="text-sm text-teal-200 mb-1">Tenure</div>
+                <div className="bg-blue-500/20 rounded-xl p-4 text-center">
+                  <div className="text-sm text-blue-200 mb-1">Tenure</div>
                   <div className="text-xl font-bold">
                     {suggestedTenure} Months
                   </div>
@@ -312,13 +312,13 @@ function LoanEligibilityCalculator({
               {/* Apply Button */}
               <Link
                 href="/apply_now"
-                className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+                className="w-full bg-white text-blue-600 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 Apply for Loan
               </Link>
 
               {/* Additional Info */}
-              <div className="text-center text-sm text-teal-200">
+              <div className="text-center text-sm text-blue-200">
                 <p>
                   This is an estimated eligibility. Final approval subject to
                   document verification.
@@ -403,13 +403,13 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
   return (
     <section
       id="emi-calculator"
-      className="py-16 bg-gradient-to-br from-teal-50 via-white to-teal-50"
+      className="py-16 bg-gradient-to-br from-blue-50 via-white to-blue-50"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            <span className="text-teal-600">EMI Calculator</span>
+            <span className="text-blue-600">EMI Calculator</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Get the total repayment and EMI amount and plan your finances
@@ -424,8 +424,8 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
               onClick={() => setActiveTab("personal")}
               className={`px-6 py-3 font-semibold transition-all duration-200 flex items-center gap-2 ${
                 activeTab === "personal"
-                  ? "bg-teal-600 text-white"
-                  : "text-gray-700 hover:bg-teal-100"
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-700 hover:bg-blue-100"
               }`}
             >
               <User className="h-4 w-4" />
@@ -435,8 +435,8 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
               onClick={() => setActiveTab("business")}
               className={`px-6 py-3 font-semibold transition-all duration-200 flex items-center gap-2 ${
                 activeTab === "business"
-                  ? "bg-teal-600 text-white"
-                  : "text-gray-700 hover:bg-teal-100"
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-700 hover:bg-blue-100"
               }`}
             >
               <Briefcase className="h-4 w-4" />
@@ -470,7 +470,7 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
                 step={1000}
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(Number(e.target.value))}
-                className="w-full h-2 bg-teal-200 rounded-lg appearance-none cursor-pointer slider"
+                className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="flex justify-between text-sm text-gray-500 mt-1">
                 <span>₹{params.minAmount.toLocaleString()}</span>
@@ -540,10 +540,9 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             <div className="flex justify-center items-center">
               <Link
                 href="/apply_now"
-                className="bg-teal-600 text-white py-4 px-12 rounded-xl font-semibold text-lg hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
+                className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 Apply Now
-                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </div>
           </div>
@@ -556,7 +555,7 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
 
             <div className="space-y-6">
               <div className="text-center">
-                <div className="text-4xl font-bold text-teal-600 mb-2">
+                <div className="text-4xl font-bold text-blue-600 mb-2">
                   ₹{totalEMI.toLocaleString()}
                 </div>
                 <div className="text-gray-600">Monthly EMI</div>
@@ -623,53 +622,17 @@ function EligibilityCalculatorInfo() {
               flexible loan amounts, and seamless processing, enabling better
               financial decision-making.
             </p>
-
-            {/* <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <TrendingUp className="h-5 w-5 text-teal-600 mt-1 flex-shrink-0" />
-                <div>
-                  <h4 className="font-semibold text-gray-900">
-                    Income Assessment
-                  </h4>
-                  <p className="text-gray-600 text-sm">
-                    Evaluates your repayment capacity based on income
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <User className="h-5 w-5 text-teal-600 mt-1 flex-shrink-0" />
-                <div>
-                  <h4 className="font-semibold text-gray-900">
-                    Credit Evaluation
-                  </h4>
-                  <p className="text-gray-600 text-sm">
-                    Considers your credit history and score
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 text-teal-600 mt-1 flex-shrink-0" />
-                <div>
-                  <h4 className="font-semibold text-gray-900">
-                    Instant Results
-                  </h4>
-                  <p className="text-gray-600 text-sm">
-                    Get eligibility status in real-time
-                  </p>
-                </div>
-              </div>
-            </div> */}
           </div>
 
           {/* Right Content - Eligibility Highlights */}
-          <div className="bg-gradient-to-br from-teal-50 to-white rounded-2xl p-8 shadow-sm border border-gray-100">
+          <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <h3 className="text-xl font-bold text-gray-900 mb-6">
               Why Use an Eligibility Calculator?
             </h3>
 
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="flex items-start gap-3">
-                <TrendingUp className="h-6 w-6 text-teal-600 flex-shrink-0 mt-1" />
+                <TrendingUp className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold text-gray-900">
                     Financial Clarity
@@ -682,7 +645,7 @@ function EligibilityCalculatorInfo() {
               </div>
 
               <div className="flex items-start gap-3">
-                <User className="h-6 w-6 text-teal-600 flex-shrink-0 mt-1" />
+                <User className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold text-gray-900">
                     Personalized Insights
@@ -695,7 +658,7 @@ function EligibilityCalculatorInfo() {
               </div>
 
               <div className="flex items-start gap-3">
-                <Briefcase className="h-6 w-6 text-teal-600 flex-shrink-0 mt-1" />
+                <Briefcase className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold text-gray-900">
                     Business Evaluation
@@ -708,7 +671,7 @@ function EligibilityCalculatorInfo() {
               </div>
 
               <div className="flex items-start gap-3">
-                <Info className="h-6 w-6 text-teal-600 flex-shrink-0 mt-1" />
+                <Info className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold text-gray-900">
                     Instant Results
@@ -771,8 +734,8 @@ function CalculatorBenefits() {
         <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
             <div key={index} className="text-center">
-              <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <benefit.icon className="h-8 w-8 text-teal-600" />
+              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <benefit.icon className="h-8 w-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {benefit.title}
@@ -923,24 +886,24 @@ function EMICalculatorInfo() {
 // Navigation CTA Section
 function CalculatorNavigation() {
   return (
-    <section className="py-12 bg-gradient-to-r from-teal-600 to-blue-700">
+    <section className="py-12 bg-gradient-to-r from-blue-600 to-blue-700">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h3 className="text-2xl font-bold text-white mb-4">
           Choose Your Calculator
         </h3>
-        <p className="text-teal-100 mb-8">
+        <p className="text-blue-100 mb-8">
           Use our specialized calculators to plan your loan journey
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="#eligibility-calculator"
-            className="bg-white text-teal-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-200 shadow-lg"
+            className="bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-200 shadow-lg"
           >
             Check Eligibility
           </a>
           <a
             href="#emi-calculator"
-            className="bg-teal-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-teal-400 transition-all duration-200 shadow-lg border border-teal-400"
+            className="bg-blue-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-400 transition-all duration-200 shadow-lg border border-blue-400"
           >
             Calculate EMI
           </a>
@@ -957,9 +920,10 @@ export default function CalculatorPage() {
   return (
     <>
       {/* <CalculatorNavigation /> */}
+
+      <EMICalculator onOpenModal={() => setIsModalOpen(true)} />
       <LoanEligibilityCalculator onOpenModal={() => setIsModalOpen(true)} />
       <EligibilityCalculatorInfo />
-      <EMICalculator onOpenModal={() => setIsModalOpen(true)} />
       <CalculatorBenefits />
       <EMICalculatorInfo />
       <Faq topic="calculator" />

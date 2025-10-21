@@ -10,7 +10,7 @@ const lenders = [
   { id: 4, name: "Bajaj Finserv", logo: "/logos/Bajaj.png", color: "green" },
   { id: 5, name: "Kotak Bank", logo: "/logos/kotak.png", color: "purple" },
   { id: 6, name: "SBI Bank", logo: "/logos/SBI.webp", color: "blue" },
-  { id: 7, name: "YES Bank", logo: "/logos/YES.png", color: "teal" },
+  { id: 7, name: "YES Bank", logo: "/logos/YES.png", color: "blue" },
   {
     id: 8,
     name: "IndusInd Bank",
@@ -27,7 +27,6 @@ const colorClasses = {
   red: "from-red-500 to-red-600",
   green: "from-green-500 to-green-600",
   purple: "from-purple-500 to-purple-600",
-  teal: "from-teal-500 to-teal-600",
   indigo: "from-indigo-500 to-indigo-600",
   pink: "from-pink-500 to-pink-600",
   yellow: "from-yellow-500 to-yellow-600",
@@ -161,7 +160,7 @@ function OurLenders({ onOpenModal }: OurLendersProps) {
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-500 rounded-full blur-3xl animate-pulse" />
         <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-400 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "2s" }}
         />
       </div>
@@ -176,7 +175,7 @@ function OurLenders({ onOpenModal }: OurLendersProps) {
                 : "translate-y-8 opacity-0"
             }`}
           >
-            Our <span className="text-teal-600">Trusted</span> Lenders
+            Our <span className="text-blue-600">Trusted</span> Lenders
           </h2>
           <p
             className={`text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed transform transition-all duration-1000 ${

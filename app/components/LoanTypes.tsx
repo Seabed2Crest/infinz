@@ -1,9 +1,13 @@
-'use client';
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 
 // Custom hook for counter animation
-function useCounterAnimation(endValue: number, duration: number = 2000, trigger: boolean = false) {
+function useCounterAnimation(
+  endValue: number,
+  duration: number = 2000,
+  trigger: boolean = false
+) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -66,10 +70,10 @@ function LoanTypes({ onOpenModal }: LoanTypesProps) {
           </h2>
         </div>
 
-        {/* Single Card with Teal Gradient Background */}
+        {/* Single Card with Ocean Blue Gradient Background */}
         <div
           ref={cardRef}
-          className="bg-gradient-to-r from-teal-500 via-teal-600 to-teal-700 p-10 rounded-2xl text-center border border-teal-700 hover:shadow-xl transition-all duration-300 animate-bounce-in"
+          className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 p-10 rounded-2xl text-center border border-blue-700 hover:shadow-xl transition-all duration-300 animate-bounce-in"
         >
           <div className="grid md:grid-cols-3 gap-8">
             {/* 7 Years of Abiding Trust */}
@@ -80,7 +84,7 @@ function LoanTypes({ onOpenModal }: LoanTypesProps) {
               <div className="text-base font-semibold text-white mb-1">
                 Years of Abiding Trust
               </div>
-              <div className="text-xs text-teal-100">
+              <div className="text-xs text-blue-100">
                 Building relationships since {new Date().getFullYear() - 7}
               </div>
             </div>
@@ -93,7 +97,7 @@ function LoanTypes({ onOpenModal }: LoanTypesProps) {
               <div className="text-base font-semibold text-white mb-1">
                 Loans Approved
               </div>
-              <div className="text-xs text-teal-100">
+              <div className="text-xs text-blue-100">
                 Total amount disbursed
               </div>
             </div>
@@ -106,7 +110,7 @@ function LoanTypes({ onOpenModal }: LoanTypesProps) {
               <div className="text-base font-semibold text-white mb-1">
                 Happy Customers
               </div>
-              <div className="text-xs text-teal-100">
+              <div className="text-xs text-blue-100">
                 Satisfied with our service
               </div>
             </div>
@@ -116,7 +120,9 @@ function LoanTypes({ onOpenModal }: LoanTypesProps) {
         {/* Additional trust indicators */}
         <div className="mt-8 text-center">
           <div className="flex flex-wrap justify-center items-center gap-8 opacity-70">
-            <div className="text-sm text-gray-500">Trusted by leading banks</div>
+            <div className="text-sm text-gray-500">
+              Trusted by leading banks
+            </div>
             <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
             <div className="text-sm text-gray-500">RBI Approved Partners</div>
             <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
