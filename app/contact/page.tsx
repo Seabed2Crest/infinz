@@ -25,7 +25,7 @@ function ContactHero() {
         <div className="text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 animate-slide-up">
             Got queries? We're Here to{" "}
-            <span className="text-teal-600">Help You!</span>
+            <span className="text-sky-700">Help You!</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed animate-slide-up animate-delay-200">
             Ready to start your financial journey? Get in touch with our expert
@@ -200,9 +200,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
                   <Clock className="w-4 h-4 text-blue-600" />
                   <span>
-                    
                     Our team will respond within 2 hours during business hours
-                  
                   </span>
                 </div>
               </form>
@@ -426,7 +424,7 @@ export default function ContactPage() {
         onOpenLeadForm={() => setIsLeadFormOpen(true)}
       />
 
-      {/* Modal placeholders - replace with your actual modal components */}
+      {/* Modal placeholders */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full">
@@ -436,7 +434,7 @@ export default function ContactPage() {
             </p>
             <button
               onClick={() => setIsModalOpen(false)}
-              className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700"
+              className="w-full bg-sky-700 text-white py-3 rounded-xl font-semibold hover:bg-sky-800"
             >
               Close
             </button>
@@ -453,7 +451,7 @@ export default function ContactPage() {
             </p>
             <button
               onClick={() => setIsLeadFormOpen(false)}
-              className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700"
+              className="w-full bg-sky-700 text-white py-3 rounded-xl font-semibold hover:bg-sky-800"
             >
               Close
             </button>
@@ -463,4 +461,3 @@ export default function ContactPage() {
     </>
   );
 }
-

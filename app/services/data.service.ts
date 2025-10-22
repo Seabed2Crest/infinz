@@ -1,33 +1,51 @@
 import http from "../http.common";
 import { API_ROUTES } from "./api.routes";
 
+// ------------------- BUSINESS LOAN -------------------
+
+// API request payload
 export interface CreateBusinessPayload {
     businessType: string;
-    turnover: string;
-    loanAmount: string;
+    turnover: number; // numeric as per backend
+    loanAmount: number; // numeric as per backend
     mobileNumber: string;
+    emiTenure: string;
 }
 
+// API response type
 export interface BusinessResponse {
     businessType: string;
-    turnover: string;
-    loanAmount: string;
+    turnover: number;
+    loanAmount: number;
     mobileNumber: string;
+    emiTenure: string;
     _id: string;
     createdAt: string;
     updatedAt: string;
     __v: number;
 }
 
+// Business Service
 export const BusinessService = {
-    // Create new business application
-    createBusiness: async (payload: CreateBusinessPayload): Promise<BusinessResponse> => {
-        const response = await http.post(API_ROUTES.BUSINESS.CREATE, payload);
-        return response.data;
+    createBusiness: async (
+        payload: CreateBusinessPayload
+    ): Promise<BusinessResponse> => {
+        try {
+            const response = await http.post(API_ROUTES.BUSINESS.CREATE, payload);
+            return response.data;
+        } catch (error: any) {
+            console.error("❌ Error in BusinessService.createBusiness:", error);
+            throw (
+                error.response?.data ||
+                new Error("Failed to create business loan application")
+            );
+        }
     },
 };
 
-// ✅ Personal Loan Interfaces
+// ------------------- PERSONAL LOAN -------------------
+
+// API request payload
 export interface CreatePersonalLoanPayload {
     loanPurpose: string;
     monthlyIncome: string;
@@ -36,6 +54,7 @@ export interface CreatePersonalLoanPayload {
     mobileNumber: string;
 }
 
+// API response type
 export interface PersonalLoanResponse {
     loanPurpose: string;
     monthlyIncome: string;
@@ -48,15 +67,26 @@ export interface PersonalLoanResponse {
     __v: number;
 }
 
-// ✅ Personal Loan Service
+// Personal Loan Service
 export const PersonalLoanService = {
-    createPersonalLoan: async (payload: CreatePersonalLoanPayload): Promise<PersonalLoanResponse> => {
-        const response = await http.post(API_ROUTES.PERSONAL_LOAN.CREATE, payload);
-        return response.data;
+    createPersonalLoan: async (
+        payload: CreatePersonalLoanPayload
+    ): Promise<PersonalLoanResponse> => {
+        try {
+            const response = await http.post(API_ROUTES.PERSONAL_LOAN.CREATE, payload);
+            return response.data;
+        } catch (error: any) {
+            console.error("❌ Error in PersonalLoanService.createPersonalLoan:", error);
+            throw (
+                error.response?.data ||
+                new Error("Failed to create personal loan application")
+            );
+        }
     },
 };
 
-//leads form
+// ------------------- LEAD FORM -------------------
+
 export interface LoanFormData {
     name: string;
     city: string;
@@ -73,11 +103,11 @@ export interface LoanResponse {
     data?: any;
 }
 
-export const leadFrom = {
+// Lead Form Service
+export const leadForm = {
     createLoan: async (formData: LoanFormData): Promise<LoanResponse> => {
         try {
-            const res = await http.post(API_ROUTES.LEAD_FORM.CREATE, formData); // <-- FIXED
-
+            const res = await http.post(API_ROUTES.LEAD_FORM.CREATE, formData);
             return {
                 success: true,
                 message: res.data.message,
@@ -91,4 +121,3 @@ export const leadFrom = {
         }
     },
 };
-
