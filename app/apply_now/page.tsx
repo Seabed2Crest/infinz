@@ -15,7 +15,7 @@ import {
   User,
   VerifyOtpResponse,
 } from "../services/otp.service";
-import { leadFrom, LoanFormData, LoanResponse } from "../services/data.service";
+import { leadForm, LoanFormData, LoanResponse } from "../services/data.service";
 
 export default function ApplyNowPage() {
   const [step, setStep] = useState<"mobile" | "otp" | "form" | "success">(
@@ -88,7 +88,7 @@ export default function ApplyNowPage() {
     const payload: LoanFormData = { ...formData, mobileNumber: mobile };
 
     try {
-      const response: LoanResponse = await leadFrom.createLoan(payload);
+      const response: LoanResponse = await leadForm.createLoan(payload);
       if (response.success) {
         console.log("Loan submitted:", response.data);
         setStep("success");
