@@ -691,7 +691,7 @@ function EligibilityCalculatorInfo() {
                 you apply smarter.
               </p>
             </div>
-          </div> */}
+          </div> 
         </div>
       </div>
     </section>
@@ -922,8 +922,8 @@ export default function CalculatorPage() {
       {/* <CalculatorNavigation /> */}
 
       <EMICalculator onOpenModal={() => setIsModalOpen(true)} />
-      <LoanEligibilityCalculator onOpenModal={() => setIsModalOpen(true)} />
       <EligibilityCalculatorInfo />
+      <LoanEligibilityCalculator onOpenModal={() => setIsModalOpen(true)} />
       <CalculatorBenefits />
       <EMICalculatorInfo />
       <Faq topic="calculator" />
