@@ -8,7 +8,7 @@ const lenders = [
   { id: 2, name: "ICICI Bank", logo: "/logos/ICICBank.jpg", color: "orange" },
   { id: 3, name: "Axis Bank", logo: "/logos/Axis.png", color: "red" },
   { id: 4, name: "Bajaj Finserv", logo: "/logos/Bajaj.png", color: "green" },
-  { id: 5, name: "Kotak Bank", logo: "/logos/kotak.png", color: "purple" },
+  { id: 5, name: "Kotak Bank", logo: "/logos/Kotak.png", color: "purple" },
   { id: 6, name: "SBI Bank", logo: "/logos/SBI.webp", color: "blue" },
   { id: 7, name: "YES Bank", logo: "/logos/YES.png", color: "blue" },
   {
