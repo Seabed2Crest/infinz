@@ -922,10 +922,10 @@ export default function CalculatorPage() {
       {/* <CalculatorNavigation /> */}
 
       <EMICalculator onOpenModal={() => setIsModalOpen(true)} />
-      <EligibilityCalculatorInfo />
-      <LoanEligibilityCalculator onOpenModal={() => setIsModalOpen(true)} />
       <CalculatorBenefits />
       <EMICalculatorInfo />
+      <LoanEligibilityCalculator onOpenModal={() => setIsModalOpen(true)} />
+      <EligibilityCalculatorInfo />
       <Faq topic="calculator" />
     </>
   );
