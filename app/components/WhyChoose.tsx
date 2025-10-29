@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Building2, Clock, Zap, Percent, Calendar } from "lucide-react";
 
-// Custom hook for intersection observer - triggers only once
+// Custom hook for intersection observer
 function useInView(threshold = 0.3) {
   const [isInView, setIsInView] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -15,17 +15,13 @@ function useInView(threshold = 0.3) {
         if (entry.isIntersecting && !hasAnimated) {
           setIsInView(true);
           setHasAnimated(true);
-          // Disconnect observer after first trigger
           observer.disconnect();
         }
       },
       { threshold }
     );
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
-    }
-
+    if (elementRef.current) observer.observe(elementRef.current);
     return () => observer.disconnect();
   }, [threshold, hasAnimated]);
 
@@ -75,16 +71,39 @@ const milestones = [
   },
 ];
 
-// Unified ocean blue color scheme for all cards
-const oceanBlueColors = {
-  bg: "from-blue-100 to-blue-200",
-  icon: "text-blue-600",
-  border: "border-blue-300",
-  glow: "shadow-blue-500/25",
-  accent: "bg-blue-500",
-};
+// 🎨 Multiple color themes (will loop)
+const colorThemes = [
+  {
+    bg: "from-blue-100 to-blue-200",
+    icon: "text-blue-600",
+    border: "border-blue-300",
+    glow: "shadow-blue-500/25",
+    accent: "bg-blue-500",
+  },
+  {
+    bg: "from-cyan-100 to-cyan-200",
+    icon: "text-cyan-600",
+    border: "border-cyan-300",
+    glow: "shadow-cyan-500/25",
+    accent: "bg-cyan-500",
+  },
+  {
+    bg: "from-green-100 to-green-200",
+    icon: "text-green-600",
+    border: "border-green-300",
+    glow: "shadow-green-500/25",
+    accent: "bg-green-500",
+  },
+  {
+    bg: "from-indigo-100 to-indigo-200",
+    icon: "text-indigo-600",
+    border: "border-indigo-300",
+    glow: "shadow-indigo-500/25",
+    accent: "bg-indigo-500",
+  },
+];
 
-interface WhyChooseProps {
+interface WhyChooseProps {  
   onOpenModal: () => void;
 }
 
@@ -127,8 +146,9 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
 
           {/* Milestones Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-4">
-            {milestones.map((milestone) => {
+            {milestones.map((milestone, index) => {
               const IconComponent = milestone.icon;
+              const color = colorThemes[index % colorThemes.length];
 
               return (
                 <div
@@ -145,23 +165,19 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
                   {/* Milestone Card */}
                   <div
                     className={`
-                    bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl 
-                    transition-all duration-500 border-2 ${
-                      oceanBlueColors.border
-                    }
-                    transform hover:-translate-y-2 hover:scale-105
-                    ${isInView ? `${oceanBlueColors.glow}` : ""}
-                  `}
+                      bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl 
+                      transition-all duration-500 border-2 ${color.border}
+                      transform hover:-translate-y-2 hover:scale-105
+                      ${isInView ? `${color.glow}` : ""}
+                    `}
                   >
                     {/* Icon Container */}
                     <div
                       className={`
-                      w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${
-                        oceanBlueColors.bg
-                      }
-                      flex items-center justify-center transform transition-all duration-700
-                      ${isInView ? "animate-bounce" : ""}
-                    `}
+                        w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${color.bg}
+                        flex items-center justify-center transform transition-all duration-700
+                        ${isInView ? "animate-bounce" : ""}
+                      `}
                       style={{
                         animationDelay: isInView
                           ? `${milestone.delay + 300}ms`
@@ -171,9 +187,7 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
                       }}
                     >
                       <IconComponent
-                        className={`h-8 w-8 ${
-                          oceanBlueColors.icon
-                        } transform transition-all duration-500 ${
+                        className={`h-8 w-8 ${color.icon} transform transition-all duration-500 ${
                           isInView ? "scale-100" : "scale-0"
                         }`}
                         style={{
@@ -219,13 +233,11 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
                     {/* Step Number */}
                     <div
                       className={`
-                      absolute -top-3 -right-3 w-8 h-8 rounded-full ${
-                        oceanBlueColors.accent
-                      }
-                      flex items-center justify-center text-white font-bold text-sm
-                      transform transition-all duration-700
-                      ${isInView ? "scale-100 rotate-0" : "scale-0 rotate-180"}
-                    `}
+                        absolute -top-3 -right-3 w-8 h-8 rounded-full ${color.accent}
+                        flex items-center justify-center text-white font-bold text-sm
+                        transform transition-all duration-700
+                        ${isInView ? "scale-100 rotate-0" : "scale-0 rotate-180"}
+                      `}
                       style={{
                         transitionDelay: isInView
                           ? `${milestone.delay + 200}ms`
@@ -249,9 +261,9 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
                     {/* Glow Effect */}
                     <div
                       className={`
-                      absolute inset-0 rounded-2xl bg-gradient-to-r ${oceanBlueColors.bg} opacity-0 
-                      hover:opacity-20 transition-opacity duration-300 pointer-events-none
-                    `}
+                        absolute inset-0 rounded-2xl bg-gradient-to-r ${color.bg} opacity-0 
+                        hover:opacity-20 transition-opacity duration-300 pointer-events-none
+                      `}
                     />
                   </div>
 
@@ -260,11 +272,11 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
                     <div className="lg:hidden flex justify-center mt-6 mb-2">
                       <div
                         className={`
-                        w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full
-                        transform transition-all duration-700 ${
-                          isInView ? "scale-y-100" : "scale-y-0"
-                        }
-                      `}
+                          w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full
+                          transform transition-all duration-700 ${
+                            isInView ? "scale-y-100" : "scale-y-0"
+                          }
+                        `}
                         style={{
                           transitionDelay: isInView
                             ? `${milestone.delay + 200}ms`
@@ -277,27 +289,6 @@ function WhyChoose({ onOpenModal }: WhyChooseProps) {
               );
             })}
           </div>
-
-          {/* Floating Particles Animation */}
-          {isInView && (
-            <div className="absolute inset-0 pointer-events-none">
-              {[...Array(8)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`
-                    absolute w-2 h-2 bg-blue-400 rounded-full opacity-60
-                    animate-bounce
-                  `}
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 2}s`,
-                    animationDuration: `${2 + Math.random() * 2}s`,
-                  }}
-                />
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </section>
