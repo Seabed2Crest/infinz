@@ -99,7 +99,6 @@ const loanSteps = [
     title: "Verify Mobile Number",
     description: "Instant mobile authentication to protect your application",
     icon: Smartphone,
-    color: "blue",
     delay: 0,
     features: [
       { text: "OTP Verification", icon: ShieldCheck },
@@ -112,7 +111,6 @@ const loanSteps = [
     title: "Enter Basic Details",
     description: "Share basic personal and professional information quickly",
     icon: User,
-    color: "green",
     delay: 300,
     features: [
       { text: "Personal Info", icon: User },
@@ -126,7 +124,6 @@ const loanSteps = [
     description:
       "Select your loan amount, tenure, and purpose from our flexible options",
     icon: Calculator,
-    color: "purple",
     delay: 600,
     features: [
       { text: "Loan Amount", icon: Banknote },
@@ -140,7 +137,6 @@ const loanSteps = [
     description:
       "Upload documents digitally for instant verification and compliance",
     icon: Shield,
-    color: "orange",
     delay: 900,
     features: [
       { text: "Document Upload", icon: Upload },
@@ -154,7 +150,6 @@ const loanSteps = [
     description:
       "Receive funds directly in your bank account within 24 hours of approval",
     icon: Banknote,
-    color: "teal",
     delay: 1200,
     features: [
       { text: "Direct Transfer", icon: Send },
@@ -164,47 +159,14 @@ const loanSteps = [
   },
 ];
 
-const colorClasses = {
-  blue: {
-    bg: "from-blue-400 to-blue-600",
-    light: "from-blue-100 to-blue-200",
-    border: "border-blue-300",
-    text: "text-blue-600",
-    shadow: "shadow-blue-500/25",
-    glow: "shadow-blue-500/40",
-  },
-  green: {
-    bg: "from-green-400 to-green-600",
-    light: "from-green-100 to-green-200",
-    border: "border-green-300",
-    text: "text-green-600",
-    shadow: "shadow-green-500/25",
-    glow: "shadow-green-500/40",
-  },
-  purple: {
-    bg: "from-purple-400 to-purple-600",
-    light: "from-purple-100 to-purple-200",
-    border: "border-purple-300",
-    text: "text-purple-600",
-    shadow: "shadow-purple-500/25",
-    glow: "shadow-purple-500/40",
-  },
-  orange: {
-    bg: "from-orange-400 to-orange-600",
-    light: "from-orange-100 to-orange-200",
-    border: "border-orange-300",
-    text: "text-orange-600",
-    shadow: "shadow-orange-500/25",
-    glow: "shadow-orange-500/40",
-  },
-  teal: {
-    bg: "from-teal-400 to-teal-600",
-    light: "from-teal-100 to-teal-200",
-    border: "border-teal-300",
-    text: "text-teal-600",
-    shadow: "shadow-teal-500/25",
-    glow: "shadow-teal-500/40",
-  },
+// Unified ocean blue color scheme for all steps
+const oceanBlueColors = {
+  bg: "from-blue-500 to-blue-600",
+  light: "from-blue-100 to-blue-200",
+  border: "border-blue-300",
+  text: "text-blue-600",
+  shadow: "shadow-blue-500/25",
+  glow: "shadow-blue-500/40",
 };
 
 // Step card component
@@ -220,7 +182,6 @@ function StepCard({
   const { isInView, elementRef } = useStepInView(0.3);
   const [isHovered, setIsHovered] = useState(false);
   const IconComponent = step.icon;
-  const colors = colorClasses[step.color as keyof typeof colorClasses];
 
   return (
     <div
@@ -236,9 +197,13 @@ function StepCard({
       <div className="relative z-10 flex-shrink-0">
         <div
           className={`
-          w-16 h-16 rounded-full bg-gradient-to-br ${colors.bg} 
+          w-16 h-16 rounded-full bg-gradient-to-br ${oceanBlueColors.bg} 
           flex items-center justify-center shadow-2xl transform transition-all duration-500
-          ${isHovered ? `scale-125 rotate-12 ${colors.glow}` : "scale-100"}
+          ${
+            isHovered
+              ? `scale-125 rotate-12 ${oceanBlueColors.glow}`
+              : "scale-100"
+          }
           ${isInView ? "animate-pulse" : ""}
         `}
           style={{
@@ -254,9 +219,11 @@ function StepCard({
         <div
           className={`
           absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border-2 ${
-            colors.border
+            oceanBlueColors.border
           }
-          flex items-center justify-center text-xs font-bold ${colors.text}
+          flex items-center justify-center text-xs font-bold ${
+            oceanBlueColors.text
+          }
           transform transition-all duration-300
           ${isHovered ? "scale-125" : "scale-100"}
         `}
@@ -268,11 +235,13 @@ function StepCard({
       {/* Content Card */}
       <div
         className={`
-        flex-1 bg-white rounded-3xl p-8 shadow-xl border-2 ${colors.border}
+        flex-1 bg-white rounded-3xl p-8 shadow-xl border-2 ${
+          oceanBlueColors.border
+        }
         transform transition-all duration-500 relative overflow-hidden
         ${
           isHovered
-            ? `scale-105 -translate-y-2 ${colors.glow} shadow-2xl`
+            ? `scale-105 -translate-y-2 ${oceanBlueColors.glow} shadow-2xl`
             : "hover:scale-102"
         }
       `}
@@ -280,7 +249,9 @@ function StepCard({
         {/* Background Pattern */}
         <div
           className={`
-          absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${colors.light} 
+          absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${
+            oceanBlueColors.light
+          } 
           rounded-full blur-2xl opacity-30 transform transition-all duration-500
           ${isHovered ? "scale-150 opacity-50" : "scale-100"}
         `}
@@ -290,7 +261,7 @@ function StepCard({
         <div className="relative z-10">
           <h3
             className={`text-2xl font-bold text-gray-900 mb-3 transition-all duration-300 ${
-              isHovered ? colors.text : ""
+              isHovered ? oceanBlueColors.text : ""
             }`}
           >
             {step.title}
@@ -307,8 +278,12 @@ function StepCard({
                 <div
                   key={idx}
                   className={`
-                    px-4 py-2 rounded-full bg-gradient-to-r ${colors.light} 
-                    text-sm font-medium ${colors.text} border ${colors.border}
+                    px-4 py-2 rounded-full bg-gradient-to-r ${
+                      oceanBlueColors.light
+                    } 
+                    text-sm font-medium ${oceanBlueColors.text} border ${
+                    oceanBlueColors.border
+                  }
                     flex items-center gap-2
                     transform transition-all duration-300
                     ${isHovered ? "scale-105 -translate-y-1" : ""}
@@ -326,7 +301,7 @@ function StepCard({
         {/* Progress Indicator */}
         <div
           className={`
-          absolute bottom-0 left-0 h-1 bg-gradient-to-r ${colors.bg} 
+          absolute bottom-0 left-0 h-1 bg-gradient-to-r ${oceanBlueColors.bg} 
           transform transition-all duration-1000 origin-left
           ${isInView ? "scale-x-100" : "scale-x-0"}
         `}
@@ -374,11 +349,11 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-1/4 left-1/6 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse" />
         <div
-          className="absolute bottom-1/4 right-1/6 w-80 h-80 bg-purple-500 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-1/4 right-1/6 w-80 h-80 bg-blue-400 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "2s" }}
         />
         <div
-          className="absolute top-2/3 left-1/3 w-64 h-64 bg-teal-500 rounded-full blur-3xl animate-pulse"
+          className="absolute top-2/3 left-1/3 w-64 h-64 bg-blue-300 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "4s" }}
         />
       </div>
@@ -394,7 +369,7 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
             }`}
           >
             Get a Loan Online in{" "}
-            <span className="text-teal-600">5 Simple Steps</span>
+            <span className="text-blue-600">5 Simple Steps</span>
           </h2>
           <p
             className={`text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed transition-all duration-1000 ${
@@ -414,7 +389,7 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
           {/* Animated Timeline Line */}
           <div className="absolute left-8 top-0 bottom-0 w-1 bg-gray-200 rounded-full">
             <div
-              className="w-full bg-gradient-to-b from-blue-500 via-purple-500 to-teal-500 rounded-full transition-all duration-1000 ease-out"
+              className="w-full bg-gradient-to-b from-blue-500 to-blue-600 rounded-full transition-all duration-1000 ease-out"
               style={{ height: `${progress}%` }}
             />
           </div>
@@ -443,9 +418,9 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
           >
             <button
               className="
-              bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 text-white 
+              bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white 
               px-12 py-6 rounded-3xl font-bold text-xl 
-              hover:from-teal-700 hover:via-blue-700 hover:to-purple-700
+              hover:from-blue-700 hover:via-blue-800 hover:to-blue-900
               transform hover:scale-110 hover:-translate-y-2
               transition-all duration-500 shadow-2xl hover:shadow-3xl
               relative overflow-hidden group

@@ -250,8 +250,8 @@ function FaqItem({
     <div
       className={`bg-white rounded-2xl shadow-lg border-2 transition-all duration-500 overflow-hidden ${
         isOpen
-          ? "border-teal-300 shadow-xl"
-          : "border-gray-100 hover:border-teal-200"
+          ? "border-blue-300 shadow-xl"
+          : "border-gray-100 hover:border-blue-200"
       } ${isHovered ? "shadow-xl" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -264,14 +264,14 @@ function FaqItem({
           {faq.question}
         </h3>
         <div
-          className={`flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center transition-all duration-300 ${
-            isOpen ? "bg-teal-200 rotate-180" : ""
+          className={`flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center transition-all duration-300 ${
+            isOpen ? "bg-blue-200 rotate-180" : ""
           } ${isHovered ? "scale-110" : ""}`}
         >
           {isOpen ? (
-            <ChevronUp className="w-5 h-5 text-teal-600" />
+            <ChevronUp className="w-5 h-5 text-blue-600" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-teal-600" />
+            <ChevronDown className="w-5 h-5 text-blue-600" />
           )}
         </div>
       </button>

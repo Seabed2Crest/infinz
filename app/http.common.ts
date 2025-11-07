@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
-const BASE_URL = "http://localhost:8085";
+const BASE_URL = "https://backend.infinz.seabed2crest.com";
 
 const http = axios.create({
     baseURL: BASE_URL,
