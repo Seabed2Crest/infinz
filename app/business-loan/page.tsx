@@ -22,18 +22,30 @@ function BusinessLoanHero() {
   const [loanAmount, setLoanAmount] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [emiTenure, setEmiTenure] = useState("");
   const router = useRouter();
 
   const handleSubmit = async () => {
-    if (!businessType || !turnover || !loanAmount || !mobileNumber) {
+    if (
+      !businessType ||
+      !turnover ||
+      !loanAmount ||
+      !mobileNumber ||
+      !emiTenure
+    ) {
       toast.error("Please fill all fields");
       return;
     }
 
     setLoading(true);
     try {
-      const payload = { businessType, turnover, loanAmount, mobileNumber };
+      const payload = {
+        businessType,
+        turnover,
+        loanAmount,
+        mobileNumber,
+        emiTenure,
+      };
       console.log("Payload:", payload);
       const response = await BusinessService.createBusiness(payload);
       console.log("Response:", response);
