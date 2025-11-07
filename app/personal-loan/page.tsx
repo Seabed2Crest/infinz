@@ -115,6 +115,13 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
       );
       return;
     }
+    if (typeof window !== "undefined" && formData.mobileNumber) {
+      localStorage.setItem("mobileNumber", formData.mobileNumber);
+      console.log(
+        "📱 Mobile number saved in localStorage:",
+        formData.mobileNumber
+      );
+    }
 
     console.log("Form validation passed, submitting...");
     setLoading(true);

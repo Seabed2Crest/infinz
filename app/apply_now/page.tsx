@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   CheckCircle,
@@ -18,9 +18,7 @@ import {
 import { leadForm, LoanFormData, LoanResponse } from "../services/data.service";
 
 export default function ApplyNowPage() {
-  const [step, setStep] = useState<"mobile" | "otp" | "form" | "success">(
-    "mobile"
-  );
+  const [step, setStep] = useState<"otp" | "form" | "success">("otp");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,6 +34,16 @@ export default function ApplyNowPage() {
     amount: "",
     tenure: "",
   });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedMobile = localStorage.getItem("mobileNumber");
+      if (storedMobile) {
+        setMobile(storedMobile);
+        console.log("📱 Loaded mobile number from localStorage:", storedMobile);
+      }
+    }
+  }, []);
 
   // --- Mobile OTP Handlers ---
   const handleMobileSubmit = async () => {
@@ -59,7 +67,7 @@ export default function ApplyNowPage() {
       setOtpLoading(true);
       setError("");
       try {
-        const payload = { phoneNumber: mobile, otp };
+        const payload = { phoneNumber: mobile, otp, origin: "web" };
         const response: VerifyOtpResponse = await OtpService.verifyOtp(payload);
 
         if (response.success) {
@@ -210,7 +218,7 @@ export default function ApplyNowPage() {
         {/* Right Section */}
         <div className="p-8 md:p-10 flex flex-col justify-center">
           {/* --- MOBILE STEP --- */}
-          {step === "mobile" && (
+          {/* {step === "mobile" && (
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">
                 Get an instant loan up to ₹1Cr with flexible EMI
@@ -245,7 +253,7 @@ export default function ApplyNowPage() {
                 </button>
               </div>
             </>
-          )}
+          )} */}
 
           {/* --- OTP STEP --- */}
           {step === "otp" && (
@@ -253,7 +261,7 @@ export default function ApplyNowPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">
                 Enter OTP
               </h2>
-              <p className="text-gray-600 text-center mb-6">
+              {/* <p className="text-gray-600 text-center mb-6">
                 Sent to +91 {mobile}
                 <button
                   onClick={() => {
@@ -265,7 +273,7 @@ export default function ApplyNowPage() {
                 >
                   Change
                 </button>
-              </p>
+              </p> */}
               {error && (
                 <p className="text-red-500 text-sm text-center mb-4 bg-red-50 py-2 rounded-lg">
                   {error}
