@@ -121,7 +121,9 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
 
     try {
       console.log("Calling PersonalLoanService.createPersonalLoan...");
-      const response = await PersonalLoanService.createPersonalLoan(formData) as any;
+      const response = (await PersonalLoanService.createPersonalLoan(
+        formData
+      )) as any;
       console.log("Full API Response:", response);
       console.log("Response type:", typeof response);
       console.log("Response keys:", response ? Object.keys(response) : "null");
@@ -794,7 +796,7 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
           {/* Centered CTA Button */}
           <div className="text-center mt-12">
             <Link
-              href="/apply_now"
+              href="/calculator"
               className="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
             >
               Check Eligibility Now
