@@ -549,7 +549,7 @@ function ApplicationSteps({ onOpenModal }: { onOpenModal: () => void }) {
 
                 <div className="mt-5 text-center">
                   <Link
-                    href="/calculator"
+                    href="/calculator#eligibility-calculator"
                     className="inline-block bg-teal-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-teal-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
                   >
                     Check Eligibility Now
