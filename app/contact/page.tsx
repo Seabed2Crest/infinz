@@ -67,11 +67,11 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                         Address
                       </p>
                       <p className="text-gray-600 leading-relaxed">
-                        No S.1869, 1st H Main Rd, above Skinomy Clinic,
+                        No 338, 2nd Floor, Siddhiaiah Puranik road,
                         <br />
-                        2nd Stage, Rajajinagar,
+                        3rd stage, 4th Block, Basaveshwaranagar,
                         <br />
-                        Bengaluru, Karnataka 560010
+                        Bangalore North - 560079
                       </p>
                     </div>
                   </div>
@@ -88,7 +88,9 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                     <Mail className="w-6 h-6 text-blue-600 flex-shrink-0" />
                     <div>
                       <p className="text-gray-900 font-semibold mb-1">Email</p>
-                      <p className="text-gray-600">support@infinz.com</p>
+                      <p className="text-gray-600">
+                        info@rakshithafinserve.com
+                      </p>
                     </div>
                   </div>
 
@@ -250,14 +252,14 @@ function ConnectWithUs() {
           </h2>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-1 gap-12">
           {/* Social Media */}
           <div className="animate-slide-left">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
               Social Media
             </h3>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               {socialLinks.map((social, index) => (
                 <a
                   key={index}
@@ -281,7 +283,7 @@ function ConnectWithUs() {
           </div>
 
           {/* Get Our Apps */}
-          <div className="animate-slide-right">
+          {/* <div className="animate-slide-right">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
               Get Our Apps
             </h3>
@@ -325,7 +327,7 @@ function ConnectWithUs() {
                 </div>
               </a>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

@@ -272,11 +272,11 @@ function Footer() {
                     Head Office
                   </p>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    No S.1869, 1st H Main Rd, above Skinomy Clinic,
+                    No 338, 2nd Floor, Siddhiaiah Puranik road,
                     <br />
-                    2nd Stage, Rajajinagar,
+                    3rd stage, 4th Block, Basaveshwaranagar,
                     <br />
-                    Bengaluru, Karnataka 560010
+                    Bangalore North - 560079
                   </p>
                 </div>
               </div>
@@ -284,7 +284,9 @@ function Footer() {
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-blue-600 flex-shrink-0" />
                 <div>
-                  <p className="text-gray-600 text-sm">support@infinz.com</p>
+                  <p className="text-gray-600 text-sm">
+                    info@rakshithafinserve.com
+                  </p>
                 </div>
               </div>
 
@@ -307,7 +309,7 @@ function Footer() {
         >
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-gray-600 text-sm">
-              © 2025 Infinz Financial Services Pvt. Ltd. All rights reserved.
+              © 2025 Rakshitha Finserve Pvt. Ltd. All rights reserved.
             </div>
 
             <div className="flex gap-6 text-sm">

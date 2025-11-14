@@ -197,7 +197,7 @@ function Header() {
           </nav>
 
           {/* App Store Links */}
-          <div className="hidden md:flex space-x-3">
+          {/* <div className="hidden md:flex space-x-3">
             <button
               onClick={() =>
                 window.open("https://apps.apple.com/app/infinz", "_blank")
@@ -223,7 +223,7 @@ function Header() {
               </svg>
               <span>Play Store</span>
             </button>
-          </div>
+          </div> */}
 
           {/* Mobile menu button */}
           <button

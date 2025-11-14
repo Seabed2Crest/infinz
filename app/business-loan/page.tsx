@@ -179,7 +179,6 @@ function BusinessLoanHero() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                 />
               </div>
-
               <button
                 onClick={handleSubmit}
                 disabled={loading}
@@ -188,7 +187,6 @@ function BusinessLoanHero() {
                 {loading ? "Submitting..." : "Get Instant Loan"}
               </button>
             </div>
-
             <p className="text-xs text-gray-500 text-center mt-4">
               By submitting, you agree to our Terms & Conditions
             </p>
@@ -199,12 +197,10 @@ function BusinessLoanHero() {
   );
 }
 
-// EMI Calculator Section
 function BusinessLoanCalculator() {
   const [loanAmount, setLoanAmount] = useState(1000000);
   const [interestRate, setInterestRate] = useState(15);
   const [tenure, setTenure] = useState(24);
-
   const calculateEMI = () => {
     const monthlyRate = interestRate / 12 / 100;
     const emi =
@@ -212,7 +208,7 @@ function BusinessLoanCalculator() {
       (Math.pow(1 + monthlyRate, tenure) - 1);
     return Math.round(emi);
   };
-
+  
   const totalAmount = calculateEMI() * tenure;
   const totalInterest = totalAmount - loanAmount;
 
@@ -795,7 +791,6 @@ function LenderComparison() {
   );
 }
 
-// Main Business Loan Page
 export default function BusinessLoanPage() {
   return (
     <>
