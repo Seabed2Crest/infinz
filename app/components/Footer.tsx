@@ -19,6 +19,7 @@ import {
   Newspaper,
   MessageCircle,
 } from "lucide-react";
+import Link from "next/link";
 
 // Custom hook for intersection observer
 function useInView(threshold = 0.3) {
@@ -313,12 +314,18 @@ function Footer() {
             </div>
 
             <div className="flex gap-6 text-sm">
-              <button className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Link
+                href="/privacy-policy"
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
                 Privacy Policy
-              </button>
-              <button className="text-gray-600 hover:text-blue-600 transition-colors">
+              </Link>
+              <Link
+                href="/terms-and-conditions"
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
                 Terms of Service
-              </button>
+              </Link>
               {/* <button className="text-gray-600 hover:text-blue-600 transition-colors">
                 Cookie Policy
               </button> */}
