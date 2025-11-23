@@ -1,4 +1,4 @@
-import http from "../http.common";
+import http, { BASE_URL } from "../http.common";
 import { API_ROUTES } from "./api.routes";
 
 // ------------------- BUSINESS LOAN -------------------
@@ -126,5 +126,17 @@ export const leadForm = {
           err.response?.data?.error || err.message || "Something went wrong",
       };
     }
+  },
+};
+
+export const blogApi = {
+  getAll: async () => {
+    const res = await fetch(`${BASE_URL}/api/v1/blogs`);
+    return res.json();
+  },
+
+  getBySlug: async (slug: string) => {
+    const res = await fetch(`${BASE_URL}/api/v1/blogs/${slug}`);
+    return res.json();
   },
 };

@@ -169,22 +169,22 @@ function Footer() {
               <div className="flex gap-3">
                 <SocialIcon
                   icon={Linkedin}
-                  href="https://in.linkedin.com/company/cashmateonline"
+                  href="https://www.linkedin.com/company/1infinz/"
                   delay={0}
                 />
                 <SocialIcon
                   icon={Facebook}
-                  href="https://www.facebook.com/cashmateonline/"
+                  href="https://www.facebook.com/1infinz/"
                   delay={100}
                 />
                 <SocialIcon
                   icon={Instagram}
-                  href="https://www.instagram.com/cashmateonline/"
+                  href=" https://www.instagram.com/1infinz/"
                   delay={200}
                 />
                 <SocialIcon
                   icon={Youtube}
-                  href="https://youtube.com/@cash_mate?si=1rttniT_7h0_hg7E"
+                  href="https://www.youtube.com/@Cash_Mate"
                   delay={300}
                 />
               </div>
@@ -241,7 +241,7 @@ function Footer() {
 
           {/* Column 5: Resources */}
           <FooterColumn title="Resources" delay={400}>
-            <FooterLink onClick={() => {}}>
+            <FooterLink onClick={() => router.push("/blogs")}>
               <BookOpen className="w-4 h-4" />
               Blogs
             </FooterLink>

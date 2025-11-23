@@ -6,6 +6,13 @@ import Footer from "./components/Footer";
 export const metadata: Metadata = {
   title: "Infinz - Your Financial Partner",
   description: "Get the best loan rates and financial services with Infinz",
+
+  // ⭐ Add this to fix favicon
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
