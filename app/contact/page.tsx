@@ -100,7 +100,7 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
                       <p className="text-gray-900 font-semibold mb-1">
                         Website
                       </p>
-                      <p className="text-gray-600">www.infinz.com</p>
+                      <p className="text-gray-600">www.1infinz.com</p>
                     </div>
                   </div>
 
