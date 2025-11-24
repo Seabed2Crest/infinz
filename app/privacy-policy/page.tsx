@@ -47,10 +47,10 @@ export default function PrivacyPolicy() {
             participation and consumption of our products and/or services
             offered by us through our website{" "}
             <a
-              href="https://www.Infinzonline.com"
+              href="https://www.1infinz.com"
               className="text-blue-600 hover:underline font-medium"
             >
-              'www.Infinzonline.com'
+              'www.1infinz.com'
             </a>{" "}
             and our mobile application (collectively,{" "}
             <strong>"Platform"</strong>) or during any interaction with us, and
