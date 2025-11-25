@@ -16,6 +16,7 @@ import {
   Shield,
   CreditCard,
 } from "lucide-react";
+
 import Link from "next/link";
 import Faq from "../components/Faq";
 
