@@ -152,6 +152,8 @@ function Header() {
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
                   <button
                     onClick={() => {
+
+                      router.push("/blogs");
                       setActiveDropdown(null);
                     }}
                     className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300 transform hover:translate-x-1"

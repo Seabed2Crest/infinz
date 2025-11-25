@@ -3,9 +3,11 @@ import http from "../http.common";
 import { API_ROUTES } from "./api.routes";
 
 export interface VerifyOtpPayload {
-    phoneNumber: string;
-    otp: string;
+  phoneNumber: string;
+  otp: string;
+  origin?: string;
 }
+
 
 export interface User {
     fullName: string;

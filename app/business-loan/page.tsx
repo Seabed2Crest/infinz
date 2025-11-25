@@ -43,7 +43,7 @@ function BusinessLoanHero() {
 
       const response = await BusinessService.createBusiness(payload);
       toast.success("Business application submitted successfully!");
-      router.push("/apply_now");
+      router.push("/apply_now?apply=true");
     } catch (error) {
       toast.error("Failed to submit application");
     } finally {
@@ -287,7 +287,7 @@ function BusinessLoanCalculator() {
 
             <div className="flex justify-center">
               <Link
-                href="#apply_two"
+                href="/apply_now"
                 className="bg-blue-600 text-white py-4 px-12 rounded-xl font-semibold hover:bg-blue-700 transition shadow-lg"
               >
                 Apply Now
@@ -481,7 +481,7 @@ function ApplicationSteps() {
 
               <div className="mt-5 text-center">
                 <Link
-                  href="/calculator#eligibility-calculator"
+                  href="/apply_now"
                   className="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-blue-700 transition shadow-lg"
                 >
                   Check Eligibility Now

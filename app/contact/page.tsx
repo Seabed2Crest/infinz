@@ -220,25 +220,25 @@ function ConnectWithUs() {
     {
       icon: Linkedin,
       name: "LinkedIn",
-      url: "https://in.linkedin.com/company/cashmateonline",
+      url: " https://www.linkedin.com/company/1infinz/",
       color: "blue",
     },
     {
       icon: Facebook,
       name: "Facebook",
-      url: "https://www.facebook.com/cashmateonline/",
+      url: "https://www.facebook.com/1infinz/",
       color: "blue",
     },
     {
       icon: Instagram,
       name: "Instagram",
-      url: "https://www.instagram.com/cashmateonline/",
+      url: "https://www.instagram.com/1infinz/",
       color: "pink",
     },
     {
       icon: Youtube,
       name: "YouTube",
-      url: "https://youtube.com/@cash_mate?si=1rttniT_7h0_hg7E",
+      url: "https://www.youtube.com/@Cash_Mate",
       color: "red",
     },
   ];
@@ -365,7 +365,7 @@ function QuickActions({ onOpenModal, onOpenLeadForm }: QuickActionsProps) {
               Get instant pre-approval for personal or business loans
             </p>
             <button
-              onClick={onOpenLeadForm}
+               onClick={() => window.open("/apply_now", "_self")}
               className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
             >
               Apply Now
@@ -383,7 +383,7 @@ function QuickActions({ onOpenModal, onOpenLeadForm }: QuickActionsProps) {
               Find out if you qualify for our loan products
             </p>
             <button
-              onClick={onOpenModal}
+              onClick={() => window.open("/calculator", "_self")}
               className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
             >
               Check Now
