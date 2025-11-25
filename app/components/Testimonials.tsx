@@ -3,88 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Quote, Star, ChevronLeft, ChevronRight, Heart } from "lucide-react";
 
-// Enhanced testimonial data
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah M.",
-    role: "Small Business Owner",
-    location: "Mumbai",
-    image:
-      "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face",
-    savings: "₹8,500",
-    rating: 5,
-    testimonial:
-      "I couldn't believe the difference in rates. Infinz saved my business thousands! The process was incredibly smooth and the team was very supportive throughout.",
-    loanType: "Business Loan",
-  },
-  {
-    id: 2,
-    name: "Michael R.",
-    role: "Software Engineer",
-    location: "Bangalore",
-    image:
-      "https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face",
-    savings: "₹12,000",
-    rating: 5,
-    testimonial:
-      "The process was so smooth, and the savings were incredible! I got my home loan approved within 24 hours. Highly recommend Infinz to everyone.",
-    loanType: "Home Loan",
-  },
-  {
-    id: 3,
-    name: "Emily L.",
-    role: "Marketing Director",
-    location: "Delhi",
-    image:
-      "https://images.pexels.com/photos/3778603/pexels-photo-3778603.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face",
-    savings: "₹3,200",
-    rating: 5,
-    testimonial:
-      "Fast, easy, and saved me thousands. The customer service was exceptional and they guided me through every step of the process.",
-    loanType: "Personal Loan",
-  },
-  {
-    id: 4,
-    name: "Raj K.",
-    role: "Entrepreneur",
-    location: "Chennai",
-    image:
-      "https://images.pexels.com/photos/3785077/pexels-photo-3785077.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face",
-    savings: "₹15,000",
-    rating: 5,
-    testimonial:
-      "Infinz helped me secure the best rates for my startup. Their platform is user-friendly and the support team is amazing. Couldn't be happier!",
-    loanType: "Business Loan",
-  },
-  {
-    id: 5,
-    name: "Priya S.",
-    role: "Doctor",
-    location: "Pune",
-    image:
-      "https://images.pexels.com/photos/3778603/pexels-photo-3778603.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face",
-    savings: "₹6,800",
-    rating: 5,
-    testimonial:
-      "Professional service with transparent pricing. Got my car loan approved instantly with the best interest rates in the market. Thank you Infinz!",
-    loanType: "Auto Loan",
-  },
-  {
-    id: 6,
-    name: "Amit T.",
-    role: "Consultant",
-    location: "Hyderabad",
-    image:
-      "https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop&crop=face",
-    savings: "₹9,500",
-    rating: 5,
-    testimonial:
-      "The digital process was seamless and I saved significantly on my education loan. The team provided excellent guidance throughout the journey.",
-    loanType: "Education Loan",
-  },
-];
-
 // Unified ocean blue color scheme for all testimonials
 const oceanBlueColors = {
   bg: "from-blue-50 to-blue-100",
@@ -275,6 +193,63 @@ function Testimonials({ onOpenModal }: TestimonialsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch testimonials from API
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const res = await fetch("https://backend.infinz.seabed2crest.com/api/v1/testimonials", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
+        });
+
+        const json = await res.json();
+        console.log("API RESPONSE:", json);
+
+        if (json.success && Array.isArray(json.data)) {
+          // Transform API data to match component structure
+          const transformedData = json.data.map((item: any) => ({
+            id: item._id,
+            name: item.name,
+            role: item.role,
+            location: item.location,
+            image: `https://infinz.s3.ap-south-1.amazonaws.com/${item.image}`, // Adjust path as needed
+            savings: `₹${item.savedAmount.toLocaleString('en-IN')}`,
+            rating: item.rating,
+            testimonial: item.testimonial,
+            loanType: getLoanTypeLabel(item.category),
+          }));
+          setTestimonials(transformedData);
+        } else {
+          console.warn("Unexpected API format:", json);
+        }
+      } catch (error) {
+        console.error("FAILED TO FETCH TESTIMONIALS:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  // Helper function to format loan type
+  const getLoanTypeLabel = (category: string) => {
+    const categoryMap: { [key: string]: string } = {
+      'home': 'Home Loan',
+      'personal': 'Personal Loan',
+      'business': 'Business Loan',
+      'auto': 'Auto Loan',
+      'education': 'Education Loan',
+      'car': 'Car Loan',
+    };
+    return categoryMap[category.toLowerCase()] || `${category.charAt(0).toUpperCase() + category.slice(1)} Loan`;
+  };
 
   // Check scroll position
   const checkScrollPosition = () => {
@@ -297,7 +272,7 @@ function Testimonials({ onOpenModal }: TestimonialsProps) {
         scrollContainer.removeEventListener("scroll", checkScrollPosition);
       }
     };
-  }, []);
+  }, [testimonials]);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -348,44 +323,50 @@ function Testimonials({ onOpenModal }: TestimonialsProps) {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-center gap-4 mb-8">
-          <button
-            onClick={() => scroll("left")}
-            disabled={!canScrollLeft}
-            className={`
-              w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200
-              flex items-center justify-center transition-all duration-300
-              ${
-                canScrollLeft
-                  ? "hover:bg-blue-50 hover:border-blue-200 text-gray-700 hover:text-blue-600"
-                  : "text-gray-300 cursor-not-allowed"
-              }
-            `}
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            disabled={!canScrollRight}
-            className={`
-              w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200
-              flex items-center justify-center transition-all duration-300
-              ${
-                canScrollRight
-                  ? "hover:bg-blue-50 hover:border-blue-200 text-gray-700 hover:text-blue-600"
-                  : "text-gray-300 cursor-not-allowed"
-              }
-            `}
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        </div>
+        {!loading && testimonials.length > 0 && (
+          <div className="flex justify-center gap-4 mb-8">
+            <button
+              onClick={() => scroll("left")}
+              disabled={!canScrollLeft}
+              className={`
+                w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200
+                flex items-center justify-center transition-all duration-300
+                ${
+                  canScrollLeft
+                    ? "hover:bg-blue-50 hover:border-blue-200 text-gray-700 hover:text-blue-600"
+                    : "text-gray-300 cursor-not-allowed"
+                }
+              `}
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              disabled={!canScrollRight}
+              className={`
+                w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200
+                flex items-center justify-center transition-all duration-300
+                ${
+                  canScrollRight
+                    ? "hover:bg-blue-50 hover:border-blue-200 text-gray-700 hover:text-blue-600"
+                    : "text-gray-300 cursor-not-allowed"
+                }
+              `}
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          </div>
+        )}
 
         {/* Scrollable Testimonials */}
         <div className="relative">
           {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+          {!loading && testimonials.length > 0 && (
+            <>
+              <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+            </>
+          )}
 
           {/* Testimonials Container */}
           <div
@@ -397,45 +378,58 @@ function Testimonials({ onOpenModal }: TestimonialsProps) {
               scrollBehavior: "smooth",
             }}
           >
-            {testimonials.map((testimonial, index) => (
-              <TestimonialCard
-                key={testimonial.id}
-                testimonial={testimonial}
-                index={index}
-                isVisible={isInView}
-              />
-            ))}
+            {loading ? (
+              <div className="w-full text-center py-20">
+                <div className="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600">Loading testimonials...</p>
+              </div>
+            ) : testimonials.length === 0 ? (
+              <div className="w-full text-center py-20">
+                <p className="text-gray-600 text-lg">No testimonials available</p>
+              </div>
+            ) : (
+              testimonials.map((testimonial, index) => (
+                <TestimonialCard
+                  key={testimonial.id}
+                  testimonial={testimonial}
+                  index={index}
+                  isVisible={isInView}
+                />
+              ))
+            )}
           </div>
         </div>
 
         {/* Bottom Stats */}
-        <div
-          className={`mt-16 text-center transform transition-all duration-1000 ${
-            isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-          }`}
-          style={{ transitionDelay: "800ms" }}
-        >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            <div>
-              <div className="text-3xl font-bold text-blue-600 mb-2">50K+</div>
-              <div className="text-gray-600">Happy Customers</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-blue-500 mb-2">4.9/5</div>
-              <div className="text-gray-600">Average Rating</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-blue-600 mb-2">
-                ₹500Cr+
+        {!loading && testimonials.length > 0 && (
+          <div
+            className={`mt-16 text-center transform transition-all duration-1000 ${
+              isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
+            style={{ transitionDelay: "800ms" }}
+          >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+              <div>
+                <div className="text-3xl font-bold text-blue-600 mb-2">50K+</div>
+                <div className="text-gray-600">Happy Customers</div>
               </div>
-              <div className="text-gray-600">Total Disbursements</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-blue-500 mb-2">98%</div>
-              <div className="text-gray-600">Satisfaction Rate</div>
+              <div>
+                <div className="text-3xl font-bold text-blue-500 mb-2">4.9/5</div>
+                <div className="text-gray-600">Average Rating</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-blue-600 mb-2">
+                  ₹500Cr+
+                </div>
+                <div className="text-gray-600">Total Disbursements</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-blue-500 mb-2">98%</div>
+                <div className="text-gray-600">Satisfaction Rate</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

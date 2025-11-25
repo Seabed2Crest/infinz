@@ -62,9 +62,8 @@ function FooterColumn({
   return (
     <div
       ref={elementRef}
-      className={`transform transition-all duration-700 ${
-        isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-      }`}
+      className={`transform transition-all duration-700 ${isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+        }`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       <h4 className="text-lg font-bold text-gray-900 mb-6">{title}</h4>
@@ -153,7 +152,8 @@ function Footer() {
                 <img
                   src="/logo_colour.png"
                   alt="Infinz Logo"
-                  className="h-12 w-auto cursor-pointer"
+                  className="cursor-pointer transition-all duration-300 transform hover:scale-105 hover:rotate-1"
+                  style={{ height: "80px", width: "auto" }}
                   onClick={() => router.push("/")}
                 />
               </div>
@@ -225,7 +225,7 @@ function Footer() {
               <Users className="w-4 h-4" />
               About Us
             </FooterLink>
-            <FooterLink onClick={() => {}}>
+            <FooterLink onClick={() => { }}>
               <Users className="w-4 h-4" />
               Career
             </FooterLink>
@@ -245,19 +245,19 @@ function Footer() {
               <BookOpen className="w-4 h-4" />
               Blogs
             </FooterLink>
-            <FooterLink onClick={() => {}}>
+            <FooterLink onClick={() => { }}>
               <BookOpen className="w-4 h-4" />
               Financial Dictionary
             </FooterLink>
-            <FooterLink onClick={() => {}}>
+            <FooterLink onClick={() => { }}>
               <FileText className="w-4 h-4" />
               Featured
             </FooterLink>
-            <FooterLink onClick={() => {}}>
+            <FooterLink onClick={() => { }}>
               <Newspaper className="w-4 h-4" />
               Newsroom
             </FooterLink>
-            <FooterLink onClick={() => {}}>
+            <FooterLink onClick={() => { }}>
               <HelpCircle className="w-4 h-4" />
               FAQ
             </FooterLink>
@@ -303,9 +303,8 @@ function Footer() {
 
         {/* Bottom Section */}
         <div
-          className={`border-t border-gray-200 pt-8 transform transition-all duration-1000 ${
-            isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-          }`}
+          className={`border-t border-gray-200 pt-8 transform transition-all duration-1000 ${isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
           style={{ transitionDelay: "600ms" }}
         >
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
