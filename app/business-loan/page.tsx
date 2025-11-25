@@ -481,7 +481,7 @@ function ApplicationSteps() {
 
               <div className="mt-5 text-center">
                 <Link
-                  href="/apply_now"
+                   href="/calculator#eligibility-calculator"
                   className="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-blue-700 transition shadow-lg"
                 >
                   Check Eligibility Now
