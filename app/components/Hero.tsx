@@ -83,7 +83,7 @@ function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
               <button
                 onClick={() => {
                   if (currentSlide === 1) {
-                    router.push("/"); // 👈 second banner
+                    router.push("/apply_now"); // 👈 second banner
                   } else {
                     router.push("/personal-loan"); // 👈 first banner (default)
                   }
