@@ -102,32 +102,54 @@ export interface LoanFormData {
   tenure: string;
   mobileNumber: string;
 }
+interface RecommendedBank {
+  bankName: string;
+  utmLink: string;
+  priority: number;
+  loanAmountRange?: {  // ✅ Made optional
+    min: string;
+    max: string;
+  };
+  salaryRequired?: string;  // ✅ Made optional
+  ageRange?: {  // ✅ Made optional
+    min: string;
+    max: string;
+  };
+} 
 
 export interface LoanResponse {
   success: boolean;
   message: string;
-  data?: any;
+  data: any; 
+  recommendedBank?: RecommendedBank;   // ✅ ADD THIS
 }
+
 
 // Lead Form Service
 export const leadForm = {
   createLoan: async (formData: LoanFormData): Promise<LoanResponse> => {
     try {
       const res = await http.post(API_ROUTES.LEAD_FORM.CREATE, formData);
+
       return {
         success: true,
         message: res.data.message,
         data: res.data.data,
+        recommendedBank: res.data.recommendedBank, 
       };
     } catch (err: any) {
       return {
         success: false,
         message:
           err.response?.data?.error || err.message || "Something went wrong",
+        data: null,
+        recommendedBank: undefined,
       };
     }
   },
 };
+
+
 
 export const blogApi = {
   getAll: async () => {

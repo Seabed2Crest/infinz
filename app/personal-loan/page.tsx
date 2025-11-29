@@ -8,6 +8,7 @@ import {
 } from "../services/data.service";
 import LoanApplicationModal from "../components/LoanApplicationModal";
 import Faq from "../components/Faq";
+import UtmLinksSection from "../components/UtmLinksSection";
 import Link from "next/link";
 import {
   Calendar,
@@ -1112,6 +1113,11 @@ export default function PersonalLoanPage() {
       <EligibilityCriteria onOpenModal={() => setIsModalOpen(true)} />
       <DocumentsRequired />
       <LoanOffersSection />
+      <UtmLinksSection 
+        salary="20K" 
+        loanAmount="1L"
+        showWhenEmpty={true}
+      />
       <Faq topic="personal-loan" />
       <LoanApplicationModal
         isOpen={isModalOpen}

@@ -16,4 +16,9 @@ export const API_ROUTES = {
     LEAD_FORM:{
         CREATE: "/api/v1/leads/create"
     },
+    
+    //UTM LINKS ROUTE
+    UTM_LINKS: {
+        FILTER: "/api/v1/utm-links/filter"
+    },
 };

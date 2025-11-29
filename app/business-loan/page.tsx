@@ -14,6 +14,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import Faq from "../components/Faq";
+import UtmLinksSection from "../components/UtmLinksSection";
 import toast from "react-hot-toast";
 
 function BusinessLoanHero() {
@@ -706,6 +707,11 @@ export default function BusinessLoanPage() {
       <EligibilityCriteria />
       <DocumentsRequired />
       <LenderComparison />
+      <UtmLinksSection 
+        salary="20K" 
+        loanAmount="1L"
+        showWhenEmpty={true}
+      />
       <Faq topic="business-loan" />
     </>
   );
