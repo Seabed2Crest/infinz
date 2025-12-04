@@ -308,7 +308,7 @@ export default function ApplyNowClient() {
 
         const response = await PersonalLoanApply.createPersonalLoan(payload);
         if (response?.success) {
-          setLoanOffer(response.data.loanOffers);   // ✅ save the offer
+          setLoanOffer(response.data.loanOffers || null);   // ✅ save the offer (may be null)
           setStep("success");
         } else {
           setError(response?.message || "Failed to submit loan application");
@@ -370,7 +370,7 @@ export default function ApplyNowClient() {
       const response = await BusinessLoanService.createBusinessLoan(payload);
 
       if (response?.success) {
-        setLoanOffer(response?.data?.loanOffers);   // ✅ save the offer
+        setLoanOffer(response?.data?.loanOffers || null);   // ✅ save the offer (may be null)
         setStep("success");
       } else {
         setError(response?.message || "Failed to submit loan application");
@@ -1044,50 +1044,50 @@ export default function ApplyNowClient() {
             )}
 
             {/* SUCCESS */}
-            {step === "success" && loanOffer && (
+            {step === "success" && (
               <div className="space-y-6">
-
                 {/* HEADER */}
                 <div className="text-center">
                   <CheckCircle size={60} className="text-green-600 mx-auto" />
                   <h2 className="text-2xl font-semibold mt-3 text-gray-900">
-                    Loan Offer Available
+                    Application submitted successfully
                   </h2>
                   <p className="text-gray-600">
-                    You are eligible for this loan offer:
+                    We have received your application and will reach you shortly.
                   </p>
                 </div>
 
-                {/* OFFER CARD */}
-                <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md">
+                {/* If we have a bank offer, show it below the generic success message */}
+                {loanOffer && (
+                  <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md">
+                    {/* Bank Logo + Name */}
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={loanOffer.bankLogo}
+                        alt={loanOffer.bankName}
+                        className="w-14 h-14 rounded-xl object-contain bg-gray-100 p-2"
+                      />
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {loanOffer.bankName}
+                      </h3>
+                    </div>
 
-                  {/* Bank Logo + Name */}
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={loanOffer.bankLogo}
-                      alt={loanOffer.bankName}
-                      className="w-14 h-14 rounded-xl object-contain bg-gray-100 p-2"
-                    />
-                    <h3 className="text-xl font-bold text-gray-900">
-                      {loanOffer.bankName}
-                    </h3>
+                    {/* APPLY BUTTON */}
+                    <a
+                      href={loanOffer.utmLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="
+                        mt-6 block w-full text-center 
+                        bg-teal-600 hover:bg-teal-700 text-white
+                        font-semibold py-3 
+                        rounded-xl transition-all duration-200
+                      "
+                    >
+                      View Bank Offer
+                    </a>
                   </div>
-
-                  {/* APPLY BUTTON */}
-                  <a
-                    href={loanOffer.utmLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="
-          mt-6 block w-full text-center 
-        bg-teal-600 hover:bg-teal-700 text-white
-          text-white font-semibold py-3 
-          rounded-xl transition-all duration-200
-        "
-                  >
-                    Apply Now
-                  </a>
-                </div>
+                )}
               </div>
             )}
 
