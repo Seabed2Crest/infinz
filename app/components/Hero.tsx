@@ -16,7 +16,7 @@ const heroSlides = [
       { value: "100 CR", label: "Loans Facilitated" },
       { value: "98%", label: "Approval Rate" },
     ],
-      buttonText: "Get Offers Now",
+      buttonText: "Check & Apply",
     lottiePath: "/lottie/Animation - financial.json", // 👈 slide-specific Lottie
   },
   {
