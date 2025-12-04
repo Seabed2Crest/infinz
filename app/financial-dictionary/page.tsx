@@ -134,22 +134,7 @@ function SearchAndFilter({
               <ChevronDown className="inline w-4 ml-1" />
             </button>
 
-            {isFilterOpen && (
-              <div className="absolute bg-white shadow rounded mt-2">
-                {categories.map((cat) => (
-                  <div
-                    key={cat}
-                    className="px-4 py-2 hover:bg-teal-50 cursor-pointer"
-                    onClick={() => {
-                      setSelectedCategory(cat);
-                      setIsFilterOpen(false);
-                    }}
-                  >
-                    {cat}
-                  </div>
-                ))}
-              </div>
-            )}
+            
           </div>
         </div>
       </div>
@@ -265,7 +250,7 @@ export default function FinancialDictionaryPage() {
         categories={categories}
       />
 
-      <TermsGrid filteredTerms={filteredTerms} loading={loading} />
+     
 
       <CTASection onOpenModal={() => alert("Loan modal open")} />
     </>
