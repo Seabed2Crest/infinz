@@ -34,9 +34,6 @@ import {
   personalDetailsService,
   PersonalLoanApply,
 } from "../services/data.service";
-import UtmLinksSection from "../components/UtmLinksSection";
-
-
 
 // --- Types ---
 interface RecommendedBank {
@@ -48,8 +45,17 @@ interface RecommendedBank {
   ageRange?: { min: string; max: string };
 }
 
-export default function ApplyNowClient() {
+// Personal details type
+interface PersonalDetails {
+  fullName: string;
+  email: string;
+  dob: string;
+  panCard: string;
+  pincode: string;
+  phone?: string;
+}
 
+export default function ApplyNowClient() {
   const searchParams = useSearchParams();
   const apply = searchParams.get("apply");
   const loanType = searchParams.get("loan") || "personal";
@@ -67,11 +73,10 @@ export default function ApplyNowClient() {
 
   const [userData, setUserData] = useState<UserSchama | null>(null);
   const [token, setToken] = useState<Token | null>(null);
-  const [recommendedBank, setRecommendedBank] =
-    useState<RecommendedBank | null>(null);
+  const [recommendedBank, setRecommendedBank] = useState<RecommendedBank | null>(null);
 
   // --- PERSONAL DETAILS ---
-  const [personal, setPersonal] = useState({
+  const [personal, setPersonal] = useState<PersonalDetails>({
     fullName: "",
     email: "",
     dob: "",
@@ -118,21 +123,29 @@ export default function ApplyNowClient() {
     const saved = localStorage.getItem("mobileNumber");
     if (saved) {
       setMobile(saved);
-      setPersonal((p) => ({ ...p, phone: saved }));
     }
   }, []);
 
   // --- HELPERS ---
   const calculateAge = (dob: string) => {
+    if (!dob) return 0;
     const birth = new Date(dob);
+    if (isNaN(birth.getTime())) return 0;
     const today = new Date();
     let age = today.getFullYear() - birth.getFullYear();
     if (
       today.getMonth() < birth.getMonth() ||
-      (today.getMonth() === birth.getMonth() &&
-        today.getDate() < birth.getDate())
+      (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())
     ) age--;
     return age;
+  };
+
+  // Format date for input field (YYYY-MM-DD)
+  const formatDateForInput = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    return date.toISOString().split('T')[0];
   };
 
   // ================================
@@ -140,7 +153,10 @@ export default function ApplyNowClient() {
   // ================================
   const handleMobileSubmit = async () => {
     setError("");
-    if (mobile.length !== 10) return;
+    if (mobile.length !== 10) {
+      setError("Please enter a valid 10-digit mobile number");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -148,13 +164,12 @@ export default function ApplyNowClient() {
 
       if (res.success) {
         localStorage.setItem("mobileNumber", mobile);
-        setPersonal((p) => ({ ...p, phone: mobile }));
         setStep("otp");
       } else {
-        setError(res.message || "OTP failed");
+        setError(res.message || "Failed to send OTP");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "OTP Error");
+      setError(err.response?.data?.message || "Failed to send OTP");
     }
     setLoading(false);
   };
@@ -164,7 +179,10 @@ export default function ApplyNowClient() {
   // ================================
   const handleOtpSubmit = async () => {
     setError("");
-    if (otp.length !== 6) return;
+    if (otp.length !== 6) {
+      setError("Please enter the 6-digit OTP");
+      return;
+    }
 
     setOtpLoading(true);
     try {
@@ -179,19 +197,23 @@ export default function ApplyNowClient() {
         localStorage.setItem("accessToken", res.data.token.accessToken);
         setUserData(res.data.user);
 
-        setPersonal((p) => ({
-          ...p,
+        // ✅ Set ALL user data from API response
+        const dobFormatted = formatDateForInput(res.data.user.dateOfBirth || "");
+        
+        setPersonal({
           fullName: res.data.user.fullName || "",
-          dob: res.data.user.dateOfBirth || "",
+          email: res.data.user.email || "",
+          dob: dobFormatted,
+          panCard: res.data.user.pancardNumber || "",
           pincode: res.data.user.pinCode || "",
-        }));
+        });
 
         setStep("personal-details");
       } else {
-        setError(res.message || "Wrong OTP");
+        setError(res.message || "Invalid OTP");
       }
-    } catch {
-      setError("OTP verification failed");
+    } catch (err: any) {
+      setError("OTP verification failed. Please try again.");
     }
     setOtpLoading(false);
   };
@@ -203,62 +225,68 @@ export default function ApplyNowClient() {
     setOtp(arr.join(""));
 
     if (only && i < 5) {
-      document
-        .querySelectorAll<HTMLInputElement>('[data-otp="true"]')
-      [i + 1]?.focus();
+      document.querySelectorAll<HTMLInputElement>('[data-otp="true"]')[i + 1]?.focus();
     }
   };
 
   // ================================
   // ✅ PERSONAL DETAILS API
   // ================================
-  const handlePersonalSubmit = async () => {
-    setError("");
+// ================================
+// ✅ PERSONAL DETAILS API
+// ================================
+const handlePersonalSubmit = async () => {
+  setError("");
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
 
-    if (!personal.fullName || !personal.email || !personal.dob || !personal.panCard || !personal.pincode) {
-      setError("All fields required");
+  if (!personal.fullName || !personal.email || !personal.dob || !personal.panCard || !personal.pincode) {
+    setError("All fields are required");
+    return;
+  }
+
+  if (!emailRegex.test(personal.email)) {
+    setError("Invalid email address");
+    return;
+  }
+
+  if (!panRegex.test(personal.panCard.toUpperCase())) {
+    setError("Invalid PAN card format");
+    return;
+  }
+
+  if (!/^[0-9]{6}$/.test(personal.pincode)) {
+    setError("Pincode must be 6 digits");
+    return;
+  }
+
+  const age = calculateAge(personal.dob);
+  if (age < 18) {
+    setError("You must be at least 18 years old");
+    return;
+  }
+
+  try {
+    // Remove the 'phone' property from the payload since the service doesn't accept it
+    const res = await personalDetailsService.save({
+      fullName: personal.fullName,
+      email: personal.email,
+      dob: personal.dob,
+      panCard: personal.panCard,
+      pincode: personal.pincode,
+    });
+
+    if (!res.success) {
+      setError(res.message || "Failed to save personal details");
       return;
     }
 
-    if (!emailRegex.test(personal.email)) {
-      setError("Invalid Email");
-      return;
-    }
-
-    if (!panRegex.test(personal.panCard.toUpperCase())) {
-      setError("Invalid PAN Card");
-      return;
-    }
-
-    if (!/^[0-9]{6}$/.test(personal.pincode)) {
-      setError("Pincode must be 6 digits");
-      return;
-    }
-
-    if (calculateAge(personal.dob) < 18) {
-      setError("Age must be 18+");
-      return;
-    }
-
-    try {
-      const res = await personalDetailsService.save({
-        ...personal,
-
-      });
-
-      if (!res.success) {
-        setError(res.message || "Save failed");
-        return;
-      }
-
-      setStep("form");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Personal save error");
-    }
-  };
+    setStep("form");
+  } catch (err: any) {
+    setError(err.response?.data?.message || "Failed to save personal details");
+  }
+};
 
   // ================================
   // ✅ LOAN API
@@ -291,24 +319,18 @@ export default function ApplyNowClient() {
           loanPurpose: "personal-loan",
           monthlyIncome: formData.netMonthlyIncome,
           loanAmountRequired: formData.requiredLoanAmount,
-          // Backend requires emiTenure; using a sensible default
           emiTenure: "12",
           mobileNumber: mobile,
           salarySlipUrl,
-          employmentType: formData.employmentType as
-            | "salaried"
-            | "self-employed",
-          salaryPaymentMode: formData.salaryPaymentMode as
-            | "cash"
-            | "inhand"
-            | "bank",
+          employmentType: formData.employmentType as "salaried" | "self-employed",
+          salaryPaymentMode: formData.salaryPaymentMode as "cash" | "inhand" | "bank",
           companyOrBusinessName: formData.companyOrBusinessName,
           companyPinCode: formData.companyPinCode,
         };
 
         const response = await PersonalLoanApply.createPersonalLoan(payload);
         if (response?.success) {
-          setLoanOffer(response.data.loanOffers || null);   // ✅ save the offer (may be null)
+          setLoanOffer(response.data.loanOffers || null);
           setStep("success");
         } else {
           setError(response?.message || "Failed to submit loan application");
@@ -343,24 +365,12 @@ export default function ApplyNowClient() {
 
       const payload = {
         requiredLoanAmount: businessForm.requiredLoanAmount,
-        employmentType: businessForm.employmentType as
-          | "salaried"
-          | "self-employed",
+        employmentType: businessForm.employmentType as "salaried" | "self-employed",
         businessName: businessForm.businessName,
-        companyType: businessForm.companyType as
-          | "Proprietorship"
-          | "Partnership"
-          | "Pvt Ltd"
-          | "LLP"
-          | "Others",
+        companyType: businessForm.companyType as "Proprietorship" | "Partnership" | "Pvt Ltd" | "LLP" | "Others",
         annualTurnover: businessForm.annualTurnover,
         industryType: businessForm.industryType,
-        registrationType: businessForm.registrationType as
-          | "GST"
-          | "SHOP"
-          | "FSSAI"
-          | "TRADE"
-          | "OTHERS",
+        registrationType: businessForm.registrationType as "GST" | "SHOP" | "FSSAI" | "TRADE" | "OTHERS",
         registrationNumber: businessForm.registrationNumber,
         incorporationDate: businessForm.incorporationDate,
         businessPincode: businessForm.businessPincode,
@@ -370,7 +380,7 @@ export default function ApplyNowClient() {
       const response = await BusinessLoanService.createBusinessLoan(payload);
 
       if (response?.success) {
-        setLoanOffer(response?.data?.loanOffers || null);   // ✅ save the offer (may be null)
+        setLoanOffer(response?.data?.loanOffers || null);
         setStep("success");
       } else {
         setError(response?.message || "Failed to submit loan application");
@@ -385,9 +395,7 @@ export default function ApplyNowClient() {
   // ================================
   // ✅ SALARY SLIP UPLOAD (PRESIGNED URL)
   // ================================
-  const handleSalarySlipChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleSalarySlipChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -417,8 +425,7 @@ export default function ApplyNowClient() {
         body: file,
       });
 
-      // Hard-coded bucket name used for the URL saved in DB
-      const BUCKET_NAME = "infinz"; // TODO: replace with real bucket
+      const BUCKET_NAME = "infinz";
       const publicUrl = `https://${BUCKET_NAME}.s3.amazonaws.com/${key}`;
       setSalarySlipUrl(publicUrl);
     } catch (uploadErr: any) {
@@ -435,48 +442,34 @@ export default function ApplyNowClient() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-100">
       <div className="container mx-auto px-4 py-12">
-
         <div className="bg-white shadow-xl rounded-3xl max-w-4xl mx-auto grid md:grid-cols-2 overflow-hidden">
-
           {/* LEFT */}
           <div className="hidden md:flex bg-teal-600 text-white p-10 flex-col items-center justify-center">
-            <Image src="/3d-hand-hold-smartphone-with-authentication-form.jpg" width={260} height={260} alt="" />
+            <Image src="/3d-hand-hold-smartphone-with-authentication-form.jpg" width={260} height={260} alt="Loan Application" />
             <h2 className="text-2xl font-bold mt-4">Instant Loan upto ₹1Cr</h2>
             <p className="opacity-90">Fast approvals, no paperwork</p>
           </div>
 
           {/* RIGHT */}
           <div className="p-8">
-
             {/* MOBILE */}
             {step === "mobile" && (
-              <div className="w-full max-w-sm mx-auto bg-gray-900 p-6 rounded-2xl shadow-lg">
-                <h2 className="text-2xl font-semibold text-white mb-5 text-center">
+              <div className="w-full max-w-sm mx-auto p-6 rounded-2xl shadow-lg">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-5 text-center">
                   Enter Mobile Number
                 </h2>
-
                 <div className="space-y-4">
                   <input
                     value={mobile}
-                    onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
+                    onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
                     maxLength={10}
                     placeholder="Enter 10-digit mobile number"
-                    className="
-          w-full px-4 py-3 rounded-xl bg-gray-800 text-white 
-          placeholder-gray-400 border border-gray-700 
-          focus:outline-none focus:ring-2 focus:ring-orange-500
-        "
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
-
                   <button
                     onClick={handleMobileSubmit}
                     disabled={loading || mobile.length !== 10}
-                    className="
-          w-full py-3 rounded-xl text-center font-semibold
-          bg-orange-600 hover:bg-orange-700 
-          disabled:bg-gray-700 disabled:cursor-not-allowed
-          text-white transition-all duration-200
-        "
+                    className="bg-teal-600 hover:bg-teal-700 text-white w-full py-3 rounded-xl font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? "Sending OTP..." : "Continue"}
                   </button>
@@ -484,13 +477,12 @@ export default function ApplyNowClient() {
               </div>
             )}
 
-
             {/* OTP */}
             {step === "otp" && (
               <>
                 <h2 className="text-2xl font-bold mb-2">Verify OTP</h2>
                 <p className="text-sm text-gray-500 mb-4">
-                  We&apos;ve sent a 6‑digit OTP to <span className="font-semibold">{mobile}</span>.
+                  We've sent a 6-digit OTP to <span className="font-semibold">{mobile}</span>.
                   Enter it below to continue.
                 </p>
                 <div className="flex justify-center gap-2 mb-6">
@@ -508,10 +500,7 @@ export default function ApplyNowClient() {
                 <button
                   onClick={handleOtpSubmit}
                   disabled={otp.length !== 6 || otpLoading}
-                  className={`w-full py-3 rounded-xl font-semibold transition ${otp.length !== 6 || otpLoading
-                    ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                    : "bg-teal-600 hover:bg-teal-700 text-white"
-                    }`}
+                  className="w-full py-3 rounded-xl font-semibold transition bg-teal-600 hover:bg-teal-700 text-white disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
                 >
                   {otpLoading ? "Verifying OTP..." : "Verify & Continue"}
                 </button>
@@ -523,28 +512,22 @@ export default function ApplyNowClient() {
               <>
                 <h2 className="text-2xl font-bold mb-2">Personal Details</h2>
                 <p className="text-sm text-gray-500 mb-6">
-                  Make sure your details match your PAN card records.
+                  Your details have been pre-filled. Please verify and make changes if needed.
                 </p>
 
                 <div className="space-y-4">
-
                   {/* Full Name */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Full Name
                     </label>
                     <div className="relative">
-                      <User
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                        size={18}
-                      />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                       <input
                         className="w-full pl-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
                         placeholder="Enter your full name"
                         value={personal.fullName}
-                        onChange={(e) =>
-                          setPersonal({ ...personal, fullName: e.target.value })
-                        }
+                        onChange={(e) => setPersonal({ ...personal, fullName: e.target.value })}
                       />
                     </div>
                   </div>
@@ -555,18 +538,13 @@ export default function ApplyNowClient() {
                       Email Address
                     </label>
                     <div className="relative">
-                      <Mail
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                        size={18}
-                      />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                       <input
                         type="email"
                         className="w-full pl-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
                         placeholder="example@email.com"
                         value={personal.email}
-                        onChange={(e) =>
-                          setPersonal({ ...personal, email: e.target.value })
-                        }
+                        onChange={(e) => setPersonal({ ...personal, email: e.target.value })}
                       />
                     </div>
                   </div>
@@ -577,17 +555,12 @@ export default function ApplyNowClient() {
                       Date of Birth
                     </label>
                     <div className="relative">
-                      <CalendarDays
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                        size={18}
-                      />
+                      <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                       <input
                         type="date"
                         className="w-full pl-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
                         value={personal.dob}
-                        onChange={(e) =>
-                          setPersonal({ ...personal, dob: e.target.value })
-                        }
+                        onChange={(e) => setPersonal({ ...personal, dob: e.target.value })}
                       />
                     </div>
                     {personal.dob && (
@@ -603,20 +576,12 @@ export default function ApplyNowClient() {
                       PAN Card
                     </label>
                     <div className="relative">
-                      <CreditCard
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                        size={18}
-                      />
+                      <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                       <input
                         className="w-full pl-10 py-3 uppercase border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
                         placeholder="ABCDE1234F"
                         value={personal.panCard}
-                        onChange={(e) =>
-                          setPersonal({
-                            ...personal,
-                            panCard: e.target.value.toUpperCase(),
-                          })
-                        }
+                        onChange={(e) => setPersonal({ ...personal, panCard: e.target.value.toUpperCase() })}
                       />
                     </div>
                   </div>
@@ -627,38 +592,42 @@ export default function ApplyNowClient() {
                       Pincode
                     </label>
                     <div className="relative">
-                      <MapPin
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                        size={18}
-                      />
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                       <input
                         maxLength={6}
                         className="w-full pl-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
                         placeholder="Enter pincode"
                         value={personal.pincode}
-                        onChange={(e) =>
-                          setPersonal({
-                            ...personal,
-                            pincode: e.target.value.replace(/\D/g, ""),
-                          })
-                        }
+                        onChange={(e) => setPersonal({ ...personal, pincode: e.target.value.replace(/\D/g, "") })}
                       />
                     </div>
                   </div>
 
-                  {/* Phone */}
+                  {/* Phone - Read only */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone Number
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <input
+                        className="w-full pl-10 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                        value={mobile}
+                        readOnly
+                        disabled
+                      />
+                    </div>
+                  </div>
 
                   <button
                     onClick={handlePersonalSubmit}
                     className="w-full mt-4 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-xl transition"
                   >
-                    Save & Continue
+                    Verify & Continue
                   </button>
                 </div>
               </>
             )}
-
-
 
             {/* LOAN - PERSONAL */}
             {step === "form" && loanType !== "business" && (
@@ -1047,20 +1016,23 @@ export default function ApplyNowClient() {
             {step === "success" && (
               <div className="space-y-6">
                 {/* HEADER */}
-                <div className="text-center">
-                  <CheckCircle size={60} className="text-green-600 mx-auto" />
-                  <h2 className="text-2xl font-semibold mt-3 text-gray-900">
-                    Application submitted successfully
-                  </h2>
-                  <p className="text-gray-600">
-                    We have received your application and will reach you shortly.
-                  </p>
-                </div>
+                {loanOffer !== null && (
+                  <div className="text-center">
+                    <CheckCircle size={60} className="text-green-600 mx-auto" />
+                    <h2 className="text-2xl font-semibold mt-3 text-gray-900">
+                      Application submitted successfully
+                    </h2>
+                    <p className="text-gray-600">
+                      We have received your application and will reach you shortly.
+                    </p>
+                  </div>
+                )}
 
                 {/* If we have a bank offer, show it below the generic success message */}
                 {loanOffer && (
                   <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md">
                     {/* Bank Logo + Name */}
+                    <p>Congratulations! Your loan details match perfectly with {loanOffer.bankName}. To provide the best offers tailored to you. Tap the button below to securely continue your application.</p>
                     <div className="flex items-center gap-4">
                       <img
                         src={loanOffer.bankLogo}
@@ -1077,12 +1049,7 @@ export default function ApplyNowClient() {
                       href={loanOffer.utmLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="
-                        mt-6 block w-full text-center 
-                        bg-teal-600 hover:bg-teal-700 text-white
-                        font-semibold py-3 
-                        rounded-xl transition-all duration-200
-                      "
+                      className="mt-6 block w-full text-center bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-xl transition-all duration-200"
                     >
                       View Bank Offer
                     </a>
@@ -1091,10 +1058,11 @@ export default function ApplyNowClient() {
               </div>
             )}
 
-
-
-            {error && <p className="text-red-500 mt-3">{error}</p>}
-
+            {error && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

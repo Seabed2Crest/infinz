@@ -4,8 +4,8 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-export const BASE_URL = "https://backend.infinz.seabed2crest.com";
-// export const BASE_URL = "http://localhost:8085";
+// export const BASE_URL = "https://backend.infinz.seabed2crest.com";
+export const BASE_URL = "http://localhost:8085";
 const http = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
