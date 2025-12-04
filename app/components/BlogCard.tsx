@@ -14,6 +14,7 @@ export default function BlogCard({ blog, index }: any) {
         <div className="h-48 w-full overflow-hidden">
           <img
             src={blog.thumbnail || "https://via.placeholder.com/600x400"}
+            alt={blog.thumbnailAlt || blog.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           />
         </div>

@@ -222,6 +222,38 @@ export const blogApi = {
   },
 };
 
+// ------------------- NEWS & PRESS RELEASES -------------------
+
+export interface NewsItem {
+  _id: string;
+  title: string;
+  slug: string;
+  type: "news" | "press-release";
+  summary: string;
+  content: string;
+  imageUrl: string;
+  imageKey?: string;
+  publishedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export const newsApi = {
+  getAll: async (type?: "news" | "press-release") => {
+    const params = new URLSearchParams();
+    if (type) params.set("type", type);
+    const query = params.toString();
+    const res = await fetch(
+      `${BASE_URL}/api/v1/news${query ? `?${query}` : ""}`
+    );
+    return res.json();
+  },
+  getById: async (id: string) => {
+    const res = await fetch(`${BASE_URL}/api/v1/news/${id}`);
+    return res.json();
+  },
+};
+
 
 
 

@@ -152,7 +152,6 @@ function Header() {
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
                   <button
                     onClick={() => {
-
                       router.push("/blogs");
                       setActiveDropdown(null);
                     }}
@@ -171,6 +170,7 @@ function Header() {
                   </button>
                   <button
                     onClick={() => {
+                      router.push("/news-and-press");
                       setActiveDropdown(null);
                     }}
                     className="block w-full text-left px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300 transform hover:translate-x-1"
@@ -357,7 +357,10 @@ function Header() {
                 {activeDropdown === "resources-mobile" && (
                   <div className="ml-4 mt-2 space-y-2">
                     <button
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => {
+                        router.push("/blogs");
+                        setIsMenuOpen(false);
+                      }}
                       className="text-gray-500 hover:text-blue-600 text-left block transition-all duration-300 transform hover:translate-x-1"
                     >
                       Blogs
@@ -372,7 +375,10 @@ function Header() {
                       Financial Dictionary
                     </button>
                     <button
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => {
+                        router.push("/news-and-press");
+                        setIsMenuOpen(false);
+                      }}
                       className="text-gray-500 hover:text-blue-600 text-left block transition-all duration-300 transform hover:translate-x-1"
                     >
                       News & Press Releases
