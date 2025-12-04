@@ -19,6 +19,7 @@ import http from "../http.common";
 // Type definitions
 interface FinancialTerm {
   _id?: string;
+  
   term: string;
   definition: string;
   category: string;
@@ -49,166 +50,201 @@ interface CTASectionProps {
 // Default fallback terms (used until API loads)
 const defaultFinancialTerms: FinancialTerm[] = [
   {
-    id: 1,
+    _id: "1",
     term: "Annual Percentage Rate (APR)",
-    definition: "The yearly interest rate charged on loans or credit cards, including fees and other costs. It represents the true cost of borrowing money over a year.",
+    definition:
+      "The yearly interest rate charged on loans or credit cards, including fees and other costs. It represents the true cost of borrowing money over a year.",
     category: "Interest Rates",
-    example: "A credit card with 18% APR means you'll pay 18% interest annually on outstanding balances.",
-    icon: "📊"
+    example:
+      "A credit card with 18% APR means you'll pay 18% interest annually on outstanding balances.",
+    icon: "📊",
   },
   {
-    id: 2,
+    _id: "2",
     term: "Credit Score",
-    definition: "A numerical representation of your creditworthiness, ranging from 300-900. Higher scores indicate better credit health and lower risk to lenders.",
+    definition:
+      "A numerical representation of your creditworthiness, ranging from 300-900. Higher scores indicate better credit health and lower risk to lenders.",
     category: "Credit",
-    example: "A credit score of 750+ typically qualifies for the best loan rates and terms.",
-    icon: "🎯"
+    example:
+      "A credit score of 750+ typically qualifies for the best loan rates and terms.",
+    icon: "🎯",
   },
   {
-    id: 3,
+    _id: "3",
     term: "EMI (Equated Monthly Installment)",
-    definition: "A fixed payment amount made by a borrower to a lender on a specific date each month. It includes both principal and interest components.",
+    definition:
+      "A fixed payment amount made by a borrower to a lender on a specific date each month. It includes both principal and interest components.",
     category: "Loans",
-    example: "A ₹5 lakh personal loan at 12% for 3 years has an EMI of approximately ₹16,607.",
-    icon: "💰"
+    example:
+      "A ₹5 lakh personal loan at 12% for 3 years has an EMI of approximately ₹16,607.",
+    icon: "💰",
   },
   {
-    id: 4,
+    _id: "4",
     term: "Collateral",
-    definition: "An asset pledged as security for a loan. If the borrower defaults, the lender can seize the collateral to recover the loan amount.",
+    definition:
+      "An asset pledged as security for a loan. If the borrower defaults, the lender can seize the collateral to recover the loan amount.",
     category: "Security",
-    example: "Your home serves as collateral for a home loan, your car for an auto loan.",
-    icon: "🏠"
+    example:
+      "Your home serves as collateral for a home loan, your car for an auto loan.",
+    icon: "🏠",
   },
   {
-    id: 5,
+    _id: "5",
     term: "Pre-approval",
-    definition: "A preliminary assessment by a lender indicating how much you can borrow and at what terms, before you formally apply for a loan.",
+    definition:
+      "A preliminary assessment by a lender indicating how much you can borrow and at what terms, before you formally apply for a loan.",
     category: "Loan Process",
     example: "Getting pre-approved helps you shop for homes within your budget range.",
-    icon: "✅"
+    icon: "✅",
   },
   {
-    id: 6,
+    _id: "6",
     term: "Debt-to-Income Ratio (DTI)",
-    definition: "The percentage of your monthly income that goes toward paying debts. Lenders use this to assess your ability to take on new debt.",
+    definition:
+      "The percentage of your monthly income that goes toward paying debts. Lenders use this to assess your ability to take on new debt.",
     category: "Credit",
-    example: "If you earn ₹50,000/month and pay ₹15,000 in EMIs, your DTI is 30%.",
-    icon: "⚖️"
+    example:
+      "If you earn ₹50,000/month and pay ₹15,000 in EMIs, your DTI is 30%.",
+    icon: "⚖️",
   },
   {
-    id: 7,
+    _id: "7",
     term: "Principal Amount",
-    definition: "The original amount of money borrowed in a loan, excluding interest and fees. This is the base amount on which interest is calculated.",
+    definition:
+      "The original amount of money borrowed in a loan, excluding interest and fees. This is the base amount on which interest is calculated.",
     category: "Loans",
     example: "On a ₹10 lakh home loan, the principal amount is ₹10 lakh.",
-    icon: "📈"
+    icon: "📈",
   },
   {
-    id: 8,
+    _id: "8",
     term: "Grace Period",
-    definition: "A period after the due date during which payment can be made without penalty. Common in credit cards and some loans.",
+    definition:
+      "A period after the due date during which payment can be made without penalty. Common in credit cards and some loans.",
     category: "Payment Terms",
-    example: "Most credit cards offer a 15-21 day grace period for payments.",
-    icon: "⏰"
+    example: "Most credit cards offer a 15–21 day grace period for payments.",
+    icon: "⏰",
   },
   {
-    id: 9,
+    _id: "9",
     term: "Fixed Interest Rate",
-    definition: "An interest rate that remains constant throughout the loan term. Provides predictable monthly payments but may be higher initially.",
+    definition:
+      "An interest rate that remains constant throughout the loan term. Provides predictable monthly payments but may be higher initially.",
     category: "Interest Rates",
-    example: "A 5-year personal loan at 12% fixed rate means 12% for the entire 5 years.",
-    icon: "🔒"
+    example:
+      "A 5-year personal loan at 12% fixed rate means 12% for the entire 5 years.",
+    icon: "🔒",
   },
   {
-    id: 10,
+    _id: "10",
     term: "Variable Interest Rate",
-    definition: "An interest rate that can change based on market conditions or a benchmark rate. Payments may increase or decrease over time.",
+    definition:
+      "An interest rate that can change based on market conditions or a benchmark rate. Payments may increase or decrease over time.",
     category: "Interest Rates",
-    example: "Home loans often start with lower variable rates that adjust with market conditions.",
-    icon: "📊"
+    example:
+      "Home loans often start with lower variable rates that adjust with market conditions.",
+    icon: "📊",
   },
   {
-    id: 11,
+    _id: "11",
     term: "Processing Fee",
-    definition: "A one-time charge levied by lenders to cover administrative costs of processing a loan application. Usually 1-3% of loan amount.",
+    definition:
+      "A one-time charge levied by lenders to cover administrative costs of processing a loan application. Usually 1–3% of loan amount.",
     category: "Fees",
     example: "A ₹5 lakh loan with 2% processing fee costs ₹10,000 upfront.",
-    icon: "💳"
+    icon: "💳",
   },
   {
-    id: 12,
+    _id: "12",
     term: "Prepayment",
-    definition: "Paying off part or all of a loan before the scheduled due date. May involve prepayment charges depending on loan terms.",
+    definition:
+      "Paying off part or all of a loan before the scheduled due date. May involve prepayment charges depending on loan terms.",
     category: "Payment Terms",
-    example: "Paying an extra ₹10,000 on your home loan principal reduces future interest.",
-    icon: "⚡"
+    example:
+      "Paying an extra ₹10,000 on your home loan principal reduces future interest.",
+    icon: "⚡",
   },
   {
-    id: 13,
+    _id: "13",
     term: "Credit Utilization",
-    definition: "The percentage of your available credit that you're currently using. Lower utilization (under 30%) improves credit scores.",
+    definition:
+      "The percentage of your available credit that you're currently using. Lower utilization (under 30%) improves credit scores.",
     category: "Credit",
-    example: "If you have ₹1 lakh credit limit and ₹20,000 balance, utilization is 20%.",
-    icon: "📊"
+    example:
+      "If you have ₹1 lakh credit limit and ₹20,000 balance, utilization is 20%.",
+    icon: "📊",
   },
   {
-    id: 14,
+    _id: "14",
     term: "Loan Tenure",
-    definition: "The total duration over which a loan must be repaid. Longer tenures mean lower EMIs but higher total interest.",
+    definition:
+      "The total duration over which a loan must be repaid. Longer tenures mean lower EMIs but higher total interest.",
     category: "Loans",
     example: "A 5-year personal loan has 60 monthly EMIs.",
-    icon: "📅"
+    icon: "📅",
   },
   {
-    id: 15,
+    _id: "15",
     term: "Foreclosure",
-    definition: "Paying off the entire outstanding loan amount before the scheduled tenure ends. May involve foreclosure charges.",
+    definition:
+      "Paying off the entire outstanding loan amount before the scheduled tenure ends. May involve foreclosure charges.",
     category: "Payment Terms",
-    example: "Selling your home and using proceeds to close the home loan early.",
-    icon: "🏁"
+    example:
+      "Selling your home and using proceeds to close the home loan early.",
+    icon: "🏁",
   },
   {
-    id: 16,
+    _id: "16",
     term: "Guarantor",
-    definition: "A person who agrees to repay the loan if the primary borrower defaults. Provides additional security to the lender.",
+    definition:
+      "A person who agrees to repay the loan if the primary borrower defaults. Provides additional security to the lender.",
     category: "Security",
-    example: "A family member co-signing your loan application as guarantor.",
-    icon: "🤝"
+    example:
+      "A family member co-signing your loan application as guarantor.",
+    icon: "🤝",
   },
   {
-    id: 17,
+    _id: "17",
     term: "KYC (Know Your Customer)",
-    definition: "The process of verifying a customer's identity and address through official documents. Mandatory for all financial transactions.",
+    definition:
+      "The process of verifying a customer's identity and address through official documents. Mandatory for all financial transactions.",
     category: "Compliance",
     example: "Submitting Aadhaar, PAN, and address proof for loan application.",
-    icon: "🆔"
+    icon: "🆔",
   },
   {
-    id: 18,
+    _id: "18",
     term: "Moratorium Period",
-    definition: "A temporary suspension of loan payments, usually during financial hardship. Interest may continue to accrue.",
+    definition:
+      "A temporary suspension of loan payments, usually during financial hardship. Interest may continue to accrue.",
     category: "Payment Terms",
-    example: "COVID-19 moratorium allowed borrowers to pause EMIs for 3-6 months.",
-    icon: "⏸️"
+    example:
+      "COVID-19 moratorium allowed borrowers to pause EMIs for 3–6 months.",
+    icon: "⏸️",
   },
   {
-    id: 19,
+    _id: "19",
     term: "Secured Loan",
-    definition: "A loan backed by collateral (like property or vehicle). Generally offers lower interest rates due to reduced risk.",
+    definition:
+      "A loan backed by collateral (like property or vehicle). Generally offers lower interest rates due to reduced risk.",
     category: "Loan Types",
-    example: "Home loans, car loans, and gold loans are secured loans.",
-    icon: "🔐"
+    example:
+      "Home loans, car loans, and gold loans are secured loans.",
+    icon: "🔐",
   },
   {
-    id: 20,
+    _id: "20",
     term: "Unsecured Loan",
-    definition: "A loan not backed by collateral, based purely on creditworthiness. Higher interest rates due to increased risk.",
+    definition:
+      "A loan not backed by collateral, based purely on creditworthiness. Higher interest rates due to increased risk.",
     category: "Loan Types",
-    example: "Personal loans, credit cards, and education loans are typically unsecured.",
-    icon: "🎯"
-  }
+    example:
+      "Personal loans, credit cards, and education loans are typically unsecured.",
+    icon: "🎯",
+  },
 ];
+
 
 // Hero Section
 function DictionaryHero() {
