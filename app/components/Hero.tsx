@@ -10,13 +10,13 @@ const heroSlides = [
     title: "Find the right solution for all your",
     subtitle: "financial needs",
     description:
-      "Compare personalized loan offers from 50+ top lenders and choose the best rates, terms, and features that match your unique requirements",
-    buttonText: "Compare & Apply",
+      "Get personalized loan offers from 30+ trusted lending partners - the best rates, terms, and features that match your unique requirements",
     stats: [
       { value: "50+", label: "Trusted Lenders" },
       { value: "100 CR", label: "Loans Facilitated" },
       { value: "98%", label: "Approval Rate" },
     ],
+      buttonText: "Get Offers Now",
     lottiePath: "/lottie/Animation - financial.json", // 👈 slide-specific Lottie
   },
   {
