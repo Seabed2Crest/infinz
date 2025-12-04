@@ -9,7 +9,7 @@ export interface VerifyOtpPayload {
 }
 
 
-export interface User {
+export interface UserSchama {
     fullName: string;
     email: string;
     phoneNumber: string;
@@ -29,7 +29,7 @@ export interface VerifyOtpResponse {
     status: number;
     message: string;
     data: {
-        user: User;
+        user: UserSchama;
         token: Token;
     };
 }

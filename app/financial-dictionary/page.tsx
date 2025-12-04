@@ -1,18 +1,30 @@
 'use client';
 
-import { useState, useEffect, useRef } from "react";
-import { Search, BookOpen, TrendingUp, DollarSign, CreditCard, Building2, Calculator, Shield, ArrowRight, Filter, X, ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Search,
+  BookOpen,
+  TrendingUp,
+  DollarSign,
+  Calculator,
+  Shield,
+  ArrowRight,
+  Filter,
+  ChevronDown,
+} from "lucide-react";
 import Image from "next/image";
 import LoanApplicationModal from "../components/LoanApplicationModal";
+import http from "../http.common";
 
 // Type definitions
 interface FinancialTerm {
-  id: number;
+  _id?: string;
   term: string;
   definition: string;
   category: string;
-  example: string;
-  icon: string;
+  example?: string;
+  icon?: string;
+  iconUrl?: string;
 }
 
 interface SearchAndFilterProps {
@@ -22,6 +34,7 @@ interface SearchAndFilterProps {
   setSelectedCategory: (category: string) => void;
   isFilterOpen: boolean;
   setIsFilterOpen: (open: boolean) => void;
+  categories: string[];
 }
 
 interface TermsGridProps {
@@ -33,8 +46,8 @@ interface CTASectionProps {
   onOpenModal: () => void;
 }
 
-// Financial terms data
-const financialTerms: FinancialTerm[] = [
+// Default fallback terms (used until API loads)
+const defaultFinancialTerms: FinancialTerm[] = [
   {
     id: 1,
     term: "Annual Percentage Rate (APR)",
@@ -197,8 +210,6 @@ const financialTerms: FinancialTerm[] = [
   }
 ];
 
-const categories = ["All", "Interest Rates", "Credit", "Loans", "Security", "Loan Process", "Payment Terms", "Fees", "Compliance", "Loan Types"];
-
 // Hero Section
 function DictionaryHero() {
   return (
@@ -263,7 +274,15 @@ function DictionaryHero() {
 }
 
 // Search and Filter Section
-function SearchAndFilter({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, isFilterOpen, setIsFilterOpen }: SearchAndFilterProps) {
+function SearchAndFilter({
+  searchTerm,
+  setSearchTerm,
+  selectedCategory,
+  setSelectedCategory,
+  isFilterOpen,
+  setIsFilterOpen,
+  categories,
+}: SearchAndFilterProps) {
   return (
     <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -321,7 +340,11 @@ function SearchAndFilter({ searchTerm, setSearchTerm, selectedCategory, setSelec
 }
 
 // Terms Grid
-function TermsGrid({ filteredTerms, onOpenModal }: TermsGridProps) {
+function TermsGrid({
+  filteredTerms,
+  onOpenModal,
+  loading = false,
+}: TermsGridProps & { loading?: boolean }) {
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -333,49 +356,69 @@ function TermsGrid({ filteredTerms, onOpenModal }: TermsGridProps) {
             Click on any term to learn more about it
           </p>
         </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredTerms.map((term: FinancialTerm, index: number) => (
-            <div
-              key={term.id}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="flex items-start gap-4 mb-4">
-                <div className="text-3xl">{term.icon}</div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {term.term}
-                  </h3>
-                  <span className="inline-block bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-sm font-semibold">
-                    {term.category}
-                  </span>
-                </div>
-              </div>
-              
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                {term.definition}
-              </p>
-              
-              <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                <h4 className="text-sm font-semibold text-gray-700 mb-2">Example:</h4>
-                <p className="text-sm text-gray-600 italic">
-                  {term.example}
-                </p>
-              </div>
-              
-              <button
-                onClick={onOpenModal}
-                className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">Loading financial terms...</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredTerms.map((term: FinancialTerm, index: number) => (
+              <div
+                key={term._id || term.term}
+                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                Apply for Loan
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-        
-        {filteredTerms.length === 0 && (
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="text-3xl">
+                    {term.iconUrl ? (
+                      <img
+                        src={term.iconUrl}
+                        alt={term.term}
+                        className="w-12 h-12 rounded-xl object-cover border border-gray-200"
+                      />
+                    ) : (
+                      term.icon || "📘"
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      {term.term}
+                    </h3>
+                    <span className="inline-block bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-sm font-semibold">
+                      {term.category}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-gray-600 mb-4 leading-relaxed">
+                  {term.definition}
+                </p>
+
+                {term.example && (
+                  <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                      Example:
+                    </h4>
+                    <p className="text-sm text-gray-600 italic">
+                      {term.example}
+                    </p>
+                  </div>
+                )}
+
+                <button
+                  onClick={onOpenModal}
+                  className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  Apply for Loan
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {filteredTerms.length === 0 && !loading && (
           <div className="text-center py-12">
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Search className="w-12 h-12 text-gray-400" />
@@ -394,12 +437,18 @@ function TermsGrid({ filteredTerms, onOpenModal }: TermsGridProps) {
 }
 
 // Quick Stats Section
-function QuickStats() {
+function QuickStats({
+  termCount,
+  categoryCount,
+}: {
+  termCount: number;
+  categoryCount: number;
+}) {
   const stats = [
-    { label: "Financial Terms", value: "20+", icon: BookOpen },
-    { label: "Categories", value: "10", icon: TrendingUp },
-    { label: "Real Examples", value: "100%", icon: DollarSign },
-    { label: "Free Access", value: "Always", icon: Shield }
+    { label: "Financial Terms", value: String(termCount), icon: BookOpen },
+    { label: "Categories", value: String(categoryCount), icon: TrendingUp },
+    { label: "Real Examples", value: "Real World", icon: DollarSign },
+    { label: "Free Access", value: "Always", icon: Shield },
   ];
 
   return (
@@ -470,49 +519,96 @@ function CTASection({ onOpenModal }: CTASectionProps) {
 
 // Main Financial Dictionary Page
 export default function FinancialDictionaryPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [terms, setTerms] = useState<FinancialTerm[]>(defaultFinancialTerms);
+  const [loadingTerms, setLoadingTerms] = useState(true);
 
-  // Filter terms based on search and category
-  const filteredTerms = financialTerms.filter(term => {
-    const matchesSearch = term.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         term.definition.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || term.category === selectedCategory;
+  useEffect(() => {
+    let active = true;
+    const fetchTerms = async () => {
+      try {
+        const response = await http.get("/api/v1/financial-dictionary");
+        if (!active) return;
+        const fetched = response.data?.data;
+        if (Array.isArray(fetched) && fetched.length > 0) {
+          setTerms(
+            fetched.map((term: any) => ({
+              _id: term._id,
+              term: term.title,
+              definition: term.description,
+              category: term.category,
+              example: term.example,
+              iconUrl: term.iconUrl,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch financial terms", error);
+      } finally {
+        if (active) {
+          setLoadingTerms(false);
+        }
+      }
+    };
+
+    fetchTerms();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const categories = [
+    "All",
+    ...Array.from(new Set(terms.map((term) => term.category))),
+  ];
+
+  const filteredTerms = terms.filter((term) => {
+    const query = searchTerm.toLowerCase();
+    const matchesSearch =
+      term.term.toLowerCase().includes(query) ||
+      term.definition.toLowerCase().includes(query);
+    const matchesCategory =
+      selectedCategory === "All" || term.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  // Close filter dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isFilterOpen && !(event.target as Element).closest('.relative')) {
+      if (isFilterOpen && !(event.target as Element).closest(".relative")) {
         setIsFilterOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isFilterOpen]);
- 
+
   return (
     <>
       <DictionaryHero />
-      <SearchAndFilter 
+      <SearchAndFilter
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         isFilterOpen={isFilterOpen}
         setIsFilterOpen={setIsFilterOpen}
+        categories={categories}
       />
-      <TermsGrid 
+      <TermsGrid
         filteredTerms={filteredTerms}
         onOpenModal={() => setIsModalOpen(true)}
+        loading={loadingTerms}
       />
-      <QuickStats/>
+      <QuickStats
+        termCount={terms.length}
+        categoryCount={new Set(terms.map((term) => term.category)).size}
+      />
       <CTASection onOpenModal={() => setIsModalOpen(true)} />
-      
+
       <LoanApplicationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

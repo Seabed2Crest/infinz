@@ -6,7 +6,6 @@ import axios, {
 
 export const BASE_URL = "https://backend.infinz.seabed2crest.com";
 // export const BASE_URL = "http://localhost:8085";
-
 const http = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
@@ -17,7 +16,8 @@ const http = axios.create({
 http.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("accessToken");
+
       if (token) {
         // Make sure headers exist
         config.headers = config.headers ?? {};

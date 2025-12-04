@@ -164,9 +164,10 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
         setFieldErrors({});
 
         // Give a small delay so alert shows before redirect
-        setTimeout(() => {
-          router.push("/apply_now?apply=true");
-        }, 300);
+setTimeout(() => {
+  router.push("/apply_now?apply=true&loan=personal");
+}, 300);
+
       } else {
         console.warn("⚠️ Unexpected API response structure:", response);
 
