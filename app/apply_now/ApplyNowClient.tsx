@@ -1016,7 +1016,7 @@ const handlePersonalSubmit = async () => {
             {step === "success" && (
               <div className="space-y-6">
                 {/* HEADER */}
-                {loanOffer !== null && (
+                {loanOffer === null && (
                   <div className="text-center">
                     <CheckCircle size={60} className="text-green-600 mx-auto" />
                     <h2 className="text-2xl font-semibold mt-3 text-gray-900">
