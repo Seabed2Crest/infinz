@@ -56,7 +56,7 @@ function DictionaryHero() {
       <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12">
         <div>
           <h1 className="text-5xl font-bold">
-            Financial <span className="text-teal-600">Dictionary</span>
+            Financial <span className="text-[#0080E5]">Dictionary</span>
           </h1>
           <p className="mt-4 text-gray-600">
             Understand finance with simple explanations
@@ -88,7 +88,7 @@ function LetterFilter({
               onClick={() => setSelectedLetter(letter)}
               className={`px-3 py-1 rounded-lg text-sm font-semibold border transition ${
                 selectedLetter === letter
-                  ? "bg-teal-600 text-white border-teal-600"
+                  ? "bg-[#0080E5] text-white border-[#0080E5]"
                   : "bg-gray-100 text-gray-700 hover:bg-teal-100 border-gray-300"
               }`}
             >
@@ -170,7 +170,7 @@ function CTASection({ onOpenModal }: CTASectionProps) {
     <div className="text-center py-20">
       <button
         onClick={onOpenModal}
-        className="bg-teal-600 text-white px-6 py-3 rounded-lg"
+        className="bg-[#0080E5] text-white px-6 py-3 rounded-lg"
       >
         Apply for Loan
       </button>

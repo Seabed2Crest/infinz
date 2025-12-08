@@ -44,7 +44,7 @@ function BusinessLoanHero() {
 
       const response = await BusinessService.createBusiness(payload);
       toast.success("Business application submitted successfully!");
-      router.push("/apply_now?apply=true&loan=business");
+      router.push("/login?loan=business&apply=true");
     } catch (error) {
       toast.error("Failed to submit application");
     } finally {

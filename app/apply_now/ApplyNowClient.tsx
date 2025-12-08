@@ -61,8 +61,8 @@ export default function ApplyNowClient() {
   const loanType = searchParams.get("loan") || "personal";
 
   const [step, setStep] = useState<
-    "mobile" | "otp" | "personal-details" | "form" | "success"
-  >("mobile");
+    "form" | "success"
+  >("form");
 
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
@@ -114,10 +114,6 @@ export default function ApplyNowClient() {
   });
 
   // --- INIT ---
-  useEffect(() => {
-    if (apply === "true") setStep("otp");
-    else setStep("mobile");
-  }, [apply]);
 
   useEffect(() => {
     const saved = localStorage.getItem("mobileNumber");
@@ -147,146 +143,6 @@ export default function ApplyNowClient() {
     if (isNaN(date.getTime())) return dateString;
     return date.toISOString().split('T')[0];
   };
-
-  // ================================
-  // ✅ SEND OTP
-  // ================================
-  const handleMobileSubmit = async () => {
-    setError("");
-    if (mobile.length !== 10) {
-      setError("Please enter a valid 10-digit mobile number");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const res = await OtpService.sendOtp(mobile);
-
-      if (res.success) {
-        localStorage.setItem("mobileNumber", mobile);
-        setStep("otp");
-      } else {
-        setError(res.message || "Failed to send OTP");
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to send OTP");
-    }
-    setLoading(false);
-  };
-
-  // ================================
-  // ✅ VERIFY OTP
-  // ================================
-  const handleOtpSubmit = async () => {
-    setError("");
-    if (otp.length !== 6) {
-      setError("Please enter the 6-digit OTP");
-      return;
-    }
-
-    setOtpLoading(true);
-    try {
-      const res: VerifyOtpResponse = await OtpService.verifyOtp({
-        phoneNumber: mobile,
-        otp,
-        origin: "web",
-      });
-
-      if (res.success) {
-        setToken(res.data.token);
-        localStorage.setItem("accessToken", res.data.token.accessToken);
-        setUserData(res.data.user);
-
-        // ✅ Set ALL user data from API response
-        const dobFormatted = formatDateForInput(res.data.user.dateOfBirth || "");
-        
-        setPersonal({
-          fullName: res.data.user.fullName || "",
-          email: res.data.user.email || "",
-          dob: dobFormatted,
-          panCard: res.data.user.pancardNumber || "",
-          pincode: res.data.user.pinCode || "",
-        });
-
-        setStep("personal-details");
-      } else {
-        setError(res.message || "Invalid OTP");
-      }
-    } catch (err: any) {
-      setError("OTP verification failed. Please try again.");
-    }
-    setOtpLoading(false);
-  };
-
-  const handleOtpChange = (i: number, v: string) => {
-    const only = v.replace(/\D/g, "");
-    const arr = otp.split("");
-    arr[i] = only;
-    setOtp(arr.join(""));
-
-    if (only && i < 5) {
-      document.querySelectorAll<HTMLInputElement>('[data-otp="true"]')[i + 1]?.focus();
-    }
-  };
-
-  // ================================
-  // ✅ PERSONAL DETAILS API
-  // ================================
-// ================================
-// ✅ PERSONAL DETAILS API
-// ================================
-const handlePersonalSubmit = async () => {
-  setError("");
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
-
-  if (!personal.fullName || !personal.email || !personal.dob || !personal.panCard || !personal.pincode) {
-    setError("All fields are required");
-    return;
-  }
-
-  if (!emailRegex.test(personal.email)) {
-    setError("Invalid email address");
-    return;
-  }
-
-  if (!panRegex.test(personal.panCard.toUpperCase())) {
-    setError("Invalid PAN card format");
-    return;
-  }
-
-  if (!/^[0-9]{6}$/.test(personal.pincode)) {
-    setError("Pincode must be 6 digits");
-    return;
-  }
-
-  const age = calculateAge(personal.dob);
-  if (age < 18) {
-    setError("You must be at least 18 years old");
-    return;
-  }
-
-  try {
-    // Remove the 'phone' property from the payload since the service doesn't accept it
-    const res = await personalDetailsService.save({
-      fullName: personal.fullName,
-      email: personal.email,
-      dob: personal.dob,
-      panCard: personal.panCard,
-      pincode: personal.pincode,
-    });
-
-    if (!res.success) {
-      setError(res.message || "Failed to save personal details");
-      return;
-    }
-
-    setStep("form");
-  } catch (err: any) {
-    setError(err.response?.data?.message || "Failed to save personal details");
-  }
-};
 
   // ================================
   // ✅ LOAN API
@@ -436,15 +292,33 @@ const handlePersonalSubmit = async () => {
     }
   };
 
+      const loan = searchParams.get('loan');
+   useEffect(() => {
+        // Set flag when user visits the apply page
+        sessionStorage.setItem('fromApplyPage', 'true');
+        console.log('ApplyNow page: Set fromApplyPage flag');
+        
+        // Optional: Store loan type for reference
+        if (loan) {
+            localStorage.setItem('lastLoanType', loan);
+        }
+        
+        return () => {
+            // Clear the flag only if navigating away via internal link (not back button)
+            // We can't reliably detect back button here, so we'll clear it on Login page
+        };
+    }, [loan]);
+
+
   // ================================
   // ✅ UI
   // ================================
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-100">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
       <div className="container mx-auto px-4 py-12">
         <div className="bg-white shadow-xl rounded-3xl max-w-4xl mx-auto grid md:grid-cols-2 overflow-hidden">
           {/* LEFT */}
-          <div className="hidden md:flex bg-teal-600 text-white p-10 flex-col items-center justify-center">
+          <div className="hidden md:flex bg-gradient-to-br from-[#0080E5] to-[#0066B3] text-white p-10 flex-col items-center justify-center">
             <Image src="/3d-hand-hold-smartphone-with-authentication-form.jpg" width={260} height={260} alt="Loan Application" />
             <h2 className="text-2xl font-bold mt-4">Instant Loan upto ₹1Cr</h2>
             <p className="opacity-90">Fast approvals, no paperwork</p>
@@ -452,187 +326,10 @@ const handlePersonalSubmit = async () => {
 
           {/* RIGHT */}
           <div className="p-8">
-            {/* MOBILE */}
-            {step === "mobile" && (
-              <div className="w-full max-w-sm mx-auto p-6 rounded-2xl shadow-lg">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-5 text-center">
-                  Enter Mobile Number
-                </h2>
-                <div className="space-y-4">
-                  <input
-                    value={mobile}
-                    onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                    maxLength={10}
-                    placeholder="Enter 10-digit mobile number"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  />
-                  <button
-                    onClick={handleMobileSubmit}
-                    disabled={loading || mobile.length !== 10}
-                    className="bg-teal-600 hover:bg-teal-700 text-white w-full py-3 rounded-xl font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loading ? "Sending OTP..." : "Continue"}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* OTP */}
-            {step === "otp" && (
-              <>
-                <h2 className="text-2xl font-bold mb-2">Verify OTP</h2>
-                <p className="text-sm text-gray-500 mb-4">
-                  We've sent a 6-digit OTP to <span className="font-semibold">{mobile}</span>.
-                  Enter it below to continue.
-                </p>
-                <div className="flex justify-center gap-2 mb-6">
-                  {[...Array(6)].map((_, i) => (
-                    <input
-                      key={i}
-                      maxLength={1}
-                      data-otp="true"
-                      value={otp[i] || ""}
-                      onChange={(e) => handleOtpChange(i, e.target.value)}
-                      className="w-10 h-12 border border-gray-300 rounded-lg text-center text-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                  ))}
-                </div>
-                <button
-                  onClick={handleOtpSubmit}
-                  disabled={otp.length !== 6 || otpLoading}
-                  className="w-full py-3 rounded-xl font-semibold transition bg-teal-600 hover:bg-teal-700 text-white disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
-                >
-                  {otpLoading ? "Verifying OTP..." : "Verify & Continue"}
-                </button>
-              </>
-            )}
-
-            {/* PERSONAL DETAILS */}
-            {step === "personal-details" && (
-              <>
-                <h2 className="text-2xl font-bold mb-2">Personal Details</h2>
-                <p className="text-sm text-gray-500 mb-6">
-                  Your details have been pre-filled. Please verify and make changes if needed.
-                </p>
-
-                <div className="space-y-4">
-                  {/* Full Name */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Full Name
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                      <input
-                        className="w-full pl-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                        placeholder="Enter your full name"
-                        value={personal.fullName}
-                        onChange={(e) => setPersonal({ ...personal, fullName: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Email */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                      <input
-                        type="email"
-                        className="w-full pl-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                        placeholder="example@email.com"
-                        value={personal.email}
-                        onChange={(e) => setPersonal({ ...personal, email: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  {/* DOB */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Date of Birth
-                    </label>
-                    <div className="relative">
-                      <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                      <input
-                        type="date"
-                        className="w-full pl-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                        value={personal.dob}
-                        onChange={(e) => setPersonal({ ...personal, dob: e.target.value })}
-                      />
-                    </div>
-                    {personal.dob && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        Age: {calculateAge(personal.dob)} years
-                      </p>
-                    )}
-                  </div>
-
-                  {/* PAN */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      PAN Card
-                    </label>
-                    <div className="relative">
-                      <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                      <input
-                        className="w-full pl-10 py-3 uppercase border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                        placeholder="ABCDE1234F"
-                        value={personal.panCard}
-                        onChange={(e) => setPersonal({ ...personal, panCard: e.target.value.toUpperCase() })}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Pincode */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Pincode
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                      <input
-                        maxLength={6}
-                        className="w-full pl-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                        placeholder="Enter pincode"
-                        value={personal.pincode}
-                        onChange={(e) => setPersonal({ ...personal, pincode: e.target.value.replace(/\D/g, "") })}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Phone - Read only */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
-                    </label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                      <input
-                        className="w-full pl-10 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
-                        value={mobile}
-                        readOnly
-                        disabled
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={handlePersonalSubmit}
-                    className="w-full mt-4 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-xl transition"
-                  >
-                    Verify & Continue
-                  </button>
-                </div>
-              </>
-            )}
-
             {/* LOAN - PERSONAL */}
             {step === "form" && loanType !== "business" && (
               <>
-                <h2 className="text-2xl font-bold mb-2">Loan Details</h2>
+                <h2 className="text-2xl font-bold mb-2 text-gray-800">Loan Details</h2>
                 <p className="text-sm text-gray-500 mb-6">
                   Personal loan application – share your income and employment
                   details so we can process your request.
@@ -645,7 +342,7 @@ const handlePersonalSubmit = async () => {
                       Required Loan Amount (₹)
                     </label>
                     <input
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="e.g. 200000"
                       value={formData.requiredLoanAmount}
                       onChange={(e) =>
@@ -663,7 +360,7 @@ const handlePersonalSubmit = async () => {
                       Employment Type
                     </label>
                     <select
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
                       value={formData.employmentType}
                       onChange={(e) =>
                         setFormData({
@@ -684,7 +381,7 @@ const handlePersonalSubmit = async () => {
                       Net Monthly Income
                     </label>
                     <select
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
                       value={formData.netMonthlyIncome}
                       onChange={(e) =>
                         setFormData({
@@ -707,7 +404,7 @@ const handlePersonalSubmit = async () => {
                       Salary Payment Mode
                     </label>
                     <select
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       value={formData.salaryPaymentMode}
                       onChange={(e) =>
                         setFormData({
@@ -729,7 +426,7 @@ const handlePersonalSubmit = async () => {
                       Company / Business Name
                     </label>
                     <input
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="Enter company or business name"
                       value={formData.companyOrBusinessName}
                       onChange={(e) =>
@@ -748,7 +445,7 @@ const handlePersonalSubmit = async () => {
                     </label>
                     <input
                       maxLength={6}
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="Enter company pincode"
                       value={formData.companyPinCode}
                       onChange={(e) =>
@@ -786,10 +483,11 @@ const handlePersonalSubmit = async () => {
                     disabled={
                       !salarySlipUrl || salarySlipUploading || loanSubmitting
                     }
-                    className={`w-full mt-4 font-semibold py-3 rounded-xl transition ${!salarySlipUrl || salarySlipUploading || loanSubmitting
-                      ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                      : "bg-teal-600 hover:bg-teal-700 text-white"
-                      }`}
+                    className={`w-full mt-4 font-semibold py-3 rounded-xl transition duration-200 ${
+                      !salarySlipUrl || salarySlipUploading || loanSubmitting
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                        : "bg-[#0080E5] hover:bg-[#0066B3] text-white shadow-md"
+                    }`}
                   >
                     {loanSubmitting ? "Submitting..." : "Submit Application"}
                   </button>
@@ -800,7 +498,7 @@ const handlePersonalSubmit = async () => {
             {/* LOAN - BUSINESS */}
             {step === "form" && loanType === "business" && (
               <>
-                <h2 className="text-2xl font-bold mb-2">Business Loan Details</h2>
+                <h2 className="text-2xl font-bold mb-2 text-gray-800">Business Loan Details</h2>
                 <p className="text-sm text-gray-500 mb-6">
                   Share your business details so we can process your business loan
                   request.
@@ -813,7 +511,7 @@ const handlePersonalSubmit = async () => {
                       Required Loan Amount (₹)
                     </label>
                     <input
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="e.g. 500000"
                       value={businessForm.requiredLoanAmount}
                       onChange={(e) =>
@@ -831,7 +529,7 @@ const handlePersonalSubmit = async () => {
                       Employment Type
                     </label>
                     <select
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
                       value={businessForm.employmentType}
                       onChange={(e) =>
                         setBusinessForm({
@@ -852,7 +550,7 @@ const handlePersonalSubmit = async () => {
                       Business Name
                     </label>
                     <input
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="Enter business name"
                       value={businessForm.businessName}
                       onChange={(e) =>
@@ -870,7 +568,7 @@ const handlePersonalSubmit = async () => {
                       Company Type
                     </label>
                     <select
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
                       value={businessForm.companyType}
                       onChange={(e) =>
                         setBusinessForm({
@@ -894,7 +592,7 @@ const handlePersonalSubmit = async () => {
                       Annual Turnover
                     </label>
                     <input
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="e.g. 2000000"
                       value={businessForm.annualTurnover}
                       onChange={(e) =>
@@ -912,7 +610,7 @@ const handlePersonalSubmit = async () => {
                       Industry / Nature of Business
                     </label>
                     <input
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="e.g. Retail, Manufacturing"
                       value={businessForm.industryType}
                       onChange={(e) =>
@@ -931,7 +629,7 @@ const handlePersonalSubmit = async () => {
                     </label>
                     <div className="flex gap-2">
                       <select
-                        className="w-1/3 py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"
+                        className="w-1/3 py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
                         value={businessForm.registrationType}
                         onChange={(e) =>
                           setBusinessForm({
@@ -948,7 +646,7 @@ const handlePersonalSubmit = async () => {
                         <option value="OTHERS">Others</option>
                       </select>
                       <input
-                        className="flex-1 py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                        className="flex-1 py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                         placeholder="Enter registration number"
                         value={businessForm.registrationNumber}
                         onChange={(e) =>
@@ -968,7 +666,7 @@ const handlePersonalSubmit = async () => {
                     </label>
                     <input
                       type="date"
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       value={businessForm.incorporationDate}
                       onChange={(e) =>
                         setBusinessForm({
@@ -986,7 +684,7 @@ const handlePersonalSubmit = async () => {
                     </label>
                     <input
                       maxLength={6}
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="Enter business pincode"
                       value={businessForm.businessPincode}
                       onChange={(e) =>
@@ -1001,10 +699,11 @@ const handlePersonalSubmit = async () => {
                   <button
                     onClick={handleFormSubmit}
                     disabled={loanSubmitting}
-                    className={`w-full mt-4 font-semibold py-3 rounded-xl transition ${loanSubmitting
-                      ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                      : "bg-teal-600 hover:bg-teal-700 text-white"
-                      }`}
+                    className={`w-full mt-4 font-semibold py-3 rounded-xl transition duration-200 ${
+                      loanSubmitting
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                        : "bg-[#0080E5] hover:bg-[#0066B3] text-white shadow-md"
+                    }`}
                   >
                     {loanSubmitting ? "Submitting..." : "Submit Business Loan"}
                   </button>
@@ -1049,7 +748,7 @@ const handlePersonalSubmit = async () => {
                       href={loanOffer.utmLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-6 block w-full text-center bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-xl transition-all duration-200"
+                      className="mt-6 block w-full text-center bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-md"
                     >
                       View Bank Offer
                     </a>

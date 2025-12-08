@@ -164,9 +164,9 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
         setFieldErrors({});
 
         // Give a small delay so alert shows before redirect
-setTimeout(() => {
-  router.push("/apply_now?apply=true&loan=personal");
-}, 300);
+        setTimeout(() => {
+          router.push("/login?loan=personal&apply=true");
+        }, 300);
 
       } else {
         console.warn("⚠️ Unexpected API response structure:", response);
@@ -193,8 +193,7 @@ setTimeout(() => {
         // Server responded with error status
         console.error("Server error response:", error.response);
         alert(
-          `Server error: ${error.response.status} - ${
-            error.response.data?.message || "Please try again."
+          `Server error: ${error.response.status} - ${error.response.data?.message || "Please try again."
           }`
         );
       } else if (error.request) {
@@ -302,11 +301,10 @@ setTimeout(() => {
                   name="loanPurpose"
                   value={formData.loanPurpose}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    fieldErrors.loanPurpose
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.loanPurpose
                       ? "border-red-500"
                       : "border-gray-300"
-                  }`}
+                    }`}
                 >
                   <option value="">Select Loan Purpose</option>
                   <option value="Debt Consolidation">Debt Consolidation</option>
@@ -333,11 +331,10 @@ setTimeout(() => {
                   name="monthlyIncome"
                   value={formData.monthlyIncome}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    fieldErrors.monthlyIncome
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.monthlyIncome
                       ? "border-red-500"
                       : "border-gray-300"
-                  }`}
+                    }`}
                 >
                   <option value="">Select Income Range</option>
                   <option value="₹15K - ₹30K">₹15K - ₹30K</option>
@@ -362,11 +359,10 @@ setTimeout(() => {
                   name="loanAmountRequired"
                   value={formData.loanAmountRequired}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    fieldErrors.loanAmountRequired
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.loanAmountRequired
                       ? "border-red-500"
                       : "border-gray-300"
-                  }`}
+                    }`}
                 >
                   <option value="">Select Loan Amount</option>
                   <option value="₹50K - ₹1L">₹50K - ₹1L</option>
@@ -392,9 +388,8 @@ setTimeout(() => {
                   name="emiTenure"
                   value={formData.emiTenure}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    fieldErrors.emiTenure ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.emiTenure ? "border-red-500" : "border-gray-300"
+                    }`}
                 >
                   <option value="">Select EMI Tenure</option>
                   <option value="6 Months">6 Months</option>
@@ -424,11 +419,10 @@ setTimeout(() => {
                   onChange={handleChange}
                   placeholder="Enter 10-digit mobile number"
                   maxLength={10}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    fieldErrors.mobileNumber
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.mobileNumber
                       ? "border-red-500"
                       : "border-gray-300"
-                  }`}
+                    }`}
                 />
                 {fieldErrors.mobileNumber && (
                   <p className="text-red-500 text-xs mt-1">
@@ -441,9 +435,8 @@ setTimeout(() => {
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className={`w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors ${
-                  loading ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+                className={`w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors ${loading ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
               >
                 {loading ? "Submitting..." : "Get Instant Loan"}
               </button>
@@ -1114,8 +1107,8 @@ export default function PersonalLoanPage() {
       <EligibilityCriteria onOpenModal={() => setIsModalOpen(true)} />
       <DocumentsRequired />
       <LoanOffersSection />
-      <UtmLinksSection 
-        salary="20K" 
+      <UtmLinksSection
+        salary="20K"
         loanAmount="1L"
         showWhenEmpty={true}
       />

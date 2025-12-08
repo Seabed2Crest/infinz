@@ -21,10 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-white">
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-white" suppressHydrationWarning>
         <Header />
-        {children}
+        <main>{children}</main>
         <Footer />
       </body>
     </html>

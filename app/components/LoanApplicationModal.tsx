@@ -271,7 +271,7 @@ function LoanApplicationModal({ isOpen, onClose }: LoanApplicationModalProps) {
                     <button
                       onClick={handleMobileSubmit}
                       disabled={isLoading}
-                      className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="px-6 py-3 bg-[#0080E5] text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       {isLoading ? 'Sending...' : 'Get OTP'}
                     </button>
@@ -346,7 +346,7 @@ function LoanApplicationModal({ isOpen, onClose }: LoanApplicationModalProps) {
                     ) : (
                       <button
                         onClick={handleResendOtp}
-                        className="text-teal-600 hover:text-teal-700 text-sm font-medium"
+                        className="text-[#0080E5] hover:text-teal-700 text-sm font-medium"
                       >
                         Resend OTP
                       </button>
@@ -357,7 +357,7 @@ function LoanApplicationModal({ isOpen, onClose }: LoanApplicationModalProps) {
                 <button
                   onClick={handleOtpSubmit}
                   disabled={isLoading || otp.length !== 6}
-                  className="w-full py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-full py-3 bg-[#0080E5] text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? 'Verifying...' : 'Verify OTP'}
                 </button>
@@ -465,7 +465,7 @@ function LoanApplicationModal({ isOpen, onClose }: LoanApplicationModalProps) {
                 <button
                   onClick={handleFormSubmit}
                   disabled={isLoading}
-                  className="w-full py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-[#0080E5] text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                 >
                   {isLoading ? 'Submitting...' : 'Submit Application'}
                   {!isLoading && <ArrowRight className="w-5 h-5" />}
@@ -499,7 +499,7 @@ function LoanApplicationModal({ isOpen, onClose }: LoanApplicationModalProps) {
 
                 <button
                   onClick={handleClose}
-                  className="px-8 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+                  className="px-8 py-3 bg-[#0080E5] text-white rounded-lg hover:bg-teal-700 transition-colors"
                 >
                   Close
                 </button>

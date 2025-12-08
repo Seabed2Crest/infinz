@@ -1,0 +1,723 @@
+"use client"
+import Image from 'next/image'
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
+import { OtpService, Token, UserSchama, VerifyOtpResponse } from '../services/otp.service';
+import { BusinessPayloadString, BusinessService, personalDetailsService, PersonalLoanService } from '../services/data.service';
+import { CalendarDays, CreditCard, Mail, MapPin, Phone, User } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+
+interface PersonalDetails {
+    fullName: string;
+    email: string;
+    dob: string;
+    panCard: string;
+    pincode: string;
+    phone?: string;
+}
+
+type Step = 'mobile' | 'otp' | 'personal-details';
+
+function Login() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    
+    // Client-side mounting state
+    const [isClient, setIsClient] = useState(false);
+    
+    // State management
+    const [step, setStep] = useState<Step>('mobile');
+    const [mobile, setMobile] = useState('');
+    const [error, setError] = useState('');
+    const [otp, setOtp] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [token, setToken] = useState<Token | null>(null);
+    const [userData, setUserData] = useState<UserSchama | null>(null);
+    const [otpLoading, setOtpLoading] = useState(false);
+    const [otpResent, setOtpResent] = useState(false);
+    
+    // Refs for OTP input management
+    const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
+    
+    // Personal details state
+    const [personal, setPersonal] = useState<PersonalDetails>({
+        fullName: '',
+        email: '',
+        dob: '',
+        panCard: '',
+        pincode: '',
+    });
+
+    // Get query parameters
+    const apply = searchParams.get('apply');
+    const loan = searchParams.get('loan');
+
+    // Initialize OTP refs array
+    useLayoutEffect(() => {
+        otpRefs.current = otpRefs.current.slice(0, 6);
+    }, []);
+
+    // Wait for client-side hydration
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    // Set initial step based on referrer and localStorage
+    useLayoutEffect(() => {
+        if (isClient) {
+            const storedMobile = localStorage.getItem('mobileNumber');
+            
+            // Check referrer to see where user is coming from
+            const referrer = document.referrer;
+            const currentUrl = window.location.href;
+            
+            console.log('Referrer:', referrer);
+            console.log('Current URL:', currentUrl);
+            console.log('Apply param:', apply);
+            console.log('Stored mobile:', storedMobile);
+            
+            // Determine if coming from apply_now page
+            const isFromApplyNow = referrer.includes('/apply_now') && referrer.includes('loan=');
+            
+            if (isFromApplyNow) {
+                // Coming from apply_now page - show mobile input
+                console.log('Coming from /apply_now page - showing mobile input');
+                setStep('mobile');
+                
+                // If we have stored mobile, pre-fill it
+                if (storedMobile) {
+                    const cleanMobile = storedMobile.replace('+91', '').trim();
+                    setMobile(cleanMobile);
+                }
+            } else if (apply === "true" && storedMobile) {
+                // Has apply=true and stored mobile → Show OTP
+                console.log('Has apply=true and stored mobile - showing OTP');
+                setStep("otp");
+                
+                // If we have stored mobile, use it
+                if (storedMobile) {
+                    // Remove +91 prefix if present
+                    const cleanMobile = storedMobile.replace('+91', '').trim();
+                    setMobile(cleanMobile);
+                }
+            } else {
+                // Default case - show mobile input
+                console.log('Default case - showing mobile input');
+                setStep("mobile");
+                
+                // If we have stored mobile, pre-fill it
+                if (storedMobile) {
+                    const cleanMobile = storedMobile.replace('+91', '').trim();
+                    setMobile(cleanMobile);
+                }
+            }
+        }
+    }, [isClient, apply]);
+
+    // Show loading state during server-side rendering
+    if (!isClient) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0080E5]"></div>
+            </div>
+        );
+    }
+
+    // Format date for input field
+    const formatDateForInput = (dateString: string): string => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return dateString;
+        return date.toISOString().split('T')[0];
+    };
+    
+    // Calculate age from DOB
+    const calculateAge = (dob: string): number => {
+        if (!dob) return 0;
+        const birth = new Date(dob);
+        if (isNaN(birth.getTime())) return 0;
+        const today = new Date();
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        return age;
+    };
+
+    // Helper function to format mobile number with +91
+    const formatMobileNumber = (mobileNumber: string): string => {
+        // Remove any non-digit characters
+        const cleanNumber = mobileNumber.replace(/\D/g, '');
+        // Ensure it's exactly 10 digits
+        if (cleanNumber.length === 10) {
+            return `+91${cleanNumber}`;
+        }
+        return mobileNumber;
+    };
+
+    // Handle mobile number submission
+    const handleMobileSubmit = async (): Promise<void> => {
+        setError('');
+
+        // Validation
+        if (mobile.length !== 10) {
+            setError('Please enter a valid 10-digit mobile number');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const applyData = localStorage.getItem('applyData');
+            const mobileNumber = formatMobileNumber(mobile);
+            
+            // Store mobile number in localStorage with +91 prefix
+            localStorage.setItem('mobileNumber', mobileNumber);
+
+            if (loan === 'personal' && applyData !== null) {
+                const payload = {
+                    ...JSON.parse(applyData),
+                    mobile: mobileNumber
+                };
+                await PersonalLoanService.createPersonalLoan(payload);
+            } else if (loan === 'business' && applyData !== null) {
+                const payload = {
+                    ...JSON.parse(applyData),
+                    mobile: mobileNumber
+                };
+                await BusinessService.createBusiness(payload as unknown as BusinessPayloadString);
+            } else {
+                await OtpService.sendOtp(mobileNumber);
+            }
+
+            setStep('otp');
+            // Focus first OTP input after transition
+            setTimeout(() => {
+                otpRefs.current[0]?.focus();
+            }, 100);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Handle OTP resend
+    const handleResendOtp = async (): Promise<void> => {
+        setOtpResent(true);
+        try {
+            // Get mobile number from localStorage or use current state
+            const storedMobile = localStorage.getItem('mobileNumber') || formatMobileNumber(mobile);
+            await OtpService.sendOtp(storedMobile);
+            setOtp('');
+            setError('');
+
+            // Reset OTP resent flag after 30 seconds
+            setTimeout(() => setOtpResent(false), 30000);
+        } catch (err: any) {
+            setError('Failed to resend OTP. Please try again.');
+        }
+    };
+
+    // Handle OTP submission
+    const handleOtpSubmit = async (): Promise<void> => {
+        setError('');
+
+        // Validation
+        if (otp.length !== 6) {
+            setError('Please enter the 6-digit OTP');
+            return;
+        }
+
+        setOtpLoading(true);
+
+        try {
+            // Get mobile number from localStorage or format current mobile
+            const storedMobile = localStorage.getItem('mobileNumber') || formatMobileNumber(mobile);
+            
+            const res: VerifyOtpResponse = await OtpService.verifyOtp({
+                phoneNumber: storedMobile, // Use the stored/formatted number with +91
+                otp,
+                origin: 'web',
+            });
+
+            if (res.success) {
+                setToken(res.data.token);
+                localStorage.setItem('accessToken', res.data.token.accessToken);
+                setUserData(res.data.user);
+
+                // Format and set user data from API response
+                const dobFormatted = formatDateForInput(res.data.user.dateOfBirth || '');
+
+                setPersonal({
+                    fullName: res.data.user.fullName || '',
+                    email: res.data.user.email || '',
+                    dob: dobFormatted,
+                    panCard: res.data.user.pancardNumber || '',
+                    pincode: res.data.user.pinCode || '',
+                    phone: storedMobile // Store formatted phone number in personal details
+                });
+
+                setStep('personal-details');
+            } else {
+                setError(res.message || 'Invalid OTP. Please try again.');
+            }
+        } catch (err: any) {
+            setError('OTP verification failed. Please check the code and try again.');
+        } finally {
+            setOtpLoading(false);
+        }
+    };
+
+    // Handle OTP input changes
+    const handleOtpChange = (index: number, value: string): void => {
+        const numericValue = value.replace(/\D/g, '');
+        if (numericValue && numericValue.length > 1) return;
+
+        const newOtp = otp.split('');
+        newOtp[index] = numericValue;
+        setOtp(newOtp.join(''));
+
+        // Auto-focus next input
+        if (numericValue && index < 5) {
+            otpRefs.current[index + 1]?.focus();
+        }
+    };
+
+    // Handle OTP input key events
+    const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            otpRefs.current[index - 1]?.focus();
+        }
+    };
+
+    // Handle personal details submission
+    const handlePersonalSubmit = async (): Promise<void> => {
+        setError('');
+
+        // Validation
+        const { fullName, email, dob, panCard, pincode } = personal;
+
+        if (!fullName || !email || !dob || !panCard || !pincode) {
+            setError('All fields are required');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError('Please enter a valid email address');
+            return;
+        }
+
+        const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+        if (!panRegex.test(panCard.toUpperCase())) {
+            setError('Invalid PAN card format. Format: ABCDE1234F');
+            return;
+        }
+
+        const pincodeRegex = /^[0-9]{6}$/;
+        if (!pincodeRegex.test(pincode)) {
+            setError('Pincode must be exactly 6 digits');
+            return;
+        }
+
+        const age = calculateAge(dob);
+        if (age < 18) {
+            setError('You must be at least 18 years old to apply');
+            return;
+        }
+
+        try {
+            // Get mobile number from localStorage
+            const storedMobile = localStorage.getItem('mobileNumber') || formatMobileNumber(mobile);
+            
+            const res = await personalDetailsService.save({
+                fullName: fullName.trim(),
+                email: email.trim(),
+                dob,
+                panCard: panCard.toUpperCase(),
+                pincode,
+            });
+
+            if (!res.success) {
+                setError(res.message || 'Failed to save personal details');
+                return;
+            }
+
+            // Redirect based on loan type
+            const redirectPath = `/apply_now?loan=${loan}`;
+            router.push(redirectPath);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'An error occurred. Please try again.');
+        }
+    };
+
+    // Update personal details
+    const updatePersonalDetail = (field: keyof PersonalDetails, value: string): void => {
+        setPersonal(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    // Render mobile number input step
+    const renderMobileStep = (): JSX.Element => (
+        <div className="w-full max-w-sm mx-auto p-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-center">
+                Welcome Back
+            </h2>
+            <p className="text-gray-500 text-sm mb-6 text-center">
+                Enter your mobile number to continue
+            </p>
+
+            <div className="space-y-4">
+                <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                        type="tel"
+                        value={mobile}
+                        onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                        maxLength={10}
+                        placeholder="Enter 10-digit mobile number"
+                        className="w-full pl-10 px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
+                        aria-label="Mobile number"
+                    />
+                    {mobile.length === 10 && (
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-sm">
+                            ✓
+                        </span>
+                    )}
+                </div>
+
+                {error && (
+                    <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
+                        {error}
+                    </div>
+                )}
+
+                <button
+                    onClick={handleMobileSubmit}
+                    disabled={loading || mobile.length !== 10}
+                    className="bg-[#0080E5] hover:bg-[#0066B3] text-white w-full py-3 rounded-xl font-semibold transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                    aria-label={loading ? 'Sending OTP' : 'Continue'}
+                >
+                    {loading ? (
+                        <span className="flex items-center justify-center gap-2">
+                            <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                            Sending OTP...
+                        </span>
+                    ) : (
+                        'Continue'
+                    )}
+                </button>
+
+                <p className="text-xs text-gray-400 text-center mt-4">
+                    By continuing, you agree to our Terms & Conditions
+                </p>
+            </div>
+        </div>
+    );
+
+    // Render OTP verification step
+    const renderOtpStep = (): JSX.Element => {
+        // Get formatted mobile number for display
+        const storedMobile = localStorage.getItem('mobileNumber');
+        const displayMobile = storedMobile 
+            ? storedMobile.replace('+91', '') 
+            : mobile;
+
+        return (
+            <>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">Verify OTP</h2>
+                <p className="text-gray-500 text-sm mb-6">
+                    {storedMobile ? (
+                        <>We've sent a 6-digit OTP to <span className="font-semibold text-gray-700">{storedMobile}</span>. Enter it below to continue.</>
+                    ) : (
+                        <>We've sent a 6-digit OTP to <span className="font-semibold text-gray-700">+91 {mobile}</span>. Enter it below to continue.</>
+                    )}
+                </p>
+
+                <div className="space-y-6">
+                    <div className="flex justify-center gap-3 mb-4">
+                        {[...Array(6)].map((_, index) => (
+                            <input
+                                key={index}
+                                ref={(el) => { otpRefs.current[index] = el; }}
+                                type="text"
+                                inputMode="numeric"
+                                maxLength={1}
+                                value={otp[index] || ''}
+                                onChange={(e) => handleOtpChange(index, e.target.value)}
+                                onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                                className="w-12 h-14 border border-gray-300 rounded-lg text-center text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
+                                aria-label={`OTP digit ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+
+                    {error && (
+                        <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
+                            {error}
+                        </div>
+                    )}
+
+                    <button
+                        onClick={handleOtpSubmit}
+                        disabled={otp.length !== 6 || otpLoading}
+                        className="w-full py-3 rounded-xl font-semibold transition duration-200 bg-[#0080E5] hover:bg-[#0066B3] text-white disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed shadow-md"
+                        aria-label={otpLoading ? 'Verifying OTP' : 'Verify OTP'}
+                    >
+                        {otpLoading ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                                Verifying...
+                            </span>
+                        ) : (
+                            'Verify & Continue'
+                        )}
+                    </button>
+
+                    <div className="text-center">
+                        <button
+                            onClick={handleResendOtp}
+                            disabled={otpResent}
+                            className="text-[#0080E5] hover:text-[#0066B3] text-sm font-medium disabled:text-gray-400 disabled:cursor-not-allowed"
+                        >
+                            {otpResent ? 'OTP Resent (Wait 30s)' : "Didn't receive OTP? Resend"}
+                        </button>
+
+                        <button
+                            onClick={() => {
+                                setStep('mobile');
+                                setOtp('');
+                                setError('');
+                                // Clear stored mobile if user wants to change
+                                localStorage.removeItem('mobileNumber');
+                            }}
+                            className="block w-full text-gray-500 hover:text-gray-700 text-sm mt-4"
+                        >
+                            ← Change mobile number
+                        </button>
+                    </div>
+                </div>
+            </>
+        );
+    };
+
+    // Render personal details step
+    const renderPersonalDetailsStep = (): JSX.Element => {
+        // Get formatted mobile number for display
+        const storedMobile = localStorage.getItem('mobileNumber');
+        const displayPhone = storedMobile || formatMobileNumber(mobile);
+
+        return (
+            <>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">Personal Details</h2>
+                <p className="text-gray-500 text-sm mb-6">
+                    Your details have been pre-filled. Please verify and make changes if needed.
+                </p>
+
+                <div className="space-y-4">
+                    {/* Full Name */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Full Name *
+                        </label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="text"
+                                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
+                                placeholder="Enter your full name"
+                                value={personal.fullName}
+                                onChange={(e) => updatePersonalDetail('fullName', e.target.value)}
+                                aria-label="Full name"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Email */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Email Address *
+                        </label>
+                        <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="email"
+                                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
+                                placeholder="example@email.com"
+                                value={personal.email}
+                                onChange={(e) => updatePersonalDetail('email', e.target.value)}
+                                aria-label="Email address"
+                            />
+                        </div>
+                    </div>
+
+                    {/* DOB with Age Display */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Date of Birth *
+                        </label>
+                        <div className="relative">
+                            <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="date"
+                                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
+                                value={personal.dob}
+                                onChange={(e) => updatePersonalDetail('dob', e.target.value)}
+                                aria-label="Date of birth"
+                            />
+                        </div>
+                        {personal.dob && (
+                            <p className="text-xs text-gray-500 mt-1">
+                                Age: <span className="font-medium">{calculateAge(personal.dob)} years</span>
+                            </p>
+                        )}
+                    </div>
+
+                    {/* PAN Card */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            PAN Card Number *
+                        </label>
+                        <div className="relative">
+                            <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="text"
+                                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent uppercase"
+                                placeholder="ABCDE1234F"
+                                value={personal.panCard}
+                                onChange={(e) => updatePersonalDetail('panCard', e.target.value.toUpperCase())}
+                                maxLength={10}
+                                aria-label="PAN card number"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Pincode */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Pincode *
+                        </label>
+                        <div className="relative">
+                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="text"
+                                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
+                                placeholder="Enter 6-digit pincode"
+                                value={personal.pincode}
+                                onChange={(e) => updatePersonalDetail('pincode', e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                maxLength={6}
+                                aria-label="Pincode"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Phone (Read-only) */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Phone Number
+                        </label>
+                        <div className="relative">
+                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="text"
+                                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                                value={displayPhone}
+                                readOnly
+                                disabled
+                                aria-label="Phone number"
+                            />
+                        </div>
+                    </div>
+
+                    {error && (
+                        <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
+                            {error}
+                        </div>
+                    )}
+
+                    <button
+                        onClick={handlePersonalSubmit}
+                        className="w-full mt-4 bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl transition duration-200 shadow-md"
+                        aria-label="Verify and continue"
+                    >
+                        Verify & Continue
+                    </button>
+
+                    <button
+                        onClick={() => setStep('otp')}
+                        className="block w-full text-gray-500 hover:text-gray-700 text-sm text-center mt-2"
+                    >
+                        ← Back to OTP verification
+                    </button>
+                </div>
+            </>
+        );
+    };
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100" suppressHydrationWarning>
+            <div className="container mx-auto px-4 py-12">
+                <div className="bg-white shadow-xl rounded-3xl max-w-4xl mx-auto grid md:grid-cols-2 overflow-hidden">
+                    {/* Left side - Hero/Info */}
+                    <div className="hidden md:flex bg-gradient-to-br from-[#0080E5] to-[#0066B3] text-white p-10 flex-col items-center justify-center">
+                        <Image
+                            src="/3d-hand-hold-smartphone-with-authentication-form.jpg"
+                            width={280}
+                            height={280}
+                            alt="Secure Login Illustration"
+                            className="object-contain"
+                            priority
+                        />
+                        <h2 className="text-2xl font-bold mt-6 mb-2 text-center">
+                            Instant Loan up to ₹1Cr
+                        </h2>
+                        <p className="opacity-90 text-center">
+                            Fast approvals • No paperwork • Best rates
+                        </p>
+                        <div className="mt-8 space-y-2 text-sm">
+                            <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 bg-white rounded-full"></span>
+                                <span>100% Digital Process</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 bg-white rounded-full"></span>
+                                <span>Secure & Encrypted</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right side - Form */}
+                    <div className="p-6 md:p-10">
+                        <div className="max-w-md mx-auto">
+                            {step === 'mobile' && renderMobileStep()}
+                            {step === 'otp' && renderOtpStep()}
+                            {step === 'personal-details' && renderPersonalDetailsStep()}
+
+                            {/* Progress indicator */}
+                            <div className="mt-8 pt-6 border-t border-gray-100">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-xs text-gray-500">Step {step === 'mobile' ? 1 : step === 'otp' ? 2 : 3} of 3</span>
+                                    <span className="text-xs font-medium text-[#0080E5]">
+                                        {step === 'mobile' ? 'Enter Mobile' : step === 'otp' ? 'Verify OTP' : 'Personal Details'}
+                                    </span>
+                                </div>
+                                <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                    <div
+                                        className={`h-full bg-[#0080E5] transition-all duration-300 ${step === 'mobile' ? 'w-1/3' : step === 'otp' ? 'w-2/3' : 'w-full'
+                                            }`}
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Login;

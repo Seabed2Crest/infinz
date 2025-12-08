@@ -170,7 +170,7 @@ function LeadFormModal({ isOpen, onClose }: LeadFormModalProps) {
                     />
                     <label className={`absolute left-12 transition-all duration-300 pointer-events-none ${
                       focusedField === 'fullName' || formData.fullName 
-                        ? 'top-2 text-xs text-teal-600' 
+                        ? 'top-2 text-xs text-[#0080E5]' 
                         : 'top-1/2 -translate-y-1/2 text-gray-500'
                     }`}>
                       Full Name
@@ -197,7 +197,7 @@ function LeadFormModal({ isOpen, onClose }: LeadFormModalProps) {
                     />
                     <label className={`absolute left-12 transition-all duration-300 pointer-events-none ${
                       focusedField === 'mobileNumber' || formData.mobileNumber 
-                        ? 'top-2 text-xs text-teal-600' 
+                        ? 'top-2 text-xs text-[#0080E5]' 
                         : 'top-1/2 -translate-y-1/2 text-gray-500'
                     }`}>
                       Mobile Number
@@ -227,7 +227,7 @@ function LeadFormModal({ isOpen, onClose }: LeadFormModalProps) {
                      </select>
                      <label className={`absolute left-12 transition-all duration-300 pointer-events-none ${
                        focusedField === 'loanType' || formData.loanType 
-                         ? 'top-2 text-xs text-teal-600' 
+                         ? 'top-2 text-xs text-[#0080E5]' 
                          : 'top-1/2 -translate-y-1/2 text-gray-500'
                      }`}>
                        
@@ -253,7 +253,7 @@ function LeadFormModal({ isOpen, onClose }: LeadFormModalProps) {
                     />
                     <label className={`absolute left-12 transition-all duration-300 pointer-events-none ${
                       focusedField === 'loanAmount' || formData.loanAmount 
-                        ? 'top-2 text-xs text-teal-600' 
+                        ? 'top-2 text-xs text-[#0080E5]' 
                         : 'top-1/2 -translate-y-1/2 text-gray-500'
                     }`}>
                       Loan Amount
@@ -279,7 +279,7 @@ function LeadFormModal({ isOpen, onClose }: LeadFormModalProps) {
                     />
                     <label className={`absolute left-12 transition-all duration-300 pointer-events-none ${
                       focusedField === 'monthlyIncome' || formData.monthlyIncome 
-                        ? 'top-2 text-xs text-teal-600' 
+                        ? 'top-2 text-xs text-[#0080E5]' 
                         : 'top-1/2 -translate-y-1/2 text-gray-500'
                     }`}>
                       Monthly Income
@@ -294,7 +294,7 @@ function LeadFormModal({ isOpen, onClose }: LeadFormModalProps) {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-4 rounded-xl font-semibold text-lg text-white transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg"
+                  className="w-full py-4 rounded-xl font-semibold text-lg text-white transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group bg-gradient-to-r from-[#0080E5] to-teal-700 hover:from-teal-700 hover:to-teal-800 shadow-lg"
                 >
                   <span className="relative z-10 flex items-center justify-center">
                     {isLoading ? 'Processing...' : 'Get Instant Quote'}
@@ -305,7 +305,7 @@ function LeadFormModal({ isOpen, onClose }: LeadFormModalProps) {
 
                 {/* Security Notice */}
                 <div className="flex items-center justify-center gap-2 text-gray-600 text-sm">
-                  <Shield className="w-4 h-4 text-teal-600" />
+                  <Shield className="w-4 h-4 text-[#0080E5]" />
                   <span>100% Secure & Confidential</span>
                 </div>
                 </form>
@@ -317,7 +317,7 @@ function LeadFormModal({ isOpen, onClose }: LeadFormModalProps) {
         {currentStep === 'success' && (
           <div className="p-8 text-center">
             <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-12 h-12 text-teal-600" />
+              <CheckCircle className="w-12 h-12 text-[#0080E5]" />
             </div>
             
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -340,7 +340,7 @@ function LeadFormModal({ isOpen, onClose }: LeadFormModalProps) {
               
               <button
                 onClick={handleClose}
-                className="w-full py-3 rounded-xl font-semibold text-white bg-teal-600 hover:bg-teal-700 transition-all duration-300"
+                className="w-full py-3 rounded-xl font-semibold text-white bg-[#0080E5] hover:bg-teal-700 transition-all duration-300"
               >
                 Close
               </button>
