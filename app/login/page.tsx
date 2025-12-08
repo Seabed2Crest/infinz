@@ -62,50 +62,55 @@ function Login() {
         setIsClient(true);
     }, []);
 
-    // Set initial step based on referrer and localStorage
+    // Set initial step based on URL parameters
     useLayoutEffect(() => {
         if (isClient) {
             const storedMobile = localStorage.getItem('mobileNumber');
             
-            // Check referrer to see where user is coming from
-            const referrer = document.referrer;
-            const currentUrl = window.location.href;
+            console.log('Initialization debug:');
+            console.log('- apply param:', apply);
+            console.log('- loan param:', loan);
+            console.log('- stored mobile:', storedMobile);
+            console.log('- full URL:', window.location.href);
             
-            console.log('Referrer:', referrer);
-            console.log('Current URL:', currentUrl);
-            console.log('Apply param:', apply);
-            console.log('Stored mobile:', storedMobile);
+            // Check if apply=true is in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const applyParam = urlParams.get('apply');
             
-            // Determine if coming from apply_now page
-            const isFromApplyNow = referrer.includes('/apply_now') && referrer.includes('loan=');
-            
-            if (isFromApplyNow) {
-                // Coming from apply_now page - show mobile input
-                console.log('Coming from /apply_now page - showing mobile input');
-                setStep('mobile');
-                
-                // If we have stored mobile, pre-fill it
+            if (applyParam === "true") {
+                // Case 1: apply=true AND we have a stored mobile number
                 if (storedMobile) {
+                    console.log('Case 1: apply=true with stored mobile - showing OTP step');
+                    setStep("otp");
+                    
+                    // Clean and set the mobile number (remove +91 if present)
                     const cleanMobile = storedMobile.replace('+91', '').trim();
                     setMobile(cleanMobile);
+                    
+                    // Auto-send OTP after a short delay
+                    setTimeout(() => {
+                        if (step === 'otp') {
+                            handleAutoResendOtp();
+                        }
+                    }, 1000);
+                } 
+                // Case 2: apply=true but NO stored mobile number
+                else {
+                    console.log('Case 2: apply=true without stored mobile - showing mobile input');
+                    setStep("mobile");
+                    
+                    // Check if there's a loan parameter to show context
+                    if (loan) {
+                        console.log('Loan type specified:', loan);
+                    }
                 }
-            } else if (apply === "true" && storedMobile) {
-                // Has apply=true and stored mobile → Show OTP
-                console.log('Has apply=true and stored mobile - showing OTP');
-                setStep("otp");
-                
-                // If we have stored mobile, use it
-                if (storedMobile) {
-                    // Remove +91 prefix if present
-                    const cleanMobile = storedMobile.replace('+91', '').trim();
-                    setMobile(cleanMobile);
-                }
-            } else {
-                // Default case - show mobile input
-                console.log('Default case - showing mobile input');
+            } 
+            // Case 3: Normal flow (no apply parameter or apply is not "true")
+            else {
+                console.log('Case 3: Normal login flow - showing mobile input');
                 setStep("mobile");
                 
-                // If we have stored mobile, pre-fill it
+                // Pre-fill with stored mobile if available
                 if (storedMobile) {
                     const cleanMobile = storedMobile.replace('+91', '').trim();
                     setMobile(cleanMobile);
@@ -113,6 +118,24 @@ function Login() {
             }
         }
     }, [isClient, apply]);
+
+    // Auto-resend OTP when landing on OTP page from apply flow
+    const handleAutoResendOtp = async (): Promise<void> => {
+        try {
+            console.log('Auto-sending OTP for apply flow...');
+            const storedMobile = localStorage.getItem('mobileNumber');
+            if (storedMobile) {
+                await OtpService.sendOtp(storedMobile);
+                setOtpResent(true);
+                console.log('Auto OTP sent successfully');
+                
+                // Reset after 30 seconds
+                setTimeout(() => setOtpResent(false), 30000);
+            }
+        } catch (error) {
+            console.error('Auto OTP send failed:', error);
+        }
+    };
 
     // Show loading state during server-side rendering
     if (!isClient) {
@@ -205,13 +228,13 @@ function Login() {
 
     // Handle OTP resend
     const handleResendOtp = async (): Promise<void> => {
-        setOtpResent(true);
         try {
             // Get mobile number from localStorage or use current state
             const storedMobile = localStorage.getItem('mobileNumber') || formatMobileNumber(mobile);
             await OtpService.sendOtp(storedMobile);
             setOtp('');
             setError('');
+            setOtpResent(true);
 
             // Reset OTP resent flag after 30 seconds
             setTimeout(() => setOtpResent(false), 30000);
@@ -345,9 +368,14 @@ function Login() {
                 return;
             }
 
-            // Redirect based on loan type
-            const redirectPath = `/apply_now?loan=${loan}`;
-            router.push(redirectPath);
+            // Check if this is part of an application flow
+            const urlParams = new URLSearchParams(window.location.search);
+            const applyParam = urlParams.get('apply');
+            const loanParam = urlParams.get('loan');
+            
+          
+                router.push(`/apply_now?loan=${loanParam}`);
+         
         } catch (err: any) {
             setError(err.response?.data?.message || 'An error occurred. Please try again.');
         }
@@ -362,65 +390,81 @@ function Login() {
     };
 
     // Render mobile number input step
-    const renderMobileStep = (): JSX.Element => (
-        <div className="w-full max-w-sm mx-auto p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-center">
-                Welcome Back
-            </h2>
-            <p className="text-gray-500 text-sm mb-6 text-center">
-                Enter your mobile number to continue
-            </p>
-
-            <div className="space-y-4">
-                <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                    <input
-                        type="tel"
-                        value={mobile}
-                        onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                        maxLength={10}
-                        placeholder="Enter 10-digit mobile number"
-                        className="w-full pl-10 px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
-                        aria-label="Mobile number"
-                    />
-                    {mobile.length === 10 && (
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-sm">
-                            ✓
-                        </span>
-                    )}
-                </div>
-
-                {error && (
-                    <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
-                        {error}
-                    </div>
-                )}
-
-                <button
-                    onClick={handleMobileSubmit}
-                    disabled={loading || mobile.length !== 10}
-                    className="bg-[#0080E5] hover:bg-[#0066B3] text-white w-full py-3 rounded-xl font-semibold transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-                    aria-label={loading ? 'Sending OTP' : 'Continue'}
-                >
-                    {loading ? (
-                        <span className="flex items-center justify-center gap-2">
-                            <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                            Sending OTP...
-                        </span>
-                    ) : (
-                        'Continue'
-                    )}
-                </button>
-
-                <p className="text-xs text-gray-400 text-center mt-4">
-                    By continuing, you agree to our Terms & Conditions
+    const renderMobileStep = (): JSX.Element => {
+        const isApplyFlow = apply === "true";
+        
+        return (
+            <div className="w-full max-w-sm mx-auto p-6">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-center">
+                    {isApplyFlow ? 'Continue Your Application' : 'Welcome Back'}
+                </h2>
+                <p className="text-gray-500 text-sm mb-6 text-center">
+                    {isApplyFlow 
+                        ? `Enter your mobile number to continue your ${loan || 'loan'} application`
+                        : 'Enter your mobile number to continue'}
                 </p>
+
+                <div className="space-y-4">
+                    <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <input
+                            type="tel"
+                            value={mobile}
+                            onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                            maxLength={10}
+                            placeholder="Enter 10-digit mobile number"
+                            className="w-full pl-10 px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
+                            aria-label="Mobile number"
+                        />
+                        {mobile.length === 10 && (
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-sm">
+                                ✓
+                            </span>
+                        )}
+                    </div>
+
+                    {error && (
+                        <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
+                            {error}
+                        </div>
+                    )}
+
+                    <button
+                        onClick={handleMobileSubmit}
+                        disabled={loading || mobile.length !== 10}
+                        className="bg-[#0080E5] hover:bg-[#0066B3] text-white w-full py-3 rounded-xl font-semibold transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                        aria-label={loading ? 'Sending OTP' : 'Continue'}
+                    >
+                        {loading ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                                Sending OTP...
+                            </span>
+                        ) : (
+                            'Continue'
+                        )}
+                    </button>
+
+                    {isApplyFlow && (
+                        <button
+                            onClick={() => router.push(`/apply_now?loan=${loan}`)}
+                            className="w-full text-gray-600 hover:text-gray-800 text-sm text-center py-2"
+                        >
+                            ← Back to application
+                        </button>
+                    )}
+
+                    <p className="text-xs text-gray-400 text-center mt-4">
+                        By continuing, you agree to our Terms & Conditions
+                    </p>
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     // Render OTP verification step
     const renderOtpStep = (): JSX.Element => {
+        const isApplyFlow = apply === "true";
         // Get formatted mobile number for display
         const storedMobile = localStorage.getItem('mobileNumber');
         const displayMobile = storedMobile 
@@ -429,12 +473,14 @@ function Login() {
 
         return (
             <>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Verify OTP</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                    {isApplyFlow ? 'Verify to Continue Application' : 'Verify OTP'}
+                </h2>
                 <p className="text-gray-500 text-sm mb-6">
-                    {storedMobile ? (
-                        <>We've sent a 6-digit OTP to <span className="font-semibold text-gray-700">{storedMobile}</span>. Enter it below to continue.</>
+                    {isApplyFlow ? (
+                        <>Verify your mobile number to continue your {loan || 'loan'} application</>
                     ) : (
-                        <>We've sent a 6-digit OTP to <span className="font-semibold text-gray-700">+91 {mobile}</span>. Enter it below to continue.</>
+                        <>We've sent a 6-digit OTP to <span className="font-semibold text-gray-700">+91 {displayMobile}</span></>
                     )}
                 </p>
 
@@ -474,11 +520,11 @@ function Login() {
                                 Verifying...
                             </span>
                         ) : (
-                            'Verify & Continue'
+                            isApplyFlow ? 'Verify & Continue Application' : 'Verify & Continue'
                         )}
                     </button>
 
-                    <div className="text-center">
+                    <div className="text-center space-y-2">
                         <button
                             onClick={handleResendOtp}
                             disabled={otpResent}
@@ -492,13 +538,25 @@ function Login() {
                                 setStep('mobile');
                                 setOtp('');
                                 setError('');
-                                // Clear stored mobile if user wants to change
-                                localStorage.removeItem('mobileNumber');
+                                
+                                // Only clear stored mobile if not in apply flow
+                                if (!isApplyFlow) {
+                                    localStorage.removeItem('mobileNumber');
+                                }
                             }}
-                            className="block w-full text-gray-500 hover:text-gray-700 text-sm mt-4"
+                            className="block w-full text-gray-500 hover:text-gray-700 text-sm mt-2"
                         >
                             ← Change mobile number
                         </button>
+
+                        {isApplyFlow && (
+                            <button
+                                onClick={() => router.push(`/apply_now?loan=${loan}`)}
+                                className="block w-full text-gray-500 hover:text-gray-700 text-sm"
+                            >
+                                ← Back to application form
+                            </button>
+                        )}
                     </div>
                 </div>
             </>
@@ -507,15 +565,20 @@ function Login() {
 
     // Render personal details step
     const renderPersonalDetailsStep = (): JSX.Element => {
+        const isApplyFlow = apply === "true";
         // Get formatted mobile number for display
         const storedMobile = localStorage.getItem('mobileNumber');
         const displayPhone = storedMobile || formatMobileNumber(mobile);
 
         return (
             <>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Personal Details</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                    {isApplyFlow ? 'Complete Your Application' : 'Personal Details'}
+                </h2>
                 <p className="text-gray-500 text-sm mb-6">
-                    Your details have been pre-filled. Please verify and make changes if needed.
+                    {isApplyFlow 
+                        ? 'Final step! Verify your details to complete your application.'
+                        : 'Your details have been pre-filled. Please verify and make changes if needed.'}
                 </p>
 
                 <div className="space-y-4">
@@ -644,7 +707,7 @@ function Login() {
                         className="w-full mt-4 bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl transition duration-200 shadow-md"
                         aria-label="Verify and continue"
                     >
-                        Verify & Continue
+                        {isApplyFlow ? 'Complete Application' : 'Verify & Continue'}
                     </button>
 
                     <button
@@ -656,6 +719,26 @@ function Login() {
                 </div>
             </>
         );
+    };
+
+    // Get current step number for progress bar
+    const getStepNumber = (): number => {
+        switch (step) {
+            case 'mobile': return 1;
+            case 'otp': return 2;
+            case 'personal-details': return 3;
+            default: return 1;
+        }
+    };
+
+    // Get step description
+    const getStepDescription = (): string => {
+        switch (step) {
+            case 'mobile': return 'Enter Mobile';
+            case 'otp': return 'Verify OTP';
+            case 'personal-details': return 'Personal Details';
+            default: return '';
+        }
     };
 
     return (
@@ -673,10 +756,12 @@ function Login() {
                             priority
                         />
                         <h2 className="text-2xl font-bold mt-6 mb-2 text-center">
-                            Instant Loan up to ₹1Cr
+                            {apply === "true" ? 'Complete Your Application' : 'Instant Loan up to ₹1Cr'}
                         </h2>
                         <p className="opacity-90 text-center">
-                            Fast approvals • No paperwork • Best rates
+                            {apply === "true" 
+                                ? 'Final step to get your loan approved' 
+                                : 'Fast approvals • No paperwork • Best rates'}
                         </p>
                         <div className="mt-8 space-y-2 text-sm">
                             <div className="flex items-center gap-2">
@@ -687,6 +772,12 @@ function Login() {
                                 <span className="w-2 h-2 bg-white rounded-full"></span>
                                 <span>Secure & Encrypted</span>
                             </div>
+                            {apply === "true" && loan && (
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 bg-white rounded-full"></span>
+                                    <span>{loan.charAt(0).toUpperCase() + loan.slice(1)} Loan Application</span>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -700,15 +791,18 @@ function Login() {
                             {/* Progress indicator */}
                             <div className="mt-8 pt-6 border-t border-gray-100">
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-xs text-gray-500">Step {step === 'mobile' ? 1 : step === 'otp' ? 2 : 3} of 3</span>
+                                    <span className="text-xs text-gray-500">Step {getStepNumber()} of 3</span>
                                     <span className="text-xs font-medium text-[#0080E5]">
-                                        {step === 'mobile' ? 'Enter Mobile' : step === 'otp' ? 'Verify OTP' : 'Personal Details'}
+                                        {getStepDescription()}
                                     </span>
                                 </div>
                                 <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                                     <div
-                                        className={`h-full bg-[#0080E5] transition-all duration-300 ${step === 'mobile' ? 'w-1/3' : step === 'otp' ? 'w-2/3' : 'w-full'
-                                            }`}
+                                        className={`h-full bg-[#0080E5] transition-all duration-300 ${
+                                            step === 'mobile' ? 'w-1/3' : 
+                                            step === 'otp' ? 'w-2/3' : 
+                                            'w-full'
+                                        }`}
                                     ></div>
                                 </div>
                             </div>
