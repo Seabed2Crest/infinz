@@ -60,9 +60,7 @@ export default function ApplyNowClient() {
   const apply = searchParams.get("apply");
   const loanType = searchParams.get("loan") || "personal";
 
-  const [step, setStep] = useState<
-    "form" | "success"
-  >("form");
+  const [step, setStep] = useState<"form" | "success">("form");
 
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
@@ -114,7 +112,6 @@ export default function ApplyNowClient() {
   });
 
   // --- INIT ---
-
   useEffect(() => {
     const saved = localStorage.getItem("mobileNumber");
     if (saved) {
@@ -132,7 +129,8 @@ export default function ApplyNowClient() {
     if (
       today.getMonth() < birth.getMonth() ||
       (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())
-    ) age--;
+    )
+      age--;
     return age;
   };
 
@@ -141,7 +139,7 @@ export default function ApplyNowClient() {
     if (!dateString) return "";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return dateString;
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   };
 
   // ================================
@@ -164,25 +162,24 @@ export default function ApplyNowClient() {
         return;
       }
 
-      if (!salarySlipUrl) {
-        setError("Please upload your salary slip before submitting.");
-        return;
-      }
-
       try {
         setLoanSubmitting(true);
-        const payload = {
+        const payload: any = {
           loanPurpose: "personal-loan",
           monthlyIncome: formData.netMonthlyIncome,
           loanAmountRequired: formData.requiredLoanAmount,
           emiTenure: "12",
           mobileNumber: mobile,
-          salarySlipUrl,
           employmentType: formData.employmentType as "salaried" | "self-employed",
           salaryPaymentMode: formData.salaryPaymentMode as "cash" | "inhand" | "bank",
           companyOrBusinessName: formData.companyOrBusinessName,
           companyPinCode: formData.companyPinCode,
         };
+
+        // attach salarySlipUrl only if user uploaded one (optional)
+        if (salarySlipUrl) {
+          payload.salarySlipUrl = salarySlipUrl;
+        }
 
         const response = await PersonalLoanApply.createPersonalLoan(payload);
         if (response?.success) {
@@ -223,7 +220,12 @@ export default function ApplyNowClient() {
         requiredLoanAmount: businessForm.requiredLoanAmount,
         employmentType: businessForm.employmentType as "salaried" | "self-employed",
         businessName: businessForm.businessName,
-        companyType: businessForm.companyType as "Proprietorship" | "Partnership" | "Pvt Ltd" | "LLP" | "Others",
+        companyType: businessForm.companyType as
+          | "Proprietorship"
+          | "Partnership"
+          | "Pvt Ltd"
+          | "LLP"
+          | "Others",
         annualTurnover: businessForm.annualTurnover,
         industryType: businessForm.industryType,
         registrationType: businessForm.registrationType as "GST" | "SHOP" | "FSSAI" | "TRADE" | "OTHERS",
@@ -292,23 +294,22 @@ export default function ApplyNowClient() {
     }
   };
 
-      const loan = searchParams.get('loan');
-   useEffect(() => {
-        // Set flag when user visits the apply page
-        sessionStorage.setItem('fromApplyPage', 'true');
-        console.log('ApplyNow page: Set fromApplyPage flag');
-        
-        // Optional: Store loan type for reference
-        if (loan) {
-            localStorage.setItem('lastLoanType', loan);
-        }
-        
-        return () => {
-            // Clear the flag only if navigating away via internal link (not back button)
-            // We can't reliably detect back button here, so we'll clear it on Login page
-        };
-    }, [loan]);
+  const loan = searchParams.get("loan");
+  useEffect(() => {
+    // Set flag when user visits the apply page
+    sessionStorage.setItem("fromApplyPage", "true");
+    console.log("ApplyNow page: Set fromApplyPage flag");
 
+    // Optional: Store loan type for reference
+    if (loan) {
+      localStorage.setItem("lastLoanType", loan);
+    }
+
+    return () => {
+      // Clear the flag only if navigating away via internal link (not back button)
+      // We can't reliably detect back button here, so we'll clear it on Login page
+    };
+  }, [loan]);
 
   // ================================
   // ✅ UI
@@ -319,7 +320,12 @@ export default function ApplyNowClient() {
         <div className="bg-white shadow-xl rounded-3xl max-w-4xl mx-auto grid md:grid-cols-2 overflow-hidden">
           {/* LEFT */}
           <div className="hidden md:flex bg-gradient-to-br from-[#0080E5] to-[#0066B3] text-white p-10 flex-col items-center justify-center">
-            <Image src="/3d-hand-hold-smartphone-with-authentication-form.jpg" width={260} height={260} alt="Loan Application" />
+            <Image
+              src="/3d-hand-hold-smartphone-with-authentication-form.jpg"
+              width={260}
+              height={260}
+              alt="Loan Application"
+            />
             <h2 className="text-2xl font-bold mt-4">Instant Loan upto ₹1Cr</h2>
             <p className="opacity-90">Fast approvals, no paperwork</p>
           </div>
@@ -331,8 +337,7 @@ export default function ApplyNowClient() {
               <>
                 <h2 className="text-2xl font-bold mb-2 text-gray-800">Loan Details</h2>
                 <p className="text-sm text-gray-500 mb-6">
-                  Personal loan application – share your income and employment
-                  details so we can process your request.
+                  Personal loan application – share your income and employment details so we can process your request.
                 </p>
 
                 <div className="space-y-4">
@@ -377,9 +382,7 @@ export default function ApplyNowClient() {
 
                   {/* Net Monthly Income */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Net Monthly Income
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Net Monthly Income</label>
                     <select
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
                       value={formData.netMonthlyIncome}
@@ -400,9 +403,7 @@ export default function ApplyNowClient() {
 
                   {/* Salary Payment Mode */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Salary Payment Mode
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Salary Payment Mode</label>
                     <select
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       value={formData.salaryPaymentMode}
@@ -422,9 +423,7 @@ export default function ApplyNowClient() {
 
                   {/* Company / Business Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Company / Business Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Company / Business Name</label>
                     <input
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="Enter company or business name"
@@ -440,9 +439,7 @@ export default function ApplyNowClient() {
 
                   {/* Company Pincode */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Company Pincode
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Pincode</label>
                     <input
                       maxLength={6}
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
@@ -462,29 +459,16 @@ export default function ApplyNowClient() {
                     <label className="block text-sm font-medium text-gray-700">
                       Upload Salary Slip <span className="text-gray-400">(optional)</span>
                     </label>
-                    <input
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      onChange={handleSalarySlipChange}
-                      className="w-full text-sm"
-                    />
-                    {salarySlipUploading && (
-                      <p className="text-xs text-gray-500">Uploading...</p>
-                    )}
-                    {salarySlipUrl && !salarySlipUploading && (
-                      <p className="text-xs text-green-600">
-                        Salary slip uploaded successfully.
-                      </p>
-                    )}
+                    <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleSalarySlipChange} className="w-full text-sm" />
+                    {salarySlipUploading && <p className="text-xs text-gray-500">Uploading...</p>}
+                    {salarySlipUrl && !salarySlipUploading && <p className="text-xs text-green-600">Salary slip uploaded successfully.</p>}
                   </div>
 
                   <button
                     onClick={handleFormSubmit}
-                    disabled={
-                      !salarySlipUrl || salarySlipUploading || loanSubmitting
-                    }
+                    disabled={salarySlipUploading || loanSubmitting}
                     className={`w-full mt-4 font-semibold py-3 rounded-xl transition duration-200 ${
-                      !salarySlipUrl || salarySlipUploading || loanSubmitting
+                      salarySlipUploading || loanSubmitting
                         ? "bg-gray-300 text-gray-600 cursor-not-allowed"
                         : "bg-[#0080E5] hover:bg-[#0066B3] text-white shadow-md"
                     }`}
@@ -500,16 +484,13 @@ export default function ApplyNowClient() {
               <>
                 <h2 className="text-2xl font-bold mb-2 text-gray-800">Business Loan Details</h2>
                 <p className="text-sm text-gray-500 mb-6">
-                  Share your business details so we can process your business loan
-                  request.
+                  Share your business details so we can process your business loan request.
                 </p>
 
                 <div className="space-y-4">
                   {/* Required Loan Amount */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Required Loan Amount (₹)
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Required Loan Amount (₹)</label>
                     <input
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="e.g. 500000"
@@ -525,9 +506,7 @@ export default function ApplyNowClient() {
 
                   {/* Employment Type */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Employment Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Employment Type</label>
                     <select
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
                       value={businessForm.employmentType}
@@ -546,9 +525,7 @@ export default function ApplyNowClient() {
 
                   {/* Business Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Business Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
                     <input
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="Enter business name"
@@ -564,9 +541,7 @@ export default function ApplyNowClient() {
 
                   {/* Company Type */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Company Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Type</label>
                     <select
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
                       value={businessForm.companyType}
@@ -588,9 +563,7 @@ export default function ApplyNowClient() {
 
                   {/* Annual Turnover */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Annual Turnover
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Annual Turnover</label>
                     <input
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="e.g. 2000000"
@@ -606,9 +579,7 @@ export default function ApplyNowClient() {
 
                   {/* Industry / Nature of Business */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Industry / Nature of Business
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Industry / Nature of Business</label>
                     <input
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
                       placeholder="e.g. Retail, Manufacturing"
@@ -624,9 +595,7 @@ export default function ApplyNowClient() {
 
                   {/* Business Registration Number */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Business Registration Number
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Business Registration Number</label>
                     <div className="flex gap-2">
                       <select
                         className="w-1/3 py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
@@ -661,9 +630,7 @@ export default function ApplyNowClient() {
 
                   {/* Date of Incorporation / Start Date */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Date of Incorporation / Start Date
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date of Incorporation / Start Date</label>
                     <input
                       type="date"
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
@@ -679,9 +646,7 @@ export default function ApplyNowClient() {
 
                   {/* Business Pincode */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Business Pincode
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Business Pincode</label>
                     <input
                       maxLength={6}
                       className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
@@ -718,12 +683,8 @@ export default function ApplyNowClient() {
                 {loanOffer === null && (
                   <div className="text-center">
                     <CheckCircle size={60} className="text-green-600 mx-auto" />
-                    <h2 className="text-2xl font-semibold mt-3 text-gray-900">
-                      Application submitted successfully
-                    </h2>
-                    <p className="text-gray-600">
-                      We have received your application and will reach you shortly.
-                    </p>
+                    <h2 className="text-2xl font-semibold mt-3 text-gray-900">Application submitted successfully</h2>
+                    <p className="text-gray-600">We have received your application and will reach you shortly.</p>
                   </div>
                 )}
 
@@ -731,16 +692,12 @@ export default function ApplyNowClient() {
                 {loanOffer && (
                   <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md">
                     {/* Bank Logo + Name */}
-                    <p>Congratulations! Your loan details match perfectly with {loanOffer.bankName}. To provide the best offers tailored to you. Tap the button below to securely continue your application.</p>
+                    <p>
+                      Congratulations! Your loan details match perfectly with {loanOffer.bankName}. To provide the best offers tailored to you. Tap the button below to securely continue your application.
+                    </p>
                     <div className="flex items-center gap-4">
-                      <img
-                        src={loanOffer.bankLogo}
-                        alt={loanOffer.bankName}
-                        className="w-14 h-14 rounded-xl object-contain bg-gray-100 p-2"
-                      />
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {loanOffer.bankName}
-                      </h3>
+                      <img src={loanOffer.bankLogo} alt={loanOffer.bankName} className="w-14 h-14 rounded-xl object-contain bg-gray-100 p-2" />
+                      <h3 className="text-xl font-bold text-gray-900">{loanOffer.bankName}</h3>
                     </div>
 
                     {/* APPLY BUTTON */}
