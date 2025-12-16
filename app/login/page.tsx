@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image'
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
+import React, { useEffect, useState, useRef, useLayoutEffect, Suspense } from 'react'
 import { OtpService, Token, UserSchama, VerifyOtpResponse } from '../services/otp.service';
 import { BusinessPayloadString, BusinessService, personalDetailsService, PersonalLoanService } from '../services/data.service';
 import { CalendarDays, CreditCard, Mail, MapPin, Phone, User } from 'lucide-react';
@@ -21,10 +21,10 @@ type Step = 'mobile' | 'otp' | 'personal-details';
 function Login() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    
+
     // Client-side mounting state
     const [isClient, setIsClient] = useState(false);
-    
+
     // State management
     const [step, setStep] = useState<Step>('mobile');
     const [mobile, setMobile] = useState('');
@@ -35,10 +35,10 @@ function Login() {
     const [userData, setUserData] = useState<UserSchama | null>(null);
     const [otpLoading, setOtpLoading] = useState(false);
     const [otpResent, setOtpResent] = useState(false);
-    
+
     // Refs for OTP input management
     const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
-    
+
     // Personal details state
     const [personal, setPersonal] = useState<PersonalDetails>({
         fullName: '',
@@ -66,50 +66,50 @@ function Login() {
     useLayoutEffect(() => {
         if (isClient) {
             const storedMobile = localStorage.getItem('mobileNumber');
-            
+
             console.log('Initialization debug:');
             console.log('- apply param:', apply);
             console.log('- loan param:', loan);
             console.log('- stored mobile:', storedMobile);
             console.log('- full URL:', window.location.href);
-            
+
             // Check if apply=true is in the URL
             const urlParams = new URLSearchParams(window.location.search);
             const applyParam = urlParams.get('apply');
-            
+
             if (applyParam === "true") {
                 // Case 1: apply=true AND we have a stored mobile number
                 if (storedMobile) {
                     console.log('Case 1: apply=true with stored mobile - showing OTP step');
                     setStep("otp");
-                    
+
                     // Clean and set the mobile number (remove +91 if present)
                     const cleanMobile = storedMobile.replace('+91', '').trim();
                     setMobile(cleanMobile);
-                    
+
                     // Auto-send OTP after a short delay
                     setTimeout(() => {
                         if (step === 'otp') {
                             handleAutoResendOtp();
                         }
                     }, 1000);
-                } 
+                }
                 // Case 2: apply=true but NO stored mobile number
                 else {
                     console.log('Case 2: apply=true without stored mobile - showing mobile input');
                     setStep("mobile");
-                    
+
                     // Check if there's a loan parameter to show context
                     if (loan) {
                         console.log('Loan type specified:', loan);
                     }
                 }
-            } 
+            }
             // Case 3: Normal flow (no apply parameter or apply is not "true")
             else {
                 console.log('Case 3: Normal login flow - showing mobile input');
                 setStep("mobile");
-                
+
                 // Pre-fill with stored mobile if available
                 if (storedMobile) {
                     const cleanMobile = storedMobile.replace('+91', '').trim();
@@ -128,7 +128,7 @@ function Login() {
                 await OtpService.sendOtp(storedMobile);
                 setOtpResent(true);
                 console.log('Auto OTP sent successfully');
-                
+
                 // Reset after 30 seconds
                 setTimeout(() => setOtpResent(false), 30000);
             }
@@ -153,7 +153,7 @@ function Login() {
         if (isNaN(date.getTime())) return dateString;
         return date.toISOString().split('T')[0];
     };
-    
+
     // Calculate age from DOB
     const calculateAge = (dob: string): number => {
         if (!dob) return 0;
@@ -194,7 +194,7 @@ function Login() {
         try {
             const applyData = localStorage.getItem('applyData');
             const mobileNumber = formatMobileNumber(mobile);
-            
+
             // Store mobile number in localStorage with +91 prefix
             localStorage.setItem('mobileNumber', mobileNumber);
 
@@ -258,7 +258,7 @@ function Login() {
         try {
             // Get mobile number from localStorage or format current mobile
             const storedMobile = localStorage.getItem('mobileNumber') || formatMobileNumber(mobile);
-            
+
             const res: VerifyOtpResponse = await OtpService.verifyOtp({
                 phoneNumber: storedMobile, // Use the stored/formatted number with +91
                 otp,
@@ -354,7 +354,7 @@ function Login() {
         try {
             // Get mobile number from localStorage
             const storedMobile = localStorage.getItem('mobileNumber') || formatMobileNumber(mobile);
-            
+
             const res = await personalDetailsService.save({
                 fullName: fullName.trim(),
                 email: email.trim(),
@@ -372,10 +372,10 @@ function Login() {
             const urlParams = new URLSearchParams(window.location.search);
             const applyParam = urlParams.get('apply');
             const loanParam = urlParams.get('loan');
-            
-          
-                router.push(`/apply_now?loan=${loanParam}`);
-         
+
+
+            router.push(`/apply_now?loan=${loanParam}`);
+
         } catch (err: any) {
             setError(err.response?.data?.message || 'An error occurred. Please try again.');
         }
@@ -392,14 +392,14 @@ function Login() {
     // Render mobile number input step
     const renderMobileStep = (): JSX.Element => {
         const isApplyFlow = apply === "true";
-        
+
         return (
             <div className="w-full max-w-sm mx-auto p-6">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-center">
                     {isApplyFlow ? 'Continue Your Application' : 'Welcome Back'}
                 </h2>
                 <p className="text-gray-500 text-sm mb-6 text-center">
-                    {isApplyFlow 
+                    {isApplyFlow
                         ? `Enter your mobile number to continue your ${loan || 'loan'} application`
                         : 'Enter your mobile number to continue'}
                 </p>
@@ -467,8 +467,8 @@ function Login() {
         const isApplyFlow = apply === "true";
         // Get formatted mobile number for display
         const storedMobile = localStorage.getItem('mobileNumber');
-        const displayMobile = storedMobile 
-            ? storedMobile.replace('+91', '') 
+        const displayMobile = storedMobile
+            ? storedMobile.replace('+91', '')
             : mobile;
 
         return (
@@ -538,7 +538,7 @@ function Login() {
                                 setStep('mobile');
                                 setOtp('');
                                 setError('');
-                                
+
                                 // Only clear stored mobile if not in apply flow
                                 if (!isApplyFlow) {
                                     localStorage.removeItem('mobileNumber');
@@ -576,7 +576,7 @@ function Login() {
                     {isApplyFlow ? 'Complete Your Application' : 'Personal Details'}
                 </h2>
                 <p className="text-gray-500 text-sm mb-6">
-                    {isApplyFlow 
+                    {isApplyFlow
                         ? 'Final step! Verify your details to complete your application.'
                         : 'Your details have been pre-filled. Please verify and make changes if needed.'}
                 </p>
@@ -759,8 +759,8 @@ function Login() {
                             {apply === "true" ? 'Complete Your Application' : 'Instant Loan up to ₹1Cr'}
                         </h2>
                         <p className="opacity-90 text-center">
-                            {apply === "true" 
-                                ? 'Final step to get your loan approved' 
+                            {apply === "true"
+                                ? 'Final step to get your loan approved'
                                 : 'Fast approvals • No paperwork • Best rates'}
                         </p>
                         <div className="mt-8 space-y-2 text-sm">
@@ -798,11 +798,10 @@ function Login() {
                                 </div>
                                 <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                                     <div
-                                        className={`h-full bg-[#0080E5] transition-all duration-300 ${
-                                            step === 'mobile' ? 'w-1/3' : 
-                                            step === 'otp' ? 'w-2/3' : 
-                                            'w-full'
-                                        }`}
+                                        className={`h-full bg-[#0080E5] transition-all duration-300 ${step === 'mobile' ? 'w-1/3' :
+                                            step === 'otp' ? 'w-2/3' :
+                                                'w-full'
+                                            }`}
                                     ></div>
                                 </div>
                             </div>
@@ -814,4 +813,20 @@ function Login() {
     );
 }
 
-export default Login;
+// Loading component for Suspense fallback
+function LoginLoading() {
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0080E5]"></div>
+        </div>
+    );
+}
+
+// Wrap Login in Suspense to handle useSearchParams()
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<LoginLoading />}>
+            <Login />
+        </Suspense>
+    );
+}
