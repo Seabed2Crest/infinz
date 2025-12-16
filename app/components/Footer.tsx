@@ -153,7 +153,7 @@ function Footer() {
                   src="/logo_colour.png"
                   alt="Infinz Logo"
                   className="cursor-pointer transition-all duration-300 transform hover:scale-105 hover:rotate-1"
-                  style={{ height: "80px", width: "auto" }}
+                  style={{ height: "90px", width: "auto" }}
                   onClick={() => router.push("/")}
                 />
               </div>
