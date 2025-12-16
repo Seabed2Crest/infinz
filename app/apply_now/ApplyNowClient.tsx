@@ -96,18 +96,18 @@ export default function ApplyNowClient() {
   const [salarySlipUploading, setSalarySlipUploading] = useState(false);
   const [salarySlipUrl, setSalarySlipUrl] = useState<string | null>(null);
   const [loanSubmitting, setLoanSubmitting] = useState(false);
-
+  const today = new Date().toISOString().split("T")[0];
   // --- BUSINESS LOAN DETAILS ---
   const [businessForm, setBusinessForm] = useState({
     requiredLoanAmount: "",
-    employmentType: "",
+
     businessName: "",
     companyType: "",
     annualTurnover: "",
     industryType: "",
     registrationType: "",
     registrationNumber: "",
-    incorporationDate: "",
+    incorporationDate: today,
     businessPincode: "",
   });
 
@@ -152,7 +152,6 @@ export default function ApplyNowClient() {
     if (loanType !== "business") {
       if (
         !formData.requiredLoanAmount ||
-        !formData.employmentType ||
         !formData.netMonthlyIncome ||
         !formData.salaryPaymentMode ||
         !formData.companyOrBusinessName ||
@@ -170,7 +169,6 @@ export default function ApplyNowClient() {
           loanAmountRequired: formData.requiredLoanAmount,
           emiTenure: "12",
           mobileNumber: mobile,
-          employmentType: formData.employmentType as "salaried" | "self-employed",
           salaryPaymentMode: formData.salaryPaymentMode as "cash" | "inhand" | "bank",
           companyOrBusinessName: formData.companyOrBusinessName,
           companyPinCode: formData.companyPinCode,
@@ -199,7 +197,7 @@ export default function ApplyNowClient() {
     // Business loan flow
     if (
       !businessForm.requiredLoanAmount ||
-      !businessForm.employmentType ||
+
       !businessForm.businessName ||
       !businessForm.companyType ||
       !businessForm.annualTurnover ||
@@ -218,7 +216,7 @@ export default function ApplyNowClient() {
 
       const payload = {
         requiredLoanAmount: businessForm.requiredLoanAmount,
-        employmentType: businessForm.employmentType as "salaried" | "self-employed",
+
         businessName: businessForm.businessName,
         companyType: businessForm.companyType as
           | "Proprietorship"
@@ -415,8 +413,8 @@ export default function ApplyNowClient() {
                       }
                     >
                       <option value="">Select payment mode</option>
-                      <option value="cash">Cash</option>
-                      <option value="inhand">In-hand</option>
+                      <option value="cash/inhand">Cash / In-hand</option>
+
                       <option value="bank">Bank account</option>
                     </select>
                   </div>
@@ -467,11 +465,10 @@ export default function ApplyNowClient() {
                   <button
                     onClick={handleFormSubmit}
                     disabled={salarySlipUploading || loanSubmitting}
-                    className={`w-full mt-4 font-semibold py-3 rounded-xl transition duration-200 ${
-                      salarySlipUploading || loanSubmitting
-                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                        : "bg-[#0080E5] hover:bg-[#0066B3] text-white shadow-md"
-                    }`}
+                    className={`w-full mt-4 font-semibold py-3 rounded-xl transition duration-200 ${salarySlipUploading || loanSubmitting
+                      ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                      : "bg-[#0080E5] hover:bg-[#0066B3] text-white shadow-md"
+                      }`}
                   >
                     {loanSubmitting ? "Submitting..." : "Submit Application"}
                   </button>
@@ -505,23 +502,7 @@ export default function ApplyNowClient() {
                   </div>
 
                   {/* Employment Type */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Employment Type</label>
-                    <select
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
-                      value={businessForm.employmentType}
-                      onChange={(e) =>
-                        setBusinessForm({
-                          ...businessForm,
-                          employmentType: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">Select employment type</option>
-                      <option value="salaried">Salaried</option>
-                      <option value="self-employed">Self-employed</option>
-                    </select>
-                  </div>
+
 
                   {/* Business Name */}
                   <div>
@@ -633,7 +614,7 @@ export default function ApplyNowClient() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Date of Incorporation / Start Date</label>
                     <input
                       type="date"
-                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
+                      max={new Date().toISOString().split("T")[0]}
                       value={businessForm.incorporationDate}
                       onChange={(e) =>
                         setBusinessForm({
@@ -642,6 +623,7 @@ export default function ApplyNowClient() {
                         })
                       }
                     />
+
                   </div>
 
                   {/* Business Pincode */}
@@ -664,11 +646,10 @@ export default function ApplyNowClient() {
                   <button
                     onClick={handleFormSubmit}
                     disabled={loanSubmitting}
-                    className={`w-full mt-4 font-semibold py-3 rounded-xl transition duration-200 ${
-                      loanSubmitting
-                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                        : "bg-[#0080E5] hover:bg-[#0066B3] text-white shadow-md"
-                    }`}
+                    className={`w-full mt-4 font-semibold py-3 rounded-xl transition duration-200 ${loanSubmitting
+                      ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                      : "bg-[#0080E5] hover:bg-[#0066B3] text-white shadow-md"
+                      }`}
                   >
                     {loanSubmitting ? "Submitting..." : "Submit Business Loan"}
                   </button>
@@ -683,7 +664,7 @@ export default function ApplyNowClient() {
                 {loanOffer === null && (
                   <div className="text-center">
                     <CheckCircle size={60} className="text-green-600 mx-auto" />
-                    <h2 className="text-2xl font-semibold mt-3 text-gray-900">Application submitted successfully</h2>
+                    <h2 className="text-2xl font-semibold mt-3 text-gray-900 text-center">Application submitted successfully</h2>
                     <p className="text-gray-600">We have received your application and will reach you shortly.</p>
                   </div>
                 )}
@@ -691,13 +672,27 @@ export default function ApplyNowClient() {
                 {/* If we have a bank offer, show it below the generic success message */}
                 {loanOffer && (
                   <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md">
-                    {/* Bank Logo + Name */}
-                    <p>
-                      Congratulations! Your loan details match perfectly with {loanOffer.bankName}. To provide the best offers tailored to you. Tap the button below to securely continue your application.
+
+                    {/* Heading */}
+                    <h2 className="text-2xl font-bold text-green-600 mb-2 text-center">
+                      Congratulations!
+                    </h2>
+
+                    {/* Description */}
+                    <p className="text-gray-700 mb-4 text-center">
+                      Your loan details match perfectly with {loanOffer.bankName}. To provide the best offers tailored to you, tap the button below to securely continue your application.
                     </p>
-                    <div className="flex items-center gap-4">
-                      <img src={loanOffer.bankLogo} alt={loanOffer.bankName} className="w-14 h-14 rounded-xl object-contain bg-gray-100 p-2" />
-                      <h3 className="text-xl font-bold text-gray-900">{loanOffer.bankName}</h3>
+
+                    {/* Bank Logo + Name */}
+                    <div className="flex items-center gap-4 mb-6">
+                      <img
+                        src={`https://infinz.s3.amazonaws.com/${loanOffer.logoImage}`}
+                        alt={loanOffer.bankName}
+                        className="w-14 h-14 rounded-xl object-contain bg-gray-100 p-2"
+                      />
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {loanOffer.bankName}
+                      </h3>
                     </div>
 
                     {/* APPLY BUTTON */}
@@ -705,12 +700,13 @@ export default function ApplyNowClient() {
                       href={loanOffer.utmLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-6 block w-full text-center bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-md"
+                      className="block w-full text-center bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-md"
                     >
                       View Bank Offer
                     </a>
                   </div>
                 )}
+
               </div>
             )}
 

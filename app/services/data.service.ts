@@ -327,7 +327,7 @@ export const personalDetailsService = {
 
 export interface CreateBusinessLoanPayload {
   requiredLoanAmount: string;
-  employmentType: "salaried" | "self-employed";
+  
 
   businessName: string;
 
@@ -367,7 +367,7 @@ export const BusinessLoanService = {
 
       const apiPayload = {
         requiredLoanAmount: payload.requiredLoanAmount,
-        employmentType: payload.employmentType,
+       
         businessName: payload.businessName,
         companyType: payload.companyType,
         annualTurnover: payload.annualTurnover,
