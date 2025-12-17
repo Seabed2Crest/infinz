@@ -248,11 +248,10 @@ function FaqItem({
 
   return (
     <div
-      className={`bg-white rounded-2xl shadow-lg border-2 transition-all duration-500 overflow-hidden ${
-        isOpen
-          ? "border-blue-300 shadow-xl"
-          : "border-gray-100 hover:border-blue-200"
-      } ${isHovered ? "shadow-xl" : ""}`}
+      className={`bg-white rounded-2xl shadow-lg border-2 transition-all duration-500 overflow-hidden ${isOpen
+        ? "border-blue-300 shadow-xl"
+        : "border-gray-100 hover:border-blue-200"
+        } ${isHovered ? "shadow-xl" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -264,9 +263,8 @@ function FaqItem({
           {faq.question}
         </h3>
         <div
-          className={`flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center transition-all duration-300 ${
-            isOpen ? "bg-blue-200 rotate-180" : ""
-          } ${isHovered ? "scale-110" : ""}`}
+          className={`flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center transition-all duration-300 ${isOpen ? "bg-blue-200 rotate-180" : ""
+            } ${isHovered ? "scale-110" : ""}`}
         >
           {isOpen ? (
             <ChevronUp className="w-5 h-5 text-blue-600" />
@@ -276,9 +274,8 @@ function FaqItem({
         </div>
       </button>
       <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${
-          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
       >
         <div className="px-6 pb-6">
           <div className="border-t border-gray-100 pt-4">
@@ -301,35 +298,32 @@ export default function Faq({ topic = "home" }: FaqProps) {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section className="w-full py-20 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+      <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10">
         <div ref={elementRef} className="text-center mb-16">
           <h2
-            className={`text-4xl md:text-5xl font-bold text-gray-900 mb-6 transform transition-all duration-1000 ${
-              isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-            }`}
+            className={`text-4xl md:text-5xl font-bold text-gray-900 mb-6 transform transition-all duration-1000 ${isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              }`}
           >
             Frequently Asked Questions?
           </h2>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="max-w-7xl mx-auto">
           {/* FAQ List */}
           <div
-            className={`space-y-4 transform transition-all duration-1000 ${
-              isInView
-                ? "translate-x-0 opacity-100"
-                : "translate-x-12 opacity-0"
-            }`}
+            className={`space-y-4 transform transition-all duration-1000 ${isInView
+              ? "translate-x-0 opacity-100"
+              : "translate-x-12 opacity-0"
+              }`}
           >
             {faqData.map((faq, index) => (
               <div
                 key={faq.id}
-                className={`transform transition-all duration-700 ${
-                  isInView
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-8 opacity-0"
-                }`}
+                className={`transform transition-all duration-700 ${isInView
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+                  }`}
                 style={{ transitionDelay: `${800 + index * 100}ms` }}
               >
                 <FaqItem
@@ -339,17 +333,6 @@ export default function Faq({ topic = "home" }: FaqProps) {
                 />
               </div>
             ))}
-          </div>
-
-          {/* Right Side Image */}
-          <div className="hidden lg:flex justify-center items-center">
-            <Image
-              src="/book.jpg"
-              alt="FAQ Illustration"
-              width={500}
-              height={500}
-              className="object-contain rounded-xl"
-            />
           </div>
         </div>
       </div>
