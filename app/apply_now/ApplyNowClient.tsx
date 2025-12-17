@@ -98,9 +98,10 @@ export default function ApplyNowClient() {
   const [loanSubmitting, setLoanSubmitting] = useState(false);
   const today = new Date().toISOString().split("T")[0];
   // --- BUSINESS LOAN DETAILS ---
+  // --- BUSINESS LOAN DETAILS ---
   const [businessForm, setBusinessForm] = useState({
     requiredLoanAmount: "",
-
+    employmentType: "", // Add this field
     businessName: "",
     companyType: "",
     annualTurnover: "",
@@ -155,7 +156,8 @@ export default function ApplyNowClient() {
         !formData.netMonthlyIncome ||
         !formData.salaryPaymentMode ||
         !formData.companyOrBusinessName ||
-        !formData.companyPinCode
+        !formData.companyPinCode ||
+        !formData.employmentType
       ) {
         setError("Please fill all required loan details");
         return;
@@ -172,6 +174,7 @@ export default function ApplyNowClient() {
           salaryPaymentMode: formData.salaryPaymentMode as "cash" | "inhand" | "bank",
           companyOrBusinessName: formData.companyOrBusinessName,
           companyPinCode: formData.companyPinCode,
+          employmentType: formData.employmentType
         };
 
         // attach salarySlipUrl only if user uploaded one (optional)
@@ -216,7 +219,7 @@ export default function ApplyNowClient() {
 
       const payload = {
         requiredLoanAmount: businessForm.requiredLoanAmount,
-
+        employmentType: businessForm.employmentType,
         businessName: businessForm.businessName,
         companyType: businessForm.companyType as
           | "Proprietorship"
@@ -502,7 +505,27 @@ export default function ApplyNowClient() {
                   </div>
 
                   {/* Employment Type */}
-
+                  {/* Employment Type for Business Loan */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Employment Type <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent bg-white"
+                      value={businessForm.employmentType}
+                      onChange={(e) =>
+                        setBusinessForm({
+                          ...businessForm,
+                          employmentType: e.target.value,
+                        })
+                      }
+                      required
+                    >
+                      <option value="">Select employment type</option>
+                      <option value="Salaried">Salaried</option>
+                      <option value="Self-employed">Self-employed</option>
+                    </select>
+                  </div>
 
                   {/* Business Name */}
                   <div>
