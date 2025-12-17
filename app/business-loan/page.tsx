@@ -22,12 +22,29 @@ function BusinessLoanHero() {
   const [turnover, setTurnover] = useState("");
   const [loanAmount, setLoanAmount] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
-  const [loading, setLoading] = useState(false);
   const [emiTenure, setEmiTenure] = useState("");
+  const [registrations, setRegistrations] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
+  const handleRegistrationChange = (value: string) => {
+    setRegistrations((prev: string[]) =>
+      prev.includes(value)
+        ? prev.filter((item) => item !== value)
+        : [...prev, value]
+    );
+  };
+
   const handleSubmit = async () => {
-    if (!businessType || !turnover || !loanAmount || !mobileNumber || !emiTenure) {
+    if (
+      !businessType ||
+      !turnover ||
+      !loanAmount ||
+      !mobileNumber ||
+      !emiTenure ||
+      registrations.length === 0
+    ) {
       toast.error("Please fill all fields");
       return;
     }
@@ -40,9 +57,11 @@ function BusinessLoanHero() {
         loanAmount,
         mobileNumber,
         emiTenure,
+        registrations, // ✅ checkbox data
       };
 
-      const response = await BusinessService.createBusiness(payload);
+      await BusinessService.createBusiness(payload);
+
       toast.success("Business application submitted successfully!");
       router.push("/login?loan=business&apply=true");
     } catch (error) {
@@ -56,123 +75,131 @@ function BusinessLoanHero() {
     <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* LEFT CONTENT */}
           <div className="space-y-8">
-            <div className="space-y-6">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                Fuel Your Business Growth with{" "}
-                <span className="text-blue-600">Instant Business Loans</span>
-              </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Get up to ₹1 crore business funding at competitive rates starting from 12% per annum.
-                Quick approval and funds in your account within 5 days.
-              </p>
-            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+              Fuel Your Business Growth with{" "}
+              <span className="text-blue-600">Instant Business Loans</span>
+            </h1>
+            <p className="text-xl text-gray-600">
+              Get up to ₹1 crore funding at competitive rates starting from 12%
+              p.a.
+            </p>
           </div>
 
-          <div
-            id="apply_two"
-            className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100"
-          >
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+          {/* FORM */}
+          <div className="bg-white rounded-2xl shadow-2xl p-8 border">
+            <h3 className="text-2xl font-bold text-center mb-6">
               Get Instant Loan
             </h3>
 
             <div className="space-y-4">
+              {/* Business Type */}
+              <select
+                value={businessType}
+                onChange={(e) => setBusinessType(e.target.value)}
+                className="w-full px-4 py-3 border rounded-lg"
+              >
+                <option value="">Select Business Type</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Trading">Trading</option>
+                <option value="Services">Services</option>
+                <option value="Retail">Retail</option>
+                <option value="Other">Other</option>
+              </select>
+
+              {/* Turnover */}
+              <select
+                value={turnover}
+                onChange={(e) => setTurnover(e.target.value)}
+                className="w-full px-4 py-3 border rounded-lg"
+              >
+                <option value="">Select Turnover</option>
+                <option value="₹2L - ₹10L">₹2L - ₹10L</option>
+                <option value="₹10L - ₹50L">₹10L - ₹50L</option>
+                <option value="₹50L - ₹1Cr">₹50L - ₹1Cr</option>
+                <option value="₹1Cr - ₹5Cr">₹1Cr - ₹5Cr</option>
+                <option value="Above ₹5Cr">Above ₹5Cr</option>
+              </select>
+
+              {/* EMI Tenure */}
+              <select
+                value={emiTenure}
+                onChange={(e) => setEmiTenure(e.target.value)}
+                className="w-full px-4 py-3 border rounded-lg"
+              >
+                <option value="">Select EMI Tenure</option>
+                <option value="6 Months">6 Months</option>
+                <option value="12 Months">12 Months</option>
+                <option value="24 Months">24 Months</option>
+                <option value="36 Months">36 Months</option>
+                <option value="48 Months">48 Months</option>
+                <option value="60 Months">60 Months</option>
+              </select>
+
+              {/* Loan Amount */}
+              <select
+                value={loanAmount}
+                onChange={(e) => setLoanAmount(e.target.value)}
+                className="w-full px-4 py-3 border rounded-lg"
+              >
+                <option value="">Select Loan Amount</option>
+                <option value="₹1L - ₹5L">₹1L - ₹5L</option>
+                <option value="₹5L - ₹10L">₹5L - ₹10L</option>
+                <option value="₹10L - ₹25L">₹10L - ₹25L</option>
+                <option value="₹25L - ₹50L">₹25L - ₹50L</option>
+                <option value="₹50L - ₹1Cr">₹50L - ₹1Cr</option>
+              </select>
+
+              {/* Business Registrations */}
+              {/* Business Registrations */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Business Type
-                </label>
-                <select
-                  value={businessType}
-                  onChange={(e) => setBusinessType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Business Type</option>
-                  <option value="Manufacturing">Manufacturing</option>
-                  <option value="Trading">Trading</option>
-                  <option value="Services">Services</option>
-                  <option value="Retail">Retail</option>
-                  <option value="Other">Other</option>
-                </select>
+                <p className="text-sm font-medium mb-3">
+                  Business Registration Number
+                </p>
+
+                <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                  {[
+                    "GST Number",
+                    "Shop and Establishment",
+                    "FSSAI",
+                    "Trade License",
+                  ].map((item) => (
+                    <label
+                      key={item}
+                      className="flex items-center space-x-2 text-sm text-gray-700"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={registrations.includes(item)}
+                        onChange={() => handleRegistrationChange(item)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span>{item}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Annual Turnover
-                </label>
-                <select
-                  value={turnover}
-                  onChange={(e) => setTurnover(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Turnover Range</option>
-                  <option value="₹2L - ₹10L">₹2L - ₹10L</option>
-                  <option value="₹10L - ₹50L">₹10L - ₹50L</option>
-                  <option value="₹50L - ₹1Cr">₹50L - ₹1Cr</option>
-                  <option value="₹1Cr - ₹5Cr">₹1Cr - ₹5Cr</option>
-                  <option value="Above ₹5Cr">Above ₹5Cr</option>
-                </select>
-              </div>
+              {/* Mobile */}
+              <input
+                type="tel"
+                maxLength={10}
+                placeholder="Mobile Number"
+                value={mobileNumber}
+                onChange={(e) => {
+                  if (/^\d*$/.test(e.target.value)) {
+                    setMobileNumber(e.target.value);
+                  }
+                }}
+                className="w-full px-4 py-3 border rounded-lg"
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  EMI Tenure
-                </label>
-                <select
-                  value={emiTenure}
-                  onChange={(e) => setEmiTenure(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Tenure</option>
-                  <option value="6 Months">6 Months</option>
-                  <option value="12 Months">12 Months</option>
-                  <option value="24 Months">24 Months</option>
-                  <option value="36 Months">36 Months</option>
-                  <option value="48 Months">48 Months</option>
-                  <option value="60 Months">60 Months</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Loan Amount Required
-                </label>
-                <select
-                  value={loanAmount}
-                  onChange={(e) => setLoanAmount(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Loan Amount</option>
-                  <option value="₹1L - ₹5L">₹1L - ₹5L</option>
-                  <option value="₹5L - ₹10L">₹5L - ₹10L</option>
-                  <option value="₹10L - ₹25L">₹10L - ₹25L</option>
-                  <option value="₹25L - ₹50L">₹25L - ₹50L</option>
-                  <option value="₹50L - ₹1Cr">₹50L - ₹1Cr</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mobile Number
-                </label>
-                <input
-                  type="tel"
-                  maxLength={10}
-                  placeholder="Enter mobile number"
-                  value={mobileNumber}
-                  onChange={(e) => {
-                    if (/^\d*$/.test(e.target.value)) {
-                      setMobileNumber(e.target.value);
-                    }
-                  }}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
+              {/* Submit */}
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold"
               >
                 {loading ? "Submitting..." : "Get Instant Loan"}
               </button>
@@ -350,7 +377,8 @@ function FeaturesSection() {
     {
       icon: Clock,
       title: "Faster Approval",
-      description: "Instant pre-approval in 10 minutes with AI-powered assessment",
+      description:
+        "Instant pre-approval in 10 minutes with AI-powered assessment",
     },
     {
       icon: FileText,
@@ -387,7 +415,8 @@ function FeaturesSection() {
             Features & Benefits of Business Loan from Infinz
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Experience hassle-free business financing designed for modern entrepreneurs.
+            Experience hassle-free business financing designed for modern
+            entrepreneurs.
           </p>
         </div>
 
@@ -400,7 +429,9 @@ function FeaturesSection() {
               <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
                 <feature.icon className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                {feature.title}
+              </h3>
               <p className="text-gray-600">{feature.description}</p>
             </div>
           ))}
@@ -474,7 +505,9 @@ function ApplicationSteps() {
                 >
                   <CheckCircle className="h-6 w-6 text-blue-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h5 className="text-lg font-semibold text-white mb-1">{step.title}</h5>
+                    <h5 className="text-lg font-semibold text-white mb-1">
+                      {step.title}
+                    </h5>
                     <p className="text-white/80 text-sm">{step.description}</p>
                   </div>
                 </div>
@@ -482,7 +515,7 @@ function ApplicationSteps() {
 
               <div className="mt-5 text-center">
                 <Link
-                   href="/calculator#eligibility-calculator"
+                  href="/calculator#eligibility-calculator"
                   className="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-xl hover:bg-blue-700 transition shadow-lg"
                 >
                   Check Eligibility Now
@@ -502,11 +535,17 @@ function ApplicationSteps() {
 // Documents Section
 function DocumentsRequired() {
   const documents = [
-    { name: "KYC Documents", description: "Aadhaar card & Selfie verification" },
+    {
+      name: "KYC Documents",
+      description: "Aadhaar card & Selfie verification",
+    },
     { name: "PAN Card", description: "Personal & Business PAN" },
     { name: "GST Document", description: "GST Registration & Returns" },
     { name: "ITR Document", description: "Last 2 years Income Tax Returns" },
-    { name: "Business Documents", description: "Company registration & licenses" },
+    {
+      name: "Business Documents",
+      description: "Company registration & licenses",
+    },
     { name: "Address Proof", description: "Company & Personal address proof" },
     {
       name: "Bank Statement",
@@ -535,7 +574,9 @@ function DocumentsRequired() {
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                 <FileText className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{doc.name}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {doc.name}
+              </h3>
               <p className="text-gray-600 text-sm">{doc.description}</p>
             </div>
           ))}
@@ -550,8 +591,20 @@ function LenderComparison() {
   const lendersData = [
     { name: "HDFC Bank", rate: 12.5, amount: 10000000, tenure: 7, rating: 4.8 },
     { name: "ICICI Bank", rate: 13.0, amount: 7500000, tenure: 5, rating: 4.7 },
-    { name: "Bajaj Finserv", rate: 12.8, amount: 5000000, tenure: 4, rating: 4.6 },
-    { name: "Kotak Mahindra", rate: 13.2, amount: 6000000, tenure: 6, rating: 4.5 },
+    {
+      name: "Bajaj Finserv",
+      rate: 12.8,
+      amount: 5000000,
+      tenure: 4,
+      rating: 4.6,
+    },
+    {
+      name: "Kotak Mahindra",
+      rate: 13.2,
+      amount: 6000000,
+      tenure: 6,
+      rating: 4.5,
+    },
     { name: "Axis Bank", rate: 13.5, amount: 8000000, tenure: 5, rating: 4.4 },
     { name: "Yes Bank", rate: 14.0, amount: 4000000, tenure: 3, rating: 4.3 },
   ];
@@ -559,7 +612,11 @@ function LenderComparison() {
   const [activeFilter, setActiveFilter] = useState("Lowest Interest Rate");
   const [lenders, setLenders] = useState(lendersData);
 
-  const filters = ["Lowest Interest Rate", "Max Loan Amount", "Min Loan Amount"];
+  const filters = [
+    "Lowest Interest Rate",
+    "Max Loan Amount",
+    "Min Loan Amount",
+  ];
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
@@ -689,7 +746,8 @@ function EligibilityCriteria() {
 
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
-            <strong>Disclaimer:</strong> Criteria may vary for different lenders.
+            <strong>Disclaimer:</strong> Criteria may vary for different
+            lenders.
           </p>
         </div>
       </div>
@@ -707,11 +765,7 @@ export default function BusinessLoanPage() {
       <EligibilityCriteria />
       <DocumentsRequired />
       <LenderComparison />
-      <UtmLinksSection 
-        salary="20K" 
-        loanAmount="1L"
-        showWhenEmpty={true}
-      />
+      <UtmLinksSection salary="20K" loanAmount="1L" showWhenEmpty={true} />
       <Faq topic="business-loan" />
     </>
   );

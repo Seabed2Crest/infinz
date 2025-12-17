@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
+import CategoryBadge from "./CategoryBadge";
 
 export default function BlogCard({ blog, index }: any) {
   return (
@@ -21,9 +22,7 @@ export default function BlogCard({ blog, index }: any) {
 
         {/* Content */}
         <div className="p-5">
-          <span className="inline-block px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-full mb-3">
-            {blog.category}
-          </span>
+          <CategoryBadge category={blog.category} />
 
           <h2 className="text-xl font-bold line-clamp-2 mb-2 group-hover:text-blue-600 transition">
             {blog.title}

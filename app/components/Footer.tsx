@@ -225,10 +225,10 @@ function Footer() {
               <Users className="w-4 h-4" />
               About Us
             </FooterLink>
-            <FooterLink onClick={() => { }}>
+            {/* <FooterLink onClick={() => { }}>
               <Users className="w-4 h-4" />
               Career
-            </FooterLink>
+            </FooterLink> */}
             <FooterLink onClick={() => router.push("/contact")}>
               <MessageCircle className="w-4 h-4" />
               Contact Us
@@ -245,19 +245,19 @@ function Footer() {
               <BookOpen className="w-4 h-4" />
               Blogs
             </FooterLink>
-            <FooterLink onClick={() => { }}>
+            <FooterLink onClick={() => router.push("/financial-dictionary")}>
               <BookOpen className="w-4 h-4" />
               Financial Dictionary
             </FooterLink>
-            <FooterLink onClick={() => { }}>
+            <FooterLink onClick={() => router.push("#")}>
               <FileText className="w-4 h-4" />
               Featured
             </FooterLink>
-            <FooterLink onClick={() => { }}>
+            <FooterLink onClick={() => router.push("/news-and-press")}>
               <Newspaper className="w-4 h-4" />
               Newsroom
             </FooterLink>
-            <FooterLink onClick={() => { }}>
+            <FooterLink onClick={() => router.push("/#faq")}>
               <HelpCircle className="w-4 h-4" />
               FAQ
             </FooterLink>
@@ -272,29 +272,43 @@ function Footer() {
                   <p className="text-gray-900 font-semibold mb-1">
                     Head Office
                   </p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+
+                  <a
+                    href="https://maps.app.goo.gl/DH2fRPy4r8utrbHXA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-600 text-sm leading-relaxed hover:text-blue-600 transition"
+                  >
                     No 338, 2nd Floor, Siddhiaiah Puranik road,
                     <br />
                     3rd stage, 4th Block, Basaveshwaranagar,
                     <br />
                     Bangalore North - 560079
-                  </p>
+                  </a>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-blue-600 flex-shrink-0" />
                 <div>
-                  <p className="text-gray-600 text-sm">
+                  <a
+                    href="mailto:info@rakshithafinserve.com"
+                    className="text-gray-600 text-sm hover:text-blue-600 transition"
+                  >
                     info@rakshithafinserve.com
-                  </p>
+                  </a>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-blue-600 flex-shrink-0" />
                 <div>
-                  <p className="text-gray-600 text-sm">06366158631</p>
+                  <a
+                    href="tel:+916366158631"
+                    className="text-gray-600 text-sm hover:text-blue-600 transition"
+                  >
+                    +91 6366158631
+                  </a>
                 </div>
               </div>
             </div>
@@ -303,8 +317,9 @@ function Footer() {
 
         {/* Bottom Section */}
         <div
-          className={`border-t border-gray-200 pt-8 transform transition-all duration-1000 ${isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-            }`}
+          className={`border-t border-gray-200 pt-8 transform transition-all duration-1000 ${
+            isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
           style={{ transitionDelay: "600ms" }}
         >
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">

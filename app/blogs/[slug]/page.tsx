@@ -7,6 +7,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import { blogApi } from "@/app/services/data.service";
+import CategoryBadge from "@/app/components/CategoryBadge";
+import { formatBlogDate } from "@/app/utils/date.utils";
 
 export default function BlogDetailsPage() {
   const { slug } = useParams();
@@ -43,13 +45,14 @@ export default function BlogDetailsPage() {
           {blog.title}
         </h1>
 
+
+
+
         {/* Category + Date */}
         <div className="flex items-center gap-4 text-gray-500 mt-3">
-          <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-            {blog.category}
-          </span>
+          <CategoryBadge category={blog.category} />
 
-          <span>{new Date(blog.createdAt).toDateString()}</span>
+          <span>{formatBlogDate(blog.createdAt)}</span>
         </div>
 
         {/* Content */}

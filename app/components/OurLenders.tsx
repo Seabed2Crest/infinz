@@ -123,7 +123,7 @@ useEffect(() => {
     if (!scrollContainer) return;
 
     let scrollPosition = 0;
-    const scrollSpeed = 0.6; // ⬅️ reduced speed (was 1)
+    const scrollSpeed = 2; // ⬅️ reduced speed (was 1)
     const cardWidth = 320;
     const totalWidth = lenders.length * cardWidth;
     let animation: number;
