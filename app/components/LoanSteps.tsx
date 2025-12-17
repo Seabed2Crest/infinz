@@ -425,7 +425,7 @@ function LoanSteps({ onOpenModal }: LoanStepsProps) {
               transition-all duration-500 shadow-2xl hover:shadow-3xl
               relative overflow-hidden group
             "
-              onClick={() => router.push("/personal-loan")}
+              onClick={() => router.push("/apply_now")}
             >
               <span className="relative z-10 flex items-center gap-3">
                 Start Your Loan Journey
