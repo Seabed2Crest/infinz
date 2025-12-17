@@ -447,7 +447,7 @@ function Login() {
 
                     {isApplyFlow && (
                         <button
-                            onClick={() => router.push(`/apply_now?loan=${loan}`)}
+                            onClick={() => router.back()}
                             className="w-full text-gray-600 hover:text-gray-800 text-sm text-center py-2"
                         >
                             ← Back to application
@@ -551,7 +551,7 @@ function Login() {
 
                         {isApplyFlow && (
                             <button
-                                onClick={() => router.push(`/apply_now?loan=${loan}`)}
+                                onClick={() => router.back()}// STORE THE CURRENT [AGE WHERE THE  USER CAME FROM]
                                 className="block w-full text-gray-500 hover:text-gray-700 text-sm"
                             >
                                 ← Back to application form
