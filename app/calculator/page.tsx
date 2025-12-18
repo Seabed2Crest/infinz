@@ -312,7 +312,7 @@ function LoanEligibilityCalculator({
 
               {/* Apply Button */}
               <Link
-                href="/login?loan=personal&apply=false"
+                href="/login"
                 className="w-full bg-white text-blue-600 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 Apply for Loan
@@ -540,7 +540,7 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
             {/* Apply Button */}
             <div className="flex justify-center items-center">
               <Link
-                href="/login?loan=personal&apply=false"
+                href="/login"
                 className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
               >
                 Apply Now

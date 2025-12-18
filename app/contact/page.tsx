@@ -365,7 +365,7 @@ function QuickActions({ onOpenModal, onOpenLeadForm }: QuickActionsProps) {
               Get instant pre-approval for personal or business loans
             </p>
             <button
-               onClick={() => window.open("/login?loan=personal&apply=false", "_self")}
+               onClick={() => window.open("/login", "_self")}
               className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
             >
               Apply Now
