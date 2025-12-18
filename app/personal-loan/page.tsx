@@ -574,7 +574,7 @@ function EMICalculator({ onOpenModal }: { onOpenModal: () => void }) {
 
             {/* Apply Now Button */}
             <Link
-              href="/apply_now
+              href="/login?loan=personal&apply=false
 "
               className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg inline-flex items-center justify-center"
             >

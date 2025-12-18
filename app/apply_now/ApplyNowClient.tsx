@@ -687,8 +687,8 @@ export default function ApplyNowClient() {
                 {loanOffer === null && (
                   <div className="text-center">
                     <CheckCircle size={60} className="text-green-600 mx-auto" />
-                    <h2 className="text-2xl font-semibold mt-3 text-gray-900 text-center">Application submitted successfully</h2>
-                    <p className="text-gray-600">We have received your application and will reach you shortly.</p>
+                    <h2 className="text-2xl font-semibold mt-3 text-gray-900 text-center">Thank you for visiting Infinz</h2>
+                    <p className="text-gray-600">We regret to inform you, we are unable to proceed further with your application as it doesn't match our eligibility standards.</p>
                   </div>
                 )}
 

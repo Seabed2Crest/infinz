@@ -193,7 +193,7 @@ function Login() {
 
         try {
             const applyData = localStorage.getItem('applyData');
-            const mobileNumber = formatMobileNumber(mobile);
+            const mobileNumber = mobile;
 
             // Store mobile number in localStorage with +91 prefix
             localStorage.setItem('mobileNumber', mobileNumber);

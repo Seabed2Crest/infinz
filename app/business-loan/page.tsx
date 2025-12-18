@@ -315,7 +315,7 @@ function BusinessLoanCalculator() {
 
             <div className="flex justify-center">
               <Link
-                href="/apply_now"
+                href="/login?loan=personal&apply=false"
                 className="bg-blue-600 text-white py-4 px-12 rounded-xl font-semibold hover:bg-blue-700 transition shadow-lg"
               >
                 Apply Now
