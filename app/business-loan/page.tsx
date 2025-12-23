@@ -36,6 +36,40 @@ function BusinessLoanHero() {
     );
   };
 
+  // const handleSubmit = async () => {
+  //   if (
+  //     !businessType ||
+  //     !turnover ||
+  //     !loanAmount ||
+  //     !mobileNumber ||
+  //     !emiTenure ||
+  //     registrations.length === 0
+  //   ) {
+  //     toast.error("Please fill all fields");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   try {
+  //     const payload = {
+  //       businessType,
+  //       turnover,
+  //       loanAmount,
+  //       mobileNumber,
+  //       emiTenure,
+  //       registrations, // ✅ checkbox data
+  //     };
+
+  //     await BusinessService.createBusiness(payload);
+
+  //     toast.success("Business application submitted successfully!");
+  //     router.push("/login?loan=business&apply=true");
+  //   } catch (error) {
+  //     toast.error("Failed to submit application");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubmit = async () => {
     if (
       !businessType ||
@@ -57,12 +91,20 @@ function BusinessLoanHero() {
         loanAmount,
         mobileNumber,
         emiTenure,
-        registrations, // ✅ checkbox data
+        registrations,
       };
 
+      // 1. Create the initial lead in the DB
       await BusinessService.createBusiness(payload);
 
-      toast.success("Business application submitted successfully!");
+      // 2. CRITICAL: Store this data so ApplyNow page can pre-fill it 
+      // and Login page knows what type of loan is being applied for.
+      localStorage.setItem("applyData", JSON.stringify(payload));
+      localStorage.setItem("mobileNumber", mobileNumber);
+
+      toast.success("Business application started!");
+      
+      // 3. Redirect to login with proper query params
       router.push("/login?loan=business&apply=true");
     } catch (error) {
       toast.error("Failed to submit application");
@@ -70,6 +112,7 @@ function BusinessLoanHero() {
       setLoading(false);
     }
   };
+
 
   return (
     <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-16">
