@@ -308,13 +308,7 @@ export interface CreateBusinessLoanPayload {
   annualTurnover: string;
   industryType: string;
    registrationTypes?: string[];
-  registrationNumbers: {
-    GST?: string;
-    SHOP?: string;
-    FSSAI?: string;
-    TRADE?: string;
-    OTHERS?: string;
-  };
+  registrationNumbers: Record<string, string>;
   incorporationDate: string;
   businessPincode: string;
   mobileNumber: string;

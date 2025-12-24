@@ -29,6 +29,7 @@ const REGISTRATION_MAPPING: Record<string, string> = {
   "Others": "OTHERS",
 };
 
+
 function ApplyNowContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -81,7 +82,9 @@ function ApplyNowContent() {
       if (loanType === "business") {
         setBusinessForm(prev => ({ ...prev, requiredLoanAmount: numericAmount }));
         // Pre-fill checkboxes if they were selected on the landing page
-        if (data.registrations) setRegistrations(data.registrations);
+         if (data.registrations && data.registrations.length > 0) {
+           setRegistrations(data.registrations);
+        }
       } else {
         setFormData(prev => ({ ...prev, requiredLoanAmount: numericAmount }));
       }
@@ -207,19 +210,25 @@ function ApplyNowContent() {
         setLoanSubmitting(false);
         return;
       }
+
+       if (registrations.length === 0) {
+      setError("Please select at least one business registration type");
+      setLoanSubmitting(false);
+      return;
+    }
       
       // ✅ FIX: Map display labels to backend keys correctly
-      const mappedTypes = registrations.map(r => REGISTRATION_MAPPING[r] || "OTHERS");
+      const mappedTypes = registrations.map(r => REGISTRATION_MAPPING[r]).filter(Boolean);
 
        console.log("🔍 Selected registrations (display):", registrations);
   console.log("🔍 Mapped registrations (backend):", mappedTypes);
    
       
       // ✅ FIX: Create registration numbers object
-      const regNumbers: Record<string, string> = {};
-  mappedTypes.forEach(type => {
-    regNumbers[type] = "Provided"; // Placeholder
-  });
+    const regNumbers: Record<string, string> = {};
+    mappedTypes.forEach(type => {
+        regNumbers[type as string] = "Provided"; 
+    });
       
       // ✅ FIX: Construct payload with correct field mapping
       const payload = {
@@ -247,6 +256,15 @@ function ApplyNowContent() {
       };
       
       console.log("📤 Sending Business Loan Payload:", payload);
+      console.log("🔍 Selected registrations (UI):", registrations);
+console.log("🔍 Mapped registrations (Backend):", registrations.map(r => REGISTRATION_MAPPING[r]));
+
+// In the payload before sending:
+console.log("📤 Sending Payload:", {
+  // ... other fields
+  registrationTypes: mappedTypes,
+  registrationNumbers: regNumbers,
+});
       
       const response = await BusinessLoanService.createBusinessLoan(payload as any);
       
@@ -384,34 +402,32 @@ function ApplyNowContent() {
                         </div>
                       </div>
 
-                      {/* ADDED: Business Registration Number Section (Checkbox Group) */}
-                      <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                        <p className="text-sm font-bold text-blue-800 mb-3">
-                          Business Registration Number
-                        </p>
-                        <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-                          {[
-                            "GST Number",
-                            "Shop and Establishment",
-                            "FSSAI",
-                            "Trade License",
-                            "Others"
-                          ].map((item) => (
-                            <label
-                              key={item}
-                              className="flex items-center space-x-2 text-sm text-gray-700 cursor-pointer"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={registrations.includes(item)}
-                                onChange={() => handleRegistrationChange(item)}
-                                className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-                              />
-                              <span>{item}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
+                    {/* // In ApplyNowContent.tsx */}
+{/* Registration Checkboxes Section */}
+<div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+  <p className="text-sm font-bold text-blue-800 mb-3">
+    Business Registration Number <span className="text-red-500">*</span>
+  </p>
+  <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+   {["GST Number", "Shop and Establishment", "FSSAI", "Trade License", "Others"].map((item) => (
+  <label key={item} className="flex items-center space-x-2 text-sm text-gray-700 cursor-pointer p-1">
+    <input
+      type="checkbox"
+      checked={registrations.includes(item)}
+      onChange={() => {
+        console.log("Checkbox clicked:", item); 
+        handleRegistrationChange(item);
+      }}
+      className="h-4 w-4 text-blue-600 rounded"
+    />
+    <span>{item}</span>
+  </label>
+))}
+  </div>
+  {registrations.length === 0 && (
+    <p className="text-red-500 text-xs mt-2">Please select at least one registration type</p>
+  )}
+</div>
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
