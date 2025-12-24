@@ -1,3 +1,4 @@
+//
 import http, { BASE_URL } from "../http.common";
 import { API_ROUTES } from "./api.routes";
 
@@ -30,7 +31,6 @@ export interface BusinessPayloadString {
   loanAmount: string;
   mobileNumber: string;
   emiTenure: string;
-  registrations: string[];
 }
 
 
@@ -307,8 +307,14 @@ export interface CreateBusinessLoanPayload {
   companyType: "Proprietorship" | "Partnership" | "Pvt Ltd" | "LLP" | "Others";
   annualTurnover: string;
   industryType: string;
-  registrationType: "GST" | "SHOP" | "FSSAI" | "TRADE" | "OTHERS";
-  registrationNumber: string;
+   registrationTypes?: string[];
+  registrationNumbers: {
+    GST?: string;
+    SHOP?: string;
+    FSSAI?: string;
+    TRADE?: string;
+    OTHERS?: string;
+  };
   incorporationDate: string;
   businessPincode: string;
   mobileNumber: string;
@@ -383,10 +389,8 @@ export const BusinessLoanService = {
         companyType: payload.companyType,
         annualTurnover: payload.annualTurnover,
         industryType: payload.industryType,
-        registrationTypes: [payload.registrationType],
-        registrationNumbers: {
-          [payload.registrationType]: payload.registrationNumber,
-        },
+        registrationTypes: payload.registrationTypes,
+       registrationNumbers: payload.registrationNumbers,
         incorporationDate: payload.incorporationDate,
         businessPincode: payload.businessPincode,
         mobileNumber: payload.mobileNumber,
