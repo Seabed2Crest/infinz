@@ -1,3 +1,4 @@
+// Business Loan Page
 "use client";
 import { useState } from "react";
 import { BusinessService } from "../services/data.service";
@@ -23,18 +24,18 @@ function BusinessLoanHero() {
   const [loanAmount, setLoanAmount] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [emiTenure, setEmiTenure] = useState("");
-  const [registrations, setRegistrations] = useState<string[]>([]);
+  // const [registrations, setRegistrations] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const handleRegistrationChange = (value: string) => {
-    setRegistrations((prev: string[]) =>
-      prev.includes(value)
-        ? prev.filter((item) => item !== value)
-        : [...prev, value]
-    );
-  };
+  // const handleRegistrationChange = (value: string) => {
+  //   setRegistrations((prev: string[]) =>
+  //     prev.includes(value)
+  //       ? prev.filter((item) => item !== value)
+  //       : [...prev, value]
+  //   );
+  // };
 
   // const handleSubmit = async () => {
   //   if (
@@ -76,8 +77,8 @@ function BusinessLoanHero() {
       !turnover ||
       !loanAmount ||
       !mobileNumber ||
-      !emiTenure ||
-      registrations.length === 0
+      !emiTenure 
+      // registrations.length === 0
     ) {
       toast.error("Please fill all fields");
       return;
@@ -91,7 +92,6 @@ function BusinessLoanHero() {
         loanAmount,
         mobileNumber,
         emiTenure,
-        registrations,
       };
 
       // 1. Create the initial lead in the DB
@@ -196,7 +196,7 @@ function BusinessLoanHero() {
 
               {/* Business Registrations */}
               {/* Business Registrations */}
-              <div>
+              {/* <div>
                 <p className="text-sm font-medium mb-3">
                   Business Registration Number
                 </p>
@@ -222,7 +222,7 @@ function BusinessLoanHero() {
                     </label>
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               {/* Mobile */}
               <input
