@@ -8,7 +8,7 @@ import React, {
   useLayoutEffect,
   Suspense,
 } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Briefcase,
   CalendarDays,
@@ -31,7 +31,7 @@ import {
   PersonalLoanService,
 } from "../services/data.service";
 
-/* ---------------------------------- TYPES --------------------------------- */
+/* ----------------------------- TYPES ----------------------------- */
 
 interface PersonalDetails {
   fullName: string;
@@ -44,7 +44,7 @@ interface PersonalDetails {
 
 type Step = "mobile" | "otp" | "personal-details";
 
-/* -------------------------------- COMPONENT -------------------------------- */
+/* ---------------------------- COMPONENT ---------------------------- */
 
 function Login() {
   const router = useRouter();
@@ -60,7 +60,7 @@ function Login() {
   const [otpResent, setOtpResent] = useState(false);
   const [showLoanModal, setShowLoanModal] = useState(false);
 
-  const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const [personal, setPersonal] = useState<PersonalDetails>({
     fullName: "",
@@ -73,12 +73,7 @@ function Login() {
   const apply = searchParams.get("apply");
   const loan = searchParams.get("loan");
 
-  /* ------------------------------- UTILITIES ------------------------------- */
-
-  const get10DigitMobile = (num: string) =>
-    num.replace(/\D/g, "").slice(-10);
-
-  /* ------------------------------ LIFECYCLE ------------------------------ */
+  /* ----------------------------- EFFECTS ----------------------------- */
 
   useEffect(() => {
     setIsClient(true);
@@ -88,7 +83,12 @@ function Login() {
     otpRefs.current = otpRefs.current.slice(0, 6);
   }, []);
 
-  /* ---------------------------- MOBILE SUBMIT ----------------------------- */
+  /* ----------------------------- HELPERS ----------------------------- */
+
+  const get10DigitMobile = (num: string) =>
+    num.replace(/\D/g, "").slice(-10);
+
+  /* ----------------------------- MOBILE ----------------------------- */
 
   const handleMobileSubmit = async () => {
     setError("");
@@ -103,7 +103,10 @@ function Login() {
       localStorage.setItem("mobileNumber", numericMobile);
       await OtpService.sendOtp(numericMobile);
       setStep("otp");
-      setTimeout(() => otpRefs.current[0]?.focus(), 100);
+
+      setTimeout(() => {
+        otpRefs.current[0]?.focus();
+      }, 100);
     } catch {
       setError("Failed to send OTP");
     } finally {
@@ -111,11 +114,12 @@ function Login() {
     }
   };
 
-  /* ------------------------------- OTP FLOW ------------------------------- */
+  /* ------------------------------- OTP ------------------------------- */
 
   const handleOtpSubmit = async () => {
+    setError("");
     if (otp.length !== 6) {
-      setError("Enter 6 digit OTP");
+      setError("Please enter the 6-digit OTP");
       return;
     }
 
@@ -128,21 +132,27 @@ function Login() {
         origin: "web",
       });
 
-      if (!res.success) throw new Error();
+      if (!res.success) {
+        setError(res.message || "Invalid OTP");
+        return;
+      }
+
+      localStorage.setItem("accessToken", res.data.token.accessToken);
 
       setPersonal({
         fullName: res.data.user.fullName || "",
         email: res.data.user.email || "",
-        dob: res.data.user.dateOfBirth?.split("T")[0] || "",
+        dob: res.data.user.dateOfBirth
+          ? res.data.user.dateOfBirth.split("T")[0]
+          : "",
         panCard: res.data.user.pancardNumber || "",
         pincode: res.data.user.pinCode || "",
         phone: mobileNumber,
       });
 
-      localStorage.setItem("accessToken", res.data.token.accessToken);
       setStep("personal-details");
     } catch {
-      setError("Invalid OTP");
+      setError("OTP verification failed");
     } finally {
       setOtpLoading(false);
     }
@@ -152,6 +162,7 @@ function Login() {
 
   const handlePersonalSubmit = () => {
     const { fullName, email, dob, panCard, pincode } = personal;
+
     if (!fullName || !email || !dob || !panCard || !pincode) {
       setError("All fields are required");
       return;
@@ -166,20 +177,20 @@ function Login() {
     }
   };
 
-  /* ------------------------------ RENDER UI ------------------------------ */
-
   if (!isClient) return null;
+
+  /* ------------------------------- UI ------------------------------- */
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
       {showLoanModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl w-full max-w-md">
-            <h3 className="font-bold mb-4">Select Loan Type</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold mb-4">Select Loan Type</h3>
 
             <button
               onClick={() => router.push("/apply_now?loan=personal")}
-              className="w-full p-4 border rounded-lg mb-2"
+              className="w-full p-4 border rounded-lg mb-3"
             >
               Personal Loan
             </button>
@@ -200,11 +211,13 @@ function Login() {
           <div className="hidden md:flex bg-[#0080E5] text-white p-10 flex-col items-center justify-center">
             <Image
               src="/3d-hand-hold-smartphone-with-authentication-form.jpg"
-              width={260}
-              height={260}
-              alt="Login"
+              width={280}
+              height={280}
+              alt="Secure Login"
             />
-            <h2 className="text-xl font-bold mt-4">Instant Loan</h2>
+            <h2 className="text-xl font-bold mt-4">
+              {apply === "true" ? "Complete Application" : "Instant Loan"}
+            </h2>
           </div>
 
           {/* RIGHT */}
@@ -212,44 +225,57 @@ function Login() {
             {step === "mobile" && (
               <>
                 <input
+                  type="tel"
                   value={mobile}
-                  onChange={(e) => setMobile(e.target.value.slice(0, 10))}
-                  placeholder="Mobile number"
-                  className="w-full border p-3 rounded"
+                  maxLength={10}
+                  onChange={(e) =>
+                    setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))
+                  }
+                  className="w-full border p-3 rounded mb-4"
+                  placeholder="Enter mobile number"
                 />
+
                 <button
                   onClick={handleMobileSubmit}
-                  className="mt-4 w-full bg-[#0080E5] text-white p-3 rounded"
+                  disabled={loading}
+                  className="w-full bg-[#0080E5] text-white p-3 rounded"
                 >
-                  Continue
+                  {loading ? "Sending OTP..." : "Continue"}
                 </button>
               </>
             )}
 
             {step === "otp" && (
               <>
-                <div className="flex gap-2 justify-center">
+                <div className="flex justify-center gap-2 mb-4">
                   {[...Array(6)].map((_, i) => (
                     <input
                       key={i}
-                      ref={(el) => (otpRefs.current[i] = el)}
+                      ref={(el) => {
+                        otpRefs.current[i] = el;
+                      }}
                       maxLength={1}
-                      className="w-10 h-12 text-center border"
+                      inputMode="numeric"
+                      className="w-12 h-14 border text-center text-xl"
                       value={otp[i] || ""}
                       onChange={(e) => {
                         const val = e.target.value.replace(/\D/g, "");
+                        if (!val) return;
                         const arr = otp.split("");
                         arr[i] = val;
                         setOtp(arr.join(""));
+                        otpRefs.current[i + 1]?.focus();
                       }}
                     />
                   ))}
                 </div>
+
                 <button
                   onClick={handleOtpSubmit}
-                  className="mt-4 w-full bg-[#0080E5] text-white p-3 rounded"
+                  disabled={otpLoading}
+                  className="w-full bg-[#0080E5] text-white p-3 rounded"
                 >
-                  Verify
+                  {otpLoading ? "Verifying..." : "Verify & Continue"}
                 </button>
               </>
             )}
@@ -257,20 +283,20 @@ function Login() {
             {step === "personal-details" && (
               <>
                 <input
+                  className="w-full border p-3 rounded mb-2"
                   placeholder="Full Name"
                   value={personal.fullName}
                   onChange={(e) =>
                     setPersonal({ ...personal, fullName: e.target.value })
                   }
-                  className="w-full border p-3 rounded mb-2"
                 />
                 <input
+                  className="w-full border p-3 rounded mb-2"
                   placeholder="Email"
                   value={personal.email}
                   onChange={(e) =>
                     setPersonal({ ...personal, email: e.target.value })
                   }
-                  className="w-full border p-3 rounded mb-2"
                 />
                 <button
                   onClick={handlePersonalSubmit}
@@ -282,7 +308,7 @@ function Login() {
             )}
 
             {error && (
-              <div className="text-red-500 text-sm mt-3">{error}</div>
+              <div className="text-red-500 text-sm mt-4">{error}</div>
             )}
           </div>
         </div>
@@ -291,7 +317,7 @@ function Login() {
   );
 }
 
-/* ----------------------------- SUSPENSE WRAP ----------------------------- */
+/* ------------------------- SUSPENSE WRAPPER ------------------------- */
 
 export default function LoginPage() {
   return (
