@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import React, {
   useEffect,
@@ -7,18 +8,7 @@ import React, {
   useLayoutEffect,
   Suspense,
 } from "react";
-import {
-  OtpService,
-  Token,
-  UserSchama,
-  VerifyOtpResponse,
-} from "../services/otp.service";
-import {
-  BusinessPayloadString,
-  BusinessService,
-  personalDetailsService,
-  PersonalLoanService,
-} from "../services/data.service";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Briefcase,
   CalendarDays,
@@ -28,8 +18,20 @@ import {
   Phone,
   User,
 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+
+import {
+  OtpService,
+  Token,
+  UserSchama,
+  VerifyOtpResponse,
+} from "../services/otp.service";
+import {
+  BusinessPayloadString,
+  BusinessService,
+  PersonalLoanService,
+} from "../services/data.service";
+
+/* ----------------------------- TYPES ----------------------------- */
 
 interface PersonalDetails {
   fullName: string;
@@ -40,32 +42,26 @@ interface PersonalDetails {
   phone?: string;
 }
 
-type Step = "mobile" | "otp" | "personal-details" | "loan-form";
+type Step = "mobile" | "otp" | "personal-details";
+
+/* ---------------------------- COMPONENT ---------------------------- */
 
 function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Client-side mounting stateapplyData 
   const [isClient, setIsClient] = useState(false);
-
-  // State management
   const [step, setStep] = useState<Step>("mobile");
   const [mobile, setMobile] = useState("");
-  const [error, setError] = useState("");
   const [otp, setOtp] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState<Token | null>(null);
-  const [userData, setUserData] = useState<UserSchama | null>(null);
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpResent, setOtpResent] = useState(false);
   const [showLoanModal, setShowLoanModal] = useState(false);
-  const [personalDetailsSaved, setPersonalDetailsSaved] = useState(false);
 
-  // Refs for OTP input management
-  const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Personal details state
   const [personal, setPersonal] = useState<PersonalDetails>({
     fullName: "",
     email: "",
@@ -74,273 +70,97 @@ function Login() {
     pincode: "",
   });
 
-  // Get query parameters
   const apply = searchParams.get("apply");
-  const [selectedLoan, setSelectedLoan] = useState<
-    "personal" | "business" | null
-  >(null);
-
-  // Initialize OTP refs array
-  useLayoutEffect(() => {
-    otpRefs.current = otpRefs.current.slice(0, 6);
-  }, []);
-
   const loan = searchParams.get("loan");
 
-  // Wait for client-side hydration
+  /* ----------------------------- EFFECTS ----------------------------- */
+
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Helper to ensure we only deal with 10 digit strings
-  const get10DigitMobile = (num: string): string => {
-    return num.replace(/\D/g, "").slice(-10);
-  };
-
-  // Set initial step based on URL parameters
   useLayoutEffect(() => {
-    if (isClient) {
-      const storedMobile = localStorage.getItem("mobileNumber");
-      const urlParams = new URLSearchParams(window.location.search);
-      const applyParam = urlParams.get("apply");
+    otpRefs.current = otpRefs.current.slice(0, 6);
+  }, []);
 
-      if (applyParam === "true") {
-        if (storedMobile) {
-          setStep("otp");
-          // Extract only the last 10 digits to be safe
-          const cleanMobile = get10DigitMobile(storedMobile);
-          setMobile(cleanMobile);
+  /* ----------------------------- HELPERS ----------------------------- */
 
-          // Auto-send OTP after a short delay
-          setTimeout(() => {
-            if (step === "otp") {
-              handleAutoResendOtp();
-            }
-          }, 1000);
-        } else {
-          setStep("mobile");
-        }
-      } else {
-        setStep("mobile");
-        if (storedMobile) {
-          const cleanMobile = get10DigitMobile(storedMobile);
-          setMobile(cleanMobile);
-        }
-      }
-    }
-  }, [isClient, apply]);
+  const get10DigitMobile = (num: string) =>
+    num.replace(/\D/g, "").slice(-10);
 
-  // Auto-resend OTP when landing on OTP page from apply flow
-  const handleAutoResendOtp = async (): Promise<void> => {
-    try {
-      const storedMobile = localStorage.getItem("mobileNumber");
-      if (storedMobile) {
-        const numericMobile = get10DigitMobile(storedMobile);
-        await OtpService.sendOtp(numericMobile);
-        setOtpResent(true);
+  /* ----------------------------- MOBILE ----------------------------- */
 
-        // Reset after 30 seconds
-        setTimeout(() => setOtpResent(false), 30000);
-      }
-    } catch (error) {
-      console.error("Auto OTP send failed:", error);
-    }
-  };
-
-  // Show loading state during server-side rendering
-  if (!isClient) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0080E5]"></div>
-      </div>
-    );
-  }
-
-  // Calculate age from DOB
-  const calculateAge = (dob: string): number => {
-    if (!dob) return 0;
-    const birth = new Date(dob);
-    if (isNaN(birth.getTime())) return 0;
-    const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birth.getDate())
-    ) {
-      age--;
-    }
-    return age;
-  };
-
-
-
-  const handleMobileSubmit = async (): Promise<void> => {
+  const handleMobileSubmit = async () => {
     setError("");
-
-    // Validation
     if (mobile.length !== 10) {
       setError("Please enter a valid 10-digit mobile number");
       return;
     }
 
-    setLoading(true);
-
     try {
+      setLoading(true);
       const numericMobile = get10DigitMobile(mobile);
-      // Store cleaned mobile number in localStorage (no +91)
       localStorage.setItem("mobileNumber", numericMobile);
-
-      const applyData = localStorage.getItem("applyData");
-      const personalDetails = localStorage.getItem("personalDetails");
-
-      if (loan === "personal" && applyData !== null) {
-        const payload = {
-          ...JSON.parse(applyData),
-          mobile: numericMobile,
-        };
-        await PersonalLoanService.createPersonalLoan(payload);
-      } else if (loan === "business" && personalDetails !== null) {
-        const personal = JSON.parse(personalDetails);
-
-        // Transform keys to match backend
-        const payload = {
-
-          userName: personal.fullName,
-          email: personal.email,
-          dateOfBirth: personal.dob,
-          panCardNumber: personal.panCard,
-          businessPincode: personal.pincode,
-          mobileNumber: numericMobile,
-          platform: "web",
-          employmentType: "self-employed",
-
-          ...(applyData ? JSON.parse(applyData) : {}),
-        };
-
-        await BusinessService.createBusiness(payload as BusinessPayloadString);
-      } else {
-        await OtpService.sendOtp(numericMobile);
-      }
-
+      await OtpService.sendOtp(numericMobile);
       setStep("otp");
 
       setTimeout(() => {
         otpRefs.current[0]?.focus();
       }, 100);
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message || "Failed to send OTP. Please try again."
-      );
+    } catch {
+      setError("Failed to send OTP");
     } finally {
       setLoading(false);
     }
   };
 
+  /* ------------------------------- OTP ------------------------------- */
 
-  // Handle OTP resend
-  const handleResendOtp = async (): Promise<void> => {
-    try {
-      const numericMobile = get10DigitMobile(
-        localStorage.getItem("mobileNumber") || mobile
-      );
-      await OtpService.sendOtp(numericMobile);
-      setOtp("");
-      setError("");
-      setOtpResent(true);
-
-      // Reset OTP resent flag after 30 seconds
-      setTimeout(() => setOtpResent(false), 30000);
-    } catch (err: any) {
-      setError("Failed to resend OTP. Please try again.");
-    }
-  };
-
-  // Handle OTP submission
-  const handleOtpSubmit = async (): Promise<void> => {
+  const handleOtpSubmit = async () => {
     setError("");
-
-    // Validation
     if (otp.length !== 6) {
       setError("Please enter the 6-digit OTP");
       return;
     }
 
-    setOtpLoading(true);
-
     try {
-      const numericMobile = get10DigitMobile(
-        localStorage.getItem("mobileNumber") || mobile
-      );
-
+      setOtpLoading(true);
+      const mobileNumber = localStorage.getItem("mobileNumber")!;
       const res: VerifyOtpResponse = await OtpService.verifyOtp({
-        phoneNumber: numericMobile,
+        phoneNumber: mobileNumber,
         otp,
         origin: "web",
       });
 
-      if (res.success) {
-        setToken(res.data.token);
-        localStorage.setItem("accessToken", res.data.token.accessToken);
-        setUserData(res.data.user);
-
-        setPersonal({
-          fullName: res.data.user.fullName || "",
-          email: res.data.user.email || "",
-          dob: res.data.user.dateOfBirth
-            ? res.data.user.dateOfBirth.split("T")[0]
-            : "",
-          panCard: res.data.user.pancardNumber || "",
-          pincode: res.data.user.pinCode || "",
-          phone: numericMobile,
-        });
-
-        // After OTP verification, go to personal details
-        setStep("personal-details");
-      } else {
-        setError(res.message || "Invalid OTP. Please try again.");
+      if (!res.success) {
+        setError(res.message || "Invalid OTP");
+        return;
       }
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message ||
-        "OTP verification failed. Please check the code and try again."
-      );
+
+      localStorage.setItem("accessToken", res.data.token.accessToken);
+
+      setPersonal({
+        fullName: res.data.user.fullName || "",
+        email: res.data.user.email || "",
+        dob: res.data.user.dateOfBirth
+          ? res.data.user.dateOfBirth.split("T")[0]
+          : "",
+        panCard: res.data.user.pancardNumber || "",
+        pincode: res.data.user.pinCode || "",
+        phone: mobileNumber,
+      });
+
+      setStep("personal-details");
+    } catch {
+      setError("OTP verification failed");
     } finally {
       setOtpLoading(false);
     }
   };
 
-  // Handle OTP input changes
-  const handleOtpChange = (index: number, value: string): void => {
-    const numericValue = value.replace(/\D/g, "");
-    if (numericValue && numericValue.length > 1) return;
+  /* -------------------------- PERSONAL DETAILS -------------------------- */
 
-    const newOtp = otp.split("");
-    newOtp[index] = numericValue;
-    setOtp(newOtp.join(""));
-
-    // Auto-focus next input
-    if (numericValue && index < 5) {
-      otpRefs.current[index + 1]?.focus();
-    }
-  };
-
-  // Handle OTP input key events
-  const handleOtpKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ): void => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpRefs.current[index - 1]?.focus();
-    }
-  };
-
-
-
-
-  // Inside handlePersonalSubmit in Login component
-  const handlePersonalSubmit = async (): Promise<void> => {
-    setError("");
+  const handlePersonalSubmit = () => {
     const { fullName, email, dob, panCard, pincode } = personal;
 
     if (!fullName || !email || !dob || !panCard || !pincode) {
@@ -348,531 +168,160 @@ function Login() {
       return;
     }
 
-    setLoading(true);
-    try {
-      // 1. Persist identity details for the ApplyNow page
-      localStorage.setItem("personalDetails", JSON.stringify({
-        fullName,
-        email,
-        dob,
-        panCard,
-        pincode
-      }));
+    localStorage.setItem("personalDetails", JSON.stringify(personal));
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const loanParam = urlParams.get("loan");
-
-      // 2. Direct redirect if loan type is known, otherwise show modal
-      if (loanParam === "personal" || loanParam === "business") {
-        router.push(`/apply_now?loan=${loanParam}`);
-      } else {
-        setShowLoanModal(true);
-      }
-    } catch (err: any) {
-      setError("An error occurred. Please try again.");
-    } finally {
-      setLoading(false);
+    if (loan === "personal" || loan === "business") {
+      router.push(`/apply_now?loan=${loan}`);
+    } else {
+      setShowLoanModal(true);
     }
   };
 
-  // Update personal details
-  const updatePersonalDetail = (
-    field: keyof PersonalDetails,
-    value: string
-  ): void => {
-    setPersonal((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  if (!isClient) return null;
 
-  // Handle loan selection from modal
-  const handleLoanSelection = (selectedType: "personal" | "business") => {
-    localStorage.setItem("loanType", selectedType);
-    setSelectedLoan(selectedType);
-    setShowLoanModal(false);
-    router.push(`/apply_now?loan=${selectedType}`);
-  };
+  /* ------------------------------- UI ------------------------------- */
 
-  // Render mobile number input step
-  const renderMobileStep = (): JSX.Element => {
-    const isApplyFlow = apply === "true";
-
-    return (
-      <div className="w-full max-w-sm mx-auto p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-center">
-          {isApplyFlow ? "Continue Your Application" : "Welcome Back"}
-        </h2>
-        <p className="text-gray-500 text-sm mb-6 text-center">
-          {isApplyFlow
-            ? `Enter your mobile number to continue your ${loan || "loan"
-            } application`
-            : "Enter your 10-digit mobile number to continue"}
-        </p>
-
-        <div className="space-y-4">
-          <div className="relative">
-            <Phone
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={18}
-            />
-            <input
-              type="tel"
-              value={mobile}
-              onChange={(e) =>
-                setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))
-              }
-              maxLength={10}
-              placeholder="Enter 10-digit mobile number"
-              className="w-full pl-10 px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
-              aria-label="Mobile number"
-            />
-            {mobile.length === 10 && (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-sm">
-                ✓
-              </span>
-            )}
-          </div>
-
-          {error && (
-            <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <button
-            onClick={handleMobileSubmit}
-            disabled={loading || mobile.length !== 10}
-            className="bg-[#0080E5] hover:bg-[#0066B3] text-white w-full py-3 rounded-xl font-semibold transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-            aria-label={loading ? "Sending OTP" : "Continue"}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                Sending OTP...
-              </span>
-            ) : (
-              "Continue"
-            )}
-          </button>
-
-          {isApplyFlow && (
-            <button
-              onClick={() => router.back()}
-              className="w-full text-gray-600 hover:text-gray-800 text-sm text-center py-2"
-            >
-              ← Back to application
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  // Render OTP verification step
-  const renderOtpStep = (): JSX.Element => {
-    const isApplyFlow = apply === "true";
-
-    return (
-      <div className="max-w-sm mx-auto">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          {isApplyFlow ? "Verify to Continue" : "Verify OTP"}
-        </h2>
-        <p className="text-gray-500 text-sm mb-6">
-          We've sent a 6-digit OTP to{" "}
-          <span className="font-semibold text-gray-700">+91 {mobile}</span>
-        </p>
-
-        <div className="space-y-6">
-          <div className="flex justify-center gap-3 mb-4">
-            {[...Array(6)].map((_, index) => (
-              <input
-                key={index}
-                ref={(el) => {
-                  otpRefs.current[index] = el;
-                }}
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                value={otp[index] || ""}
-                onChange={(e) => handleOtpChange(index, e.target.value)}
-                onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                className="w-12 h-14 border border-gray-300 rounded-lg text-center text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-[#0080E5] focus:border-transparent"
-                aria-label={`OTP digit ${index + 1}`}
-              />
-            ))}
-          </div>
-
-          {error && (
-            <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <button
-            onClick={handleOtpSubmit}
-            disabled={otp.length !== 6 || otpLoading}
-            className="w-full py-3 rounded-xl font-semibold transition duration-200 bg-[#0080E5] hover:bg-[#0066B3] text-white disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed shadow-md"
-          >
-            {otpLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                Verifying...
-              </span>
-            ) : (
-              "Verify & Continue"
-            )}
-          </button>
-
-          <div className="text-center space-y-2">
-            <button
-              onClick={handleResendOtp}
-              disabled={otpResent}
-              className="text-[#0080E5] hover:text-[#0066B3] text-sm font-medium disabled:text-gray-400 disabled:cursor-not-allowed"
-            >
-              {otpResent
-                ? "OTP Resent (Wait 30s)"
-                : "Didn't receive OTP? Resend"}
-            </button>
-
-            <button
-              onClick={() => {
-                setStep("mobile");
-                setOtp("");
-                setError("");
-              }}
-              className="block w-full text-gray-500 hover:text-gray-700 text-sm mt-2"
-            >
-              ← Change mobile number
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Render personal details step
-  const renderPersonalDetailsStep = (): JSX.Element => {
-    const displayPhone = mobile;
-
-    return (
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          Personal Details
-        </h2>
-        <p className="text-gray-500 text-sm mb-6">
-          Please provide your personal details to continue.
-        </p>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name *
-            </label>
-            <div className="relative">
-              <User
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={18}
-              />
-              <input
-                type="text"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5]"
-                placeholder="Enter your full name"
-                value={personal.fullName}
-                onChange={(e) =>
-                  updatePersonalDetail("fullName", e.target.value)
-                }
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address *
-            </label>
-            <div className="relative">
-              <Mail
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={18}
-              />
-              <input
-                type="email"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5]"
-                placeholder="example@email.com"
-                value={personal.email}
-                onChange={(e) => updatePersonalDetail("email", e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Date of Birth *
-              </label>
-              <div className="relative">
-                <CalendarDays
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={18}
-                />
-                <input
-                  type="date"
-                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5]"
-                  value={personal.dob}
-                  onChange={(e) => updatePersonalDetail("dob", e.target.value)}
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                PAN Card *
-              </label>
-              <div className="relative">
-                <CreditCard
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={18}
-                />
-                <input
-                  type="text"
-                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] uppercase"
-                  placeholder="ABCDE1234F"
-                  value={personal.panCard}
-                  onChange={(e) =>
-                    updatePersonalDetail(
-                      "panCard",
-                      e.target.value.toUpperCase()
-                    )
-                  }
-                  maxLength={10}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Pincode *
-            </label>
-            <div className="relative">
-              <MapPin
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={18}
-              />
-              <input
-                type="text"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5]"
-                placeholder="Enter 6-digit pincode"
-                value={personal.pincode}
-                onChange={(e) =>
-                  updatePersonalDetail(
-                    "pincode",
-                    e.target.value.replace(/\D/g, "").slice(0, 6)
-                  )
-                }
-                maxLength={6}
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone Number
-            </label>
-            <div className="relative">
-              <Phone
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={18}
-              />
-              <input
-                type="text"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
-                value={"+91 " + displayPhone}
-                readOnly
-                disabled
-              />
-            </div>
-          </div>
-
-          {error && (
-            <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <button
-            onClick={handlePersonalSubmit}
-            disabled={loading}
-            className="w-full bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl transition duration-200 shadow-md disabled:opacity-50"
-          >
-            {loading ? "Saving..." : "Save & Continue"}
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  // Render loan selection modal
-  const renderLoanModal = (): JSX.Element | null => {
-    if (!showLoanModal) return null;
-
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden p-6 text-center">
-          <h3 className="text-xl font-bold text-gray-800 mb-2">
-            Select Loan Type
-          </h3>
-          <p className="text-gray-500 text-sm mb-6">
-            Please select the type of loan you are looking for.
-          </p>
-
-          <div className="space-y-3">
-            <button
-              onClick={() => handleLoanSelection("personal")}
-              className="w-full p-4 border border-gray-200 rounded-xl hover:border-[#0080E5] hover:bg-blue-50 transition-all group flex items-center justify-between"
-            >
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-100 p-2 rounded-lg text-[#0080E5]">
-                  <User size={20} />
-                </div>
-                <div className="text-left">
-                  <div className="font-semibold text-gray-800 group-hover:text-[#0080E5]">
-                    Personal Loan
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    For Salaried Individuals
-                  </div>
-                </div>
-              </div>
-              <span className="text-gray-300 group-hover:text-[#0080E5]">
-                {"→"}
-              </span>
-            </button>
-
-            <button
-              onClick={() => handleLoanSelection("business")}
-              className="w-full p-4 border border-gray-200 rounded-xl hover:border-[#0080E5] hover:bg-blue-50 transition-all group flex items-center justify-between"
-            >
-              <div className="flex items-center gap-3">
-                <div className="bg-green-100 p-2 rounded-lg text-green-600">
-                  <Briefcase size={20} />
-                </div>
-                <div className="text-left">
-                  <div className="font-semibold text-gray-800 group-hover:text-[#0080E5]">
-                    Business Loan
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    For Self Employed Individual
-                  </div>
-                </div>
-              </div>
-              <span className="text-gray-300 group-hover:text-[#0080E5]">
-                {"→"}
-              </span>
-            </button>
-          </div>
-        </div>
-     
-    );
-};
-
-// Get current step number for progress bar
-const getStepNumber = (): number => {
-  switch (step) {
-    case "mobile":
-      return 1;
-    case "otp":
-      return 2;
-    case "personal-details":
-      return 3;
-    default:
-      return 1;
-  }
-};
-
-// Get step description
-const getStepDescription = (): string => {
-  switch (step) {
-    case "mobile":
-      return "Enter Mobile";
-    case "otp":
-      return "Verify OTP";
-    case "personal-details":
-      return "Details";
-    default:
-      return "";
-  }
-};
-
-return (
-  <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
-    {renderLoanModal()}
-    <div className="container mx-auto px-4 py-12">
-      <div className="bg-white shadow-xl rounded-3xl max-w-4xl mx-auto grid md:grid-cols-2 overflow-hidden">
-        {/* Left side */}
-        <div className="hidden md:flex bg-gradient-to-br from-[#0080E5] to-[#0066B3] text-white p-10 flex-col items-center justify-center">
-          <Image
-            src="/3d-hand-hold-smartphone-with-authentication-form.jpg"
-            width={280}
-            height={280}
-            alt="Secure Login"
-            className="object-contain"
-            priority
-          />
-          <h2 className="text-2xl font-bold mt-6 mb-2 text-center">
-            {apply === "true"
-              ? "Complete Your Application"
-              : "Instant Loan up to ₹1Cr"}
-          </h2>
-          <p className="opacity-90 text-center">
-            Fast approvals • Best rates
-          </p>
-        </div>
-
-        {/* Right side */}
-        <div className="p-8 md:p-10">
-          <div className="max-w-md mx-auto">
-            {step === "mobile" && renderMobileStep()}
-            {step === "otp" && renderOtpStep()}
-            {step === "personal-details" && renderPersonalDetailsStep()}
-
-            {/* Progress indicator */}
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-500">
-                  Step {getStepNumber()} of 3
-                </span>
-                <span className="text-xs font-medium text-[#0080E5]">
-                  {getStepDescription()}
-                </span>
-              </div>
-              <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#0080E5] transition-all duration-300"
-                  style={{ width: `${(getStepNumber() / 3) * 100}%` }}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-}
-
-// Loading component for Suspense fallback
-function LoginLoading() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0080E5]"></div>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
+      {showLoanModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold mb-4">Select Loan Type</h3>
+
+            <button
+              onClick={() => router.push("/apply_now?loan=personal")}
+              className="w-full p-4 border rounded-lg mb-3"
+            >
+              Personal Loan
+            </button>
+
+            <button
+              onClick={() => router.push("/apply_now?loan=business")}
+              className="w-full p-4 border rounded-lg"
+            >
+              Business Loan
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="container mx-auto px-4 py-12">
+        <div className="bg-white shadow-xl rounded-3xl max-w-4xl mx-auto grid md:grid-cols-2 overflow-hidden">
+          {/* LEFT */}
+          <div className="hidden md:flex bg-[#0080E5] text-white p-10 flex-col items-center justify-center">
+            <Image
+              src="/3d-hand-hold-smartphone-with-authentication-form.jpg"
+              width={280}
+              height={280}
+              alt="Secure Login"
+            />
+            <h2 className="text-xl font-bold mt-4">
+              {apply === "true" ? "Complete Application" : "Instant Loan"}
+            </h2>
+          </div>
+
+          {/* RIGHT */}
+          <div className="p-8">
+            {step === "mobile" && (
+              <>
+                <input
+                  type="tel"
+                  value={mobile}
+                  maxLength={10}
+                  onChange={(e) =>
+                    setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))
+                  }
+                  className="w-full border p-3 rounded mb-4"
+                  placeholder="Enter mobile number"
+                />
+
+                <button
+                  onClick={handleMobileSubmit}
+                  disabled={loading}
+                  className="w-full bg-[#0080E5] text-white p-3 rounded"
+                >
+                  {loading ? "Sending OTP..." : "Continue"}
+                </button>
+              </>
+            )}
+
+            {step === "otp" && (
+              <>
+                <div className="flex justify-center gap-2 mb-4">
+                  {[...Array(6)].map((_, i) => (
+                    <input
+                      key={i}
+                      ref={(el) => {
+                        otpRefs.current[i] = el;
+                      }}
+                      maxLength={1}
+                      inputMode="numeric"
+                      className="w-12 h-14 border text-center text-xl"
+                      value={otp[i] || ""}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, "");
+                        if (!val) return;
+                        const arr = otp.split("");
+                        arr[i] = val;
+                        setOtp(arr.join(""));
+                        otpRefs.current[i + 1]?.focus();
+                      }}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleOtpSubmit}
+                  disabled={otpLoading}
+                  className="w-full bg-[#0080E5] text-white p-3 rounded"
+                >
+                  {otpLoading ? "Verifying..." : "Verify & Continue"}
+                </button>
+              </>
+            )}
+
+            {step === "personal-details" && (
+              <>
+                <input
+                  className="w-full border p-3 rounded mb-2"
+                  placeholder="Full Name"
+                  value={personal.fullName}
+                  onChange={(e) =>
+                    setPersonal({ ...personal, fullName: e.target.value })
+                  }
+                />
+                <input
+                  className="w-full border p-3 rounded mb-2"
+                  placeholder="Email"
+                  value={personal.email}
+                  onChange={(e) =>
+                    setPersonal({ ...personal, email: e.target.value })
+                  }
+                />
+                <button
+                  onClick={handlePersonalSubmit}
+                  className="w-full bg-[#0080E5] text-white p-3 rounded"
+                >
+                  Save & Continue
+                </button>
+              </>
+            )}
+
+            {error && (
+              <div className="text-red-500 text-sm mt-4">{error}</div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-// Wrap Login in Suspense to handle useSearchParams()
+/* ------------------------- SUSPENSE WRAPPER ------------------------- */
+
 export default function LoginPage() {
   return (
-    <Suspense fallback={<LoginLoading />}>
+    <Suspense fallback={null}>
       <Login />
     </Suspense>
   );
