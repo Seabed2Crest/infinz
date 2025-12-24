@@ -772,7 +772,7 @@ function Login() {
           </div>
         </div>
       </div>
-      </div >
+      </div>
     );
 };
 
