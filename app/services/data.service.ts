@@ -30,59 +30,48 @@ export interface BusinessPayloadString {
   loanAmount: string;
   mobileNumber: string;
   emiTenure: string;
+  registrations: string[];
 }
 
 
-// API response type
 export interface BusinessResponse {
+  _id: string;
   businessType: string;
   turnover: string;
   loanAmount: string;
   mobileNumber: string;
   emiTenure: string;
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
 }
 
 // Business Service
 export const BusinessService = {
-  createBusiness: async (
-    payload: BusinessPayloadString
-  ): Promise<BusinessResponse> => {
+  createBusiness: async (payload: BusinessPayloadString): Promise<BusinessResponse> => {
     try {
       const response = await http.post(API_ROUTES.BUSINESS_LEADS.CREATE, payload);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Error in BusinessService.createBusiness:", error);
-      throw (
-        error.response?.data ||
-        new Error("Failed to create business loan application")
-      );
+      throw error.response?.data || new Error("Lead creation failed");
     }
   },
 };
 
+
 // ------------------- PERSONAL LOAN -------------------
 
-// API request payload
-export interface CreatePersonalLoanPayload {
-  // required by backend
-  loanPurpose: string; // ex: "personal-loan"
-  monthlyIncome: string; // numeric or range as string
-  loanAmountRequired: string; // numeric as string
-  emiTenure: string; // months
-  mobileNumber: string; // 10 digit mobile number
 
-  // extra metadata (frontend only, backend currently ignores unknown fields)
-  salarySlipUrl?: string; // S3 file URL
-  employmentType?: "salaried" | "self-employed";
-  salaryPaymentMode?: "cash" | "inhand" | "bank";
+
+export interface CreatePersonalLoanPayload {
+  loanPurpose: string;
+  monthlyIncome: string;
+  loanAmountRequired: string;
+  emiTenure: string;
+  mobileNumber: string;
+  salarySlipUrl?: string;
+  employmentType?: string;
+  salaryPaymentMode?: string;
   companyOrBusinessName?: string;
   companyPinCode?: string;
 }
-
 
 
 
@@ -116,42 +105,28 @@ export const PersonalLoanService = {
     }
   },
 };
-export const PersonalLoanApply = {
-  createPersonalLoan: async (
-    payload: CreatePersonalLoanPayload
-  ) => {
-    try {
 
+export const PersonalLoanApply = {
+  createPersonalLoan: async (payload: CreatePersonalLoanPayload) => {
+    try {
       const actualPayload = {
         employmentType: payload.employmentType,
-        netMonthlyIncome:payload.monthlyIncome,
+        netMonthlyIncome: payload.monthlyIncome,
         paymentMode: payload.salaryPaymentMode,
         companyOrBusinessName: payload.companyOrBusinessName,
         companyPinCode: payload.companyPinCode,
         salarySlipDocument: payload.salarySlipUrl,
         desiredAmount: payload.loanAmountRequired,
-        platform:"web",
-      }
-      const response = await http.post(
-        API_ROUTES.PERSONAL_LOAN.CREATE,
-        actualPayload
-      );
-      return response.data as PersonalLoanResponse;
+        platform: "web",
+        mobileNumber: payload.mobileNumber
+      };
+      const response = await http.post(API_ROUTES.PERSONAL_LOAN.CREATE, actualPayload);
+      return response.data;
     } catch (error: any) {
-      console.error(
-        "❌ Error in PersonalLoanService.createPersonalLoan:",
-        error
-      );
-      throw (
-        error.response?.data ||
-        new Error("Failed to create personal loan application")
-      );
+      throw error.response?.data || new Error("Personal loan failed");
     }
   },
 };
-
-// ------------------- LEAD FORM -------------------
-
 export interface LoanFormData {
   name: string;
   city: string;
@@ -325,32 +300,24 @@ export const personalDetailsService = {
 
 // ------------------- BUSINESS LOAN (DETAILED) -------------------
 
+
 export interface CreateBusinessLoanPayload {
   requiredLoanAmount: string;
-  
-
   businessName: string;
-
-  companyType:
-  | "Proprietorship"
-  | "Partnership"
-  | "Pvt Ltd"
-  | "LLP"
-  | "Others";
-
+  companyType: "Proprietorship" | "Partnership" | "Pvt Ltd" | "LLP" | "Others";
   annualTurnover: string;
-
   industryType: string;
-
-  // single selection in UI – will be converted to array/object for API
   registrationType: "GST" | "SHOP" | "FSSAI" | "TRADE" | "OTHERS";
   registrationNumber: string;
-
   incorporationDate: string;
-
   businessPincode: string;
-
   mobileNumber: string;
+  // IDENTITY FIELDS REQUIRED BY BACKEND
+  userName: string;
+  dateOfBirth: string;
+  panCardNumber: string;
+  email: string;
+  employmentType?: string;
 }
 
 export interface BusinessLoanResponse {
@@ -359,15 +326,59 @@ export interface BusinessLoanResponse {
   data:any
 }
 
-export const BusinessLoanService = {
-  createBusinessLoan: async (
-    payload: CreateBusinessLoanPayload
-  ): Promise<BusinessLoanResponse> => {
-    try {
+// export const BusinessLoanService = {
+//   createBusinessLoan: async (
+//     payload: CreateBusinessLoanPayload
+//   ): Promise<BusinessLoanResponse> => {
+//     try {
 
+//       const apiPayload = {
+//         requiredLoanAmount: payload.requiredLoanAmount,
+       
+//         businessName: payload.businessName,
+//         companyType: payload.companyType,
+//         annualTurnover: payload.annualTurnover,
+//         industryType: payload.industryType,
+//         registrationTypes: [payload.registrationType],
+//         registrationNumbers: {
+//           [payload.registrationType]: payload.registrationNumber,
+//         },
+//         incorporationDate: payload.incorporationDate,
+//         businessPincode: payload.businessPincode,
+//         mobileNumber: payload.mobileNumber,
+//       };
+
+//       const res = await http.post(
+//         API_ROUTES.BUSINESS.CREATE,
+//         apiPayload
+//       );
+
+//       return {
+//         success: true,
+//         message: res.data.message,
+//         data: res.data.data,
+//       };
+
+//     } catch (error: any) {
+//       console.error("❌ Error in BusinessLoanService.createBusinessLoan:", error);
+
+//       return {
+//         success: false,
+//         message:
+//           error.response?.data?.error ||
+//           error.message ||
+//           "Failed to submit business loan",
+//         data: null as any,
+//       };
+//     }
+//   },
+// };
+
+export const BusinessLoanService = {
+  createBusinessLoan: async (payload: CreateBusinessLoanPayload) => {
+    try {
       const apiPayload = {
         requiredLoanAmount: payload.requiredLoanAmount,
-       
         businessName: payload.businessName,
         companyType: payload.companyType,
         annualTurnover: payload.annualTurnover,
@@ -379,72 +390,76 @@ export const BusinessLoanService = {
         incorporationDate: payload.incorporationDate,
         businessPincode: payload.businessPincode,
         mobileNumber: payload.mobileNumber,
+        // BACKEND MAPPING
+        userName: payload.userName,
+        dateOfBirth: payload.dateOfBirth,
+        panCardNumber: payload.panCardNumber,
+         email: payload.email, 
+        employmentType: payload.employmentType || "business-owner",
+        platform: "web"
       };
-
-      const res = await http.post(
-        API_ROUTES.BUSINESS.CREATE,
-        apiPayload
-      );
-
-      return {
-        success: true,
-        message: res.data.message,
-        data: res.data.data,
-      };
-
+      const res = await http.post(API_ROUTES.BUSINESS.CREATE, apiPayload);
+      return res.data;
     } catch (error: any) {
-      console.error("❌ Error in BusinessLoanService.createBusinessLoan:", error);
-
-      return {
-        success: false,
-        message:
-          error.response?.data?.error ||
-          error.message ||
-          "Failed to submit business loan",
-        data: null as any,
-      };
+      throw error.response?.data || new Error("Business loan failed");
     }
   },
 };
+
+
 interface PresignUrlType {
   fileName: string;
   fileType: string;
   uploadType: string;
 }
 
+// export const PresignUrl = {
+//   UploadFile: async (payload: PresignUrlType) => {
+//     try {
+//       const apiPayload = {
+//         files: [
+//           {
+//             fileName: payload.fileName,
+//             fileType: payload.fileType,
+//           },
+//         ],
+//         uploadType: payload.uploadType,
+//       };
+
+//       const res = await http.post(API_ROUTES.PRESIGN_URL, apiPayload);
+
+//       return {
+//         success: true,
+//         message: res.data.message,
+//         data: res.data.data,
+//       };
+//     } catch (error: any) {
+//       console.error("❌ Error in PresignUrl.UploadFile:", error);
+
+//       return {
+//         success: false,
+//         message:
+//           error.response?.data?.error ||
+//           error.message ||
+//           "Failed to upload file",
+//         data: null as any,
+//       };
+//     }
+//   },
+// };
+
 export const PresignUrl = {
-  UploadFile: async (payload: PresignUrlType) => {
+  UploadFile: async (payload: { fileName: string; fileType: string; uploadType: string }) => {
     try {
       const apiPayload = {
-        files: [
-          {
-            fileName: payload.fileName,
-            fileType: payload.fileType,
-          },
-        ],
+        files: [{ fileName: payload.fileName, fileType: payload.fileType }],
         uploadType: payload.uploadType,
       };
-
       const res = await http.post(API_ROUTES.PRESIGN_URL, apiPayload);
-
-      return {
-        success: true,
-        message: res.data.message,
-        data: res.data.data,
-      };
+      return { success: true, data: res.data.data };
     } catch (error: any) {
-      console.error("❌ Error in PresignUrl.UploadFile:", error);
-
-      return {
-        success: false,
-        message:
-          error.response?.data?.error ||
-          error.message ||
-          "Failed to upload file",
-        data: null as any,
-      };
+      return { success: false, message: error.message };
     }
   },
 };
-
 

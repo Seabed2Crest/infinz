@@ -4,24 +4,31 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-export const BASE_URL = "https://backend.infinz.seabed2crest.com";
-// export const BASE_URL = "http://localhost:8085";
+// 🔗 Backend Base URL
+export const BASE_URL = "http://localhost:8085";
+// export const BASE_URL = "https://backend.infinz.seabed2crest.com";
+
+// 🔑 Token storage key (single source of truth)
+const AUTH_TOKEN_KEY = "accessToken";
+
+// ⚡ Axios instance
 const http = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+  },
   withCredentials: true,
 });
 
-// Request interceptor
+// 📤 Request Interceptor (attach token)
 http.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     if (typeof window !== "undefined") {
-    const token = localStorage.getItem("accessToken");
+      const token = localStorage.getItem(AUTH_TOKEN_KEY);
 
       if (token) {
-        // Make sure headers exist
         config.headers = config.headers ?? {};
-        config.headers["Authorization"] = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${token}`;
       }
     }
     return config;
@@ -29,13 +36,16 @@ http.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error)
 );
 
-// Response interceptor
+// 📥 Response Interceptor (handle auth errors)
 http.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      console.warn("Unauthorized! Token may have expired.");
+      console.warn("⚠️ Unauthorized: Token missing or expired");
+
+    
     }
+
     return Promise.reject(error);
   }
 );
