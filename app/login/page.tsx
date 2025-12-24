@@ -920,7 +920,7 @@ function Login() {
                       Personal Loan
                     </div>
                     <div className="text-xs text-gray-500">
-                      For individual needs
+                      For Salaried Individuals
                     </div>
                   </div>
                 </div>
@@ -942,7 +942,7 @@ function Login() {
                       Business Loan
                     </div>
                     <div className="text-xs text-gray-500">
-                      For business expansion
+                      For Self Employed Individual
                     </div>
                   </div>
                 </div>
