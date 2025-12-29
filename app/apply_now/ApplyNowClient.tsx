@@ -24,9 +24,9 @@ interface PersonalDetails {
 const REGISTRATION_MAPPING: Record<string, string> = {
   "GST Number": "GST",
   "Shop and Establishment": "SHOP",
-  "FSSAI": "FSSAI",
+  FSSAI: "FSSAI",
   "Trade License": "TRADE",
-  "Others": "OTHERS",
+  Others: "OTHERS",
 };
 
 function ApplyNowContent() {
@@ -79,22 +79,31 @@ function ApplyNowContent() {
 
     if (applyData) {
       const data = JSON.parse(applyData);
-      const numericAmount = data.loanAmount?.replace(/\D/g, "") || "";
+      let numericAmount = data.loanAmount?.replace(/[^\d]/g, "") || "";
+
+      // If the cleaned value is less than 4 digits (like 510), treat it as invalid and clear it
+      if (numericAmount.length < 4) {
+        numericAmount = ""; // prevents showing 510
+      }
 
       if (loanType === "business") {
-        setBusinessForm(prev => ({ ...prev, requiredLoanAmount: numericAmount }));
+        setBusinessForm((prev) => ({
+          ...prev,
+          requiredLoanAmount: numericAmount,
+        }));
         if (data.registrations) setRegistrations(data.registrations);
       } else {
-        setFormData(prev => ({ ...prev, requiredLoanAmount: numericAmount }));
+        setFormData((prev) => ({ ...prev, requiredLoanAmount: numericAmount }));
       }
     }
   }, [loanType]);
 
-
   // -----------------------------------------------------
   // Salary Slip Upload Function (Presigned URL)
   // -----------------------------------------------------
-  const handleSalarySlipChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSalarySlipChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -132,7 +141,6 @@ function ApplyNowContent() {
     }
   };
 
-
   // -----------------------------------------------------
   // Submit Form (Personal & Business Loan)
   // -----------------------------------------------------
@@ -161,9 +169,13 @@ function ApplyNowContent() {
           return;
         }
 
-        const mappedTypes = registrations.map(r => REGISTRATION_MAPPING[r] || "OTHERS");
+        const mappedTypes = registrations.map(
+          (r) => REGISTRATION_MAPPING[r] || "OTHERS"
+        );
         const regNumbers: Record<string, string> = {};
-        mappedTypes.forEach(type => { regNumbers[type] = "Provided"; });
+        mappedTypes.forEach((type) => {
+          regNumbers[type] = "Provided";
+        });
 
         const payload = {
           ...businessForm,
@@ -174,13 +186,16 @@ function ApplyNowContent() {
           email: personal.email,
           registrationTypes: mappedTypes,
           registrationNumbers: regNumbers,
-          platform: "web"
+          platform: "web",
         };
 
-        const response = await BusinessLoanService.createBusinessLoan(payload as any);
+        const response = await BusinessLoanService.createBusinessLoan(
+          payload as any
+        );
 
         if (response?.success) {
-          if (response?.data?.loanOffers) setLoanOffer(response.data.loanOffers);
+          if (response?.data?.loanOffers)
+            setLoanOffer(response.data.loanOffers);
           setStep("success");
           toast.success("Application submitted successfully!");
         } else {
@@ -209,14 +224,16 @@ function ApplyNowContent() {
           salarySlipUrl: salarySlipUrl || undefined,
         };
 
-        const response = await PersonalLoanApply.createPersonalLoan(payload as any);
+        const response = await PersonalLoanApply.createPersonalLoan(
+          payload as any
+        );
 
         if (response?.success) {
-          if (response?.data?.loanOffers) setLoanOffer(response.data.loanOffers);
+          if (response?.data?.loanOffers)
+            setLoanOffer(response.data.loanOffers);
           setStep("success");
         } else setError(response?.message || "Application failed");
       }
-
     } catch (err: any) {
       setError(err.message || "An error occurred during submission.");
       toast.error("Something went wrong. Try again.");
@@ -225,7 +242,6 @@ function ApplyNowContent() {
     }
   };
 
-
   // ---------------------------------------
   // UI Rendering
   // ---------------------------------------
@@ -233,39 +249,60 @@ function ApplyNowContent() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
       <div className="container mx-auto px-4 py-12">
         <div className="bg-white shadow-xl rounded-3xl max-w-4xl mx-auto grid md:grid-cols-2 overflow-hidden">
-
           {/* LEFT PANEL */}
           <div className="hidden md:flex bg-gradient-to-br from-[#0080E5] to-[#0066B3] text-white p-10 flex-col items-center justify-center">
-            <Image src="/3d-hand-hold-smartphone-with-authentication-form.jpg" width={260} height={260} alt="Loan" priority />
-            <h2 className="text-2xl font-bold mt-4 text-center">Instant Loan up to ₹1Cr</h2>
-            <p className="opacity-90 text-center mt-2">Fast approvals • Digital process</p>
+            <Image
+              src="/3d-hand-hold-smartphone-with-authentication-form.jpg"
+              width={260}
+              height={260}
+              alt="Loan"
+              priority
+            />
+            <h2 className="text-2xl font-bold mt-4 text-center">
+              Instant Loan up to ₹1Cr
+            </h2>
+            <p className="opacity-90 text-center mt-2">
+              Fast approvals • Digital process
+            </p>
           </div>
 
           {/* RIGHT PANEL */}
           <div className="p-8">
-
             {/* FORM SCREEN */}
             {step === "form" && (
               <>
                 <h2 className="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">
-                  {loanType === "business" ? "Business Loan Details" : "Personal Loan Details"}
+                  {loanType === "business"
+                    ? "Business Loan Details"
+                    : "Personal Loan Details"}
                 </h2>
 
                 <div className="space-y-4">
-                  
                   {/* Loan Amount */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Required Loan Amount (₹)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Required Loan Amount (₹)
+                    </label>
                     <input
                       type="text"
                       className="w-full py-3 px-3 border rounded-lg"
                       placeholder="e.g. 500000"
-                      value={loanType === "business" ? businessForm.requiredLoanAmount : formData.requiredLoanAmount}
+                      value={
+                        loanType === "business"
+                          ? businessForm.requiredLoanAmount
+                          : formData.requiredLoanAmount
+                      }
                       onChange={(e) => {
                         const val = e.target.value.replace(/\D/g, "");
                         loanType === "business"
-                          ? setBusinessForm({ ...businessForm, requiredLoanAmount: val })
-                          : setFormData({ ...formData, requiredLoanAmount: val });
+                          ? setBusinessForm({
+                              ...businessForm,
+                              requiredLoanAmount: val,
+                            })
+                          : setFormData({
+                              ...formData,
+                              requiredLoanAmount: val,
+                            });
                       }}
                     />
                   </div>
@@ -274,13 +311,52 @@ function ApplyNowContent() {
                   {loanType === "business" ? (
                     <>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Business Name</label>
-                        <input className="w-full py-3 px-3 border rounded-lg" value={businessForm.businessName} onChange={(e) => setBusinessForm({ ...businessForm, businessName: e.target.value })} />
+                        <label className="block text-sm font-medium mb-1">
+                          Business Name
+                        </label>
+                        <input
+                          className="w-full py-3 px-3 border rounded-lg"
+                          value={businessForm.businessName}
+                          onChange={(e) =>
+                            setBusinessForm({
+                              ...businessForm,
+                              businessName: e.target.value,
+                            })
+                          }
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-1">Nature of Business</label>
-                        <select className="w-full py-3 px-3 border rounded-lg bg-white" value={businessForm.industryType} onChange={(e) => setBusinessForm({ ...businessForm, industryType: e.target.value })}>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Annual Turnover
+                        </label>
+                        <input
+                          className="w-full py-3 px-3 border border-gray-300 rounded-lg"
+                          placeholder="e.g. 2000000"
+                          value={businessForm.annualTurnover}
+                          onChange={(e) =>
+                            setBusinessForm({
+                              ...businessForm,
+                              annualTurnover: e.target.value.replace(/\D/g, ""), // numeric only
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          Nature of Business
+                        </label>
+                        <select
+                          className="w-full py-3 px-3 border rounded-lg bg-white"
+                          value={businessForm.industryType}
+                          onChange={(e) =>
+                            setBusinessForm({
+                              ...businessForm,
+                              industryType: e.target.value,
+                            })
+                          }
+                        >
                           <option value="Retail">Retail</option>
                           <option value="Manufacturing">Manufacturing</option>
                           <option value="Services">Services</option>
@@ -291,11 +367,32 @@ function ApplyNowContent() {
 
                       {/* Business Registration (Checkboxes) */}
                       <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                        <p className="text-sm font-bold text-blue-800 mb-3">Business Registration Number</p>
+                        <p className="text-sm font-bold text-blue-800 mb-3">
+                          Business Registration Number
+                        </p>
                         <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-                          {["GST Number","Shop and Establishment","FSSAI","Trade License","Others"].map((item) => (
-                            <label key={item} className="flex items-center space-x-2 text-sm cursor-pointer">
-                              <input type="checkbox" checked={registrations.includes(item)} onChange={() => setRegistrations(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item])}/>
+                          {[
+                            "GST Number",
+                            "Shop and Establishment",
+                            "FSSAI",
+                            "Trade License",
+                            "Others",
+                          ].map((item) => (
+                            <label
+                              key={item}
+                              className="flex items-center space-x-2 text-sm cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={registrations.includes(item)}
+                                onChange={() =>
+                                  setRegistrations((prev) =>
+                                    prev.includes(item)
+                                      ? prev.filter((i) => i !== item)
+                                      : [...prev, item]
+                                  )
+                                }
+                              />
                               <span>{item}</span>
                             </label>
                           ))}
@@ -304,57 +401,154 @@ function ApplyNowContent() {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-sm mb-1">Incorporation Date</label>
-                          <input type="date" max={today} className="w-full py-3 px-3 border rounded-lg" value={businessForm.incorporationDate} onChange={(e) => setBusinessForm({ ...businessForm, incorporationDate: e.target.value })}/>
+                          <label className="block text-sm mb-1">
+                            Incorporation Date
+                          </label>
+                          <input
+                            type="date"
+                            max={today}
+                            className="w-full py-3 px-3 border rounded-lg"
+                            value={businessForm.incorporationDate}
+                            onChange={(e) =>
+                              setBusinessForm({
+                                ...businessForm,
+                                incorporationDate: e.target.value,
+                              })
+                            }
+                          />
                         </div>
                         <div>
-                          <label className="block text-sm mb-1">Business Pincode</label>
-                          <input maxLength={6} className="w-full py-3 px-3 border rounded-lg" value={businessForm.businessPincode} onChange={(e) => setBusinessForm({ ...businessForm, businessPincode: e.target.value.replace(/\D/g, "") })}/>
+                          <label className="block text-sm mb-1">
+                            Business Pincode
+                          </label>
+                          <input
+                            maxLength={6}
+                            className="w-full py-3 px-3 border rounded-lg"
+                            value={businessForm.businessPincode}
+                            onChange={(e) =>
+                              setBusinessForm({
+                                ...businessForm,
+                                businessPincode: e.target.value.replace(
+                                  /\D/g,
+                                  ""
+                                ),
+                              })
+                            }
+                          />
                         </div>
                       </div>
                     </>
                   ) : (
-                  /* -------------- PERSONAL LOAN FORM -------------- */
+                    /* -------------- PERSONAL LOAN FORM -------------- */
                     <>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Net Monthly Income</label>
-                        <input className="w-full py-3 px-3 border rounded-lg" value={formData.netMonthlyIncome} onChange={(e) => setFormData({ ...formData, netMonthlyIncome: e.target.value.replace(/\D/g, "") })}/>
+                        <label className="block text-sm font-medium mb-1">
+                          Net Monthly Income
+                        </label>
+                        <input
+                          className="w-full py-3 px-3 border rounded-lg"
+                          value={formData.netMonthlyIncome}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              netMonthlyIncome: e.target.value.replace(
+                                /\D/g,
+                                ""
+                              ),
+                            })
+                          }
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-1">Payment Mode</label>
-                        <select className="w-full py-3 px-3 border rounded-lg bg-white" value={formData.salaryPaymentMode} onChange={(e) => setFormData({ ...formData, salaryPaymentMode: e.target.value })}>
+                        <label className="block text-sm font-medium mb-1">
+                          Payment Mode
+                        </label>
+                        <select
+                          className="w-full py-3 px-3 border rounded-lg bg-white"
+                          value={formData.salaryPaymentMode}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              salaryPaymentMode: e.target.value,
+                            })
+                          }
+                        >
                           <option value="bank">Bank</option>
                           <option value="cash">Cash</option>
                         </select>
                       </div>
 
-                    
-
                       <div>
-                        <label className="block text-sm font-medium mb-1">Company Name</label>
-                        <input className="w-full py-3 px-3 border rounded-lg" value={formData.companyOrBusinessName} onChange={(e) => setFormData({ ...formData, companyOrBusinessName: e.target.value })}/>
+                        <label className="block text-sm font-medium mb-1">
+                          Company Name
+                        </label>
+                        <input
+                          className="w-full py-3 px-3 border rounded-lg"
+                          value={formData.companyOrBusinessName}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              companyOrBusinessName: e.target.value,
+                            })
+                          }
+                        />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-1">Office Pincode</label>
-                        <input maxLength={6} className="w-full py-3 px-3 border rounded-lg" value={formData.companyPinCode} onChange={(e) => setFormData({ ...formData, companyPinCode: e.target.value.replace(/\D/g, "") })}/>
+                        <label className="block text-sm font-medium mb-1">
+                          Office Pincode
+                        </label>
+                        <input
+                          maxLength={6}
+                          className="w-full py-3 px-3 border rounded-lg"
+                          value={formData.companyPinCode}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              companyPinCode: e.target.value.replace(/\D/g, ""),
+                            })
+                          }
+                        />
                       </div>
 
-                        {/* Salary Slip Upload */}
+                      {/* Salary Slip Upload */}
                       <div className="mt-2 space-y-2">
-                        <label className="block text-sm font-medium">Upload Salary Slip (optional)</label>
-                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleSalarySlipChange} className="w-full text-sm"/>
-                        {salarySlipUploading && <p className="text-xs text-gray-600">Uploading...</p>}
-                        {salarySlipUrl && !salarySlipUploading && <p className="text-xs text-green-600">Uploaded successfully ✔</p>}
+                        <label className="block text-sm font-medium">
+                          Upload Salary Slip (optional)
+                        </label>
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={handleSalarySlipChange}
+                          className="w-full text-sm"
+                        />
+                        {salarySlipUploading && (
+                          <p className="text-xs text-gray-600">Uploading...</p>
+                        )}
+                        {salarySlipUrl && !salarySlipUploading && (
+                          <p className="text-xs text-green-600">
+                            Uploaded successfully ✔
+                          </p>
+                        )}
                       </div>
                     </>
                   )}
 
-                  {error && <p className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</p>}
+                  {error && (
+                    <p className="text-red-500 text-sm bg-red-50 p-2 rounded">
+                      {error}
+                    </p>
+                  )}
 
-                  <button onClick={handleFormSubmit} disabled={loanSubmitting} className="w-full mt-6 bg-[#0080E5] hover:bg-[#0066B3] text-white font-bold py-4 rounded-xl shadow-lg disabled:opacity-50">
-                    {loanSubmitting ? "Submitting..." : "Check Loan Eligibility"}
+                  <button
+                    onClick={handleFormSubmit}
+                    disabled={loanSubmitting}
+                    className="w-full mt-6 bg-[#0080E5] hover:bg-[#0066B3] text-white font-bold py-4 rounded-xl shadow-lg disabled:opacity-50"
+                  >
+                    {loanSubmitting
+                      ? "Submitting..."
+                      : "Check Loan Eligibility"}
                   </button>
                 </div>
               </>
@@ -363,23 +557,34 @@ function ApplyNowContent() {
             {/* SUCCESS SCREEN WITH BANK OFFER */}
             {step === "success" && (
               <div className="space-y-6 text-center py-10">
-                
                 {/* if NO loan match */}
                 {!loanOffer && (
                   <>
                     <CheckCircle size={60} className="text-green-600 mx-auto" />
-                    <h2 className="text-2xl font-bold">Thank you for visiting Infinz</h2>
-                    <p className="text-gray-600">We couldn’t match eligibility at this moment.</p>
-                    <button onClick={() => router.push("/")} className="text-[#0080E5] font-semibold mt-4">Return to Home</button>
+                    <h2 className="text-2xl font-bold">
+                      Thank you for visiting Infinz
+                    </h2>
+                    <p className="text-gray-600">
+                      We couldn’t match eligibility at this moment.
+                    </p>
+                    <button
+                      onClick={() => router.push("/")}
+                      className="text-[#0080E5] font-semibold mt-4"
+                    >
+                      Return to Home
+                    </button>
                   </>
                 )}
 
                 {/* if MATCH FOUND */}
                 {loanOffer && (
                   <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md">
-                    <h2 className="text-2xl font-bold text-green-600 mb-2">🎉 Congratulations!</h2>
+                    <h2 className="text-2xl font-bold text-green-600 mb-2">
+                      🎉 Congratulations!
+                    </h2>
                     <p className="text-gray-700 mb-4">
-                      We found a match with <b>{loanOffer.bankName}</b>. Continue to view your best offer.
+                      We found a match with <b>{loanOffer.bankName}</b>.
+                      Continue to view your best offer.
                     </p>
 
                     <div className="flex items-center justify-center gap-4 mb-6">
@@ -388,18 +593,22 @@ function ApplyNowContent() {
                         alt={loanOffer.bankName}
                         className="w-14 h-14 rounded-xl bg-gray-100 p-2"
                       />
-                      <h3 className="text-xl font-bold">{loanOffer.bankName}</h3>
+                      <h3 className="text-xl font-bold">
+                        {loanOffer.bankName}
+                      </h3>
                     </div>
 
-                    <a href={loanOffer.utmLink} target="_blank" className="block w-full bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl shadow-md">
+                    <a
+                      href={loanOffer.utmLink}
+                      target="_blank"
+                      className="block w-full bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl shadow-md"
+                    >
                       View Bank Offer
                     </a>
                   </div>
                 )}
-
               </div>
             )}
-
           </div>
         </div>
       </div>
@@ -409,7 +618,13 @@ function ApplyNowContent() {
 
 export default function ApplyNowClient() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-[#0080E5]" /></div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="animate-spin text-[#0080E5]" />
+        </div>
+      }
+    >
       <ApplyNowContent />
     </Suspense>
   );
