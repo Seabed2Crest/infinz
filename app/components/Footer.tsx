@@ -257,10 +257,10 @@ function Footer() {
               <Newspaper className="w-4 h-4" />
               Newsroom
             </FooterLink>
-            <FooterLink onClick={() => router.push("/#faq")}>
+            {/* <FooterLink onClick={() => router.push("/#faq")}>
               <HelpCircle className="w-4 h-4" />
               FAQ
-            </FooterLink>
+            </FooterLink> */}
           </FooterColumn>
 
           {/* Column 6: Address */}
