@@ -771,93 +771,93 @@ function Login() {
             </button>
           </div>
         </div>
-     
+      </div>
     );
-};
+  };
 
-// Get current step number for progress bar
-const getStepNumber = (): number => {
-  switch (step) {
-    case "mobile":
-      return 1;
-    case "otp":
-      return 2;
-    case "personal-details":
-      return 3;
-    default:
-      return 1;
-  }
-};
+  // Get current step number for progress bar
+  const getStepNumber = (): number => {
+    switch (step) {
+      case "mobile":
+        return 1;
+      case "otp":
+        return 2;
+      case "personal-details":
+        return 3;
+      default:
+        return 1;
+    }
+  };
 
-// Get step description
-const getStepDescription = (): string => {
-  switch (step) {
-    case "mobile":
-      return "Enter Mobile";
-    case "otp":
-      return "Verify OTP";
-    case "personal-details":
-      return "Details";
-    default:
-      return "";
-  }
-};
+  // Get step description
+  const getStepDescription = (): string => {
+    switch (step) {
+      case "mobile":
+        return "Enter Mobile";
+      case "otp":
+        return "Verify OTP";
+      case "personal-details":
+        return "Details";
+      default:
+        return "";
+    }
+  };
 
-return (
-  <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
-    {renderLoanModal()}
-    <div className="container mx-auto px-4 py-12">
-      <div className="bg-white shadow-xl rounded-3xl max-w-4xl mx-auto grid md:grid-cols-2 overflow-hidden">
-        {/* Left side */}
-        <div className="hidden md:flex bg-gradient-to-br from-[#0080E5] to-[#0066B3] text-white p-10 flex-col items-center justify-center">
-          <Image
-            src="/3d-hand-hold-smartphone-with-authentication-form.jpg"
-            width={280}
-            height={280}
-            alt="Secure Login"
-            className="object-contain"
-            priority
-          />
-          <h2 className="text-2xl font-bold mt-6 mb-2 text-center">
-            {apply === "true"
-              ? "Complete Your Application"
-              : "Instant Loan up to ₹1Cr"}
-          </h2>
-          <p className="opacity-90 text-center">
-            Fast approvals • Best rates
-          </p>
-        </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
+      {renderLoanModal()}
+      <div className="container mx-auto px-4 py-12">
+        <div className="bg-white shadow-xl rounded-3xl max-w-4xl mx-auto grid md:grid-cols-2 overflow-hidden">
+          {/* Left side */}
+          <div className="hidden md:flex bg-gradient-to-br from-[#0080E5] to-[#0066B3] text-white p-10 flex-col items-center justify-center">
+            <Image
+              src="/3d-hand-hold-smartphone-with-authentication-form.jpg"
+              width={280}
+              height={280}
+              alt="Secure Login"
+              className="object-contain"
+              priority
+            />
+            <h2 className="text-2xl font-bold mt-6 mb-2 text-center">
+              {apply === "true"
+                ? "Complete Your Application"
+                : "Instant Loan up to ₹1Cr"}
+            </h2>
+            <p className="opacity-90 text-center">
+              Fast approvals • Best rates
+            </p>
+          </div>
 
-        {/* Right side */}
-        <div className="p-8 md:p-10">
-          <div className="max-w-md mx-auto">
-            {step === "mobile" && renderMobileStep()}
-            {step === "otp" && renderOtpStep()}
-            {step === "personal-details" && renderPersonalDetailsStep()}
+          {/* Right side */}
+          <div className="p-8 md:p-10">
+            <div className="max-w-md mx-auto">
+              {step === "mobile" && renderMobileStep()}
+              {step === "otp" && renderOtpStep()}
+              {step === "personal-details" && renderPersonalDetailsStep()}
 
-            {/* Progress indicator */}
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-500">
-                  Step {getStepNumber()} of 3
-                </span>
-                <span className="text-xs font-medium text-[#0080E5]">
-                  {getStepDescription()}
-                </span>
-              </div>
-              <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#0080E5] transition-all duration-300"
-                  style={{ width: `${(getStepNumber() / 3) * 100}%` }}
-                ></div>
+              {/* Progress indicator */}
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-gray-500">
+                    Step {getStepNumber()} of 3
+                  </span>
+                  <span className="text-xs font-medium text-[#0080E5]">
+                    {getStepDescription()}
+                  </span>
+                </div>
+                <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#0080E5] transition-all duration-300"
+                    style={{ width: `${(getStepNumber() / 3) * 100}%` }}
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
 
 // Loading component for Suspense fallback
