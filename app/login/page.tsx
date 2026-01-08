@@ -62,6 +62,7 @@ function Login() {
   const [otpResent, setOtpResent] = useState(false);
   const [showLoanModal, setShowLoanModal] = useState(false);
   const [personalDetailsSaved, setPersonalDetailsSaved] = useState(false);
+  const PAN_HOLDER_TYPES = ["P", "C", "H", "F", "A", "T", "B", "L", "J", "G"];
 
   // Refs for OTP input management
   const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -74,6 +75,44 @@ function Login() {
     panCard: "",
     pincode: "",
   });
+
+  //handle PAN Changes
+  const handlePanChange = (value: string) => {
+    let pan = value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+
+    let result = "";
+
+    for (let i = 0; i < pan.length && i < 10; i++) {
+      const char = pan[i];
+
+      // 1–3 → Alphabets only
+      if (i <= 2 && /[A-Z]/.test(char)) {
+        result += char;
+      }
+
+      // 4th → PAN holder type
+      else if (i === 3 && PAN_HOLDER_TYPES.includes(char)) {
+        result += char;
+      }
+
+      // 5th → Alphabet only (surname/entity initial)
+      else if (i === 4 && /[A-Z]/.test(char)) {
+        result += char;
+      }
+
+      // 6–9 → Digits only
+      else if (i >= 5 && i <= 8 && /[0-9]/.test(char)) {
+        result += char;
+      }
+
+      // 10th → Alphabet only (check digit)
+      else if (i === 9 && /[A-Z]/.test(char)) {
+        result += char;
+      }
+    }
+
+    updatePersonalDetail("panCard", result);
+  };
 
   // Get query parameters
   const apply = searchParams.get("apply");
@@ -350,6 +389,10 @@ function Login() {
     }
   };
 
+  const isValidPanStrict = (pan: string): boolean => {
+    return /^[A-Z]{3}[PCHFABTLJG][A-Z][0-9]{4}[A-Z]$/.test(pan);
+  };
+
   // Inside handlePersonalSubmit in Login component
   const handlePersonalSubmit = async (): Promise<void> => {
     setError("");
@@ -358,6 +401,11 @@ function Login() {
 
     if (!fullName || !email || !dob || !panCard || !pincode) {
       setError("All fields are required");
+      return;
+    }
+
+    if (!isValidPanStrict(personal.panCard)) {
+      setError("Enter a valid PAN (Format: AAAPA1234A)");
       return;
     }
 
@@ -670,16 +718,12 @@ function Login() {
                 />
                 <input
                   type="text"
-                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] uppercase"
-                  placeholder="ABCDE1234F"
+                  placeholder="AAAPA1234A"
                   value={personal.panCard}
-                  onChange={(e) =>
-                    updatePersonalDetail(
-                      "panCard",
-                      e.target.value.toUpperCase()
-                    )
-                  }
+                  onChange={(e) => handlePanChange(e.target.value)}
                   maxLength={10}
+                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] uppercase"
+                  autoComplete="off"
                 />
               </div>
             </div>

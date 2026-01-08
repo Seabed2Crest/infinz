@@ -148,23 +148,28 @@ function ApplyNowContent() {
     setError("");
 
     if (!mobile || !personal) {
-      setError("Session expired. Please restart the application.");
+      setError("Session expired. Please Retry");
       return;
     }
 
-    if (!personal.fullName || !personal.dob || !personal.panCard) {
-      setError("Personal details missing. Please restart application.");
-      setLoanSubmitting(false);
-      return;
-    }
+    // if (!personal.fullName || !personal.dob || !personal.panCard) {
+    //   setError("Personal details missing. Please restart application.");
+    //   setLoanSubmitting(false);
+    //   return;
+    // }
 
     setLoanSubmitting(true);
 
     try {
       // ---------------- Business Loan ----------------
       if (loanType === "business") {
-        if (!businessForm.requiredLoanAmount || !businessForm.businessName) {
-          setError("Please fill all required details");
+        const validationError = validateBusinessForm(
+          businessForm,
+          registrations
+        );
+
+        if (validationError) {
+          setError(validationError);
           setLoanSubmitting(false);
           return;
         }
@@ -199,18 +204,19 @@ function ApplyNowContent() {
           setStep("success");
           toast.success("Application submitted successfully!");
         } else {
-          setError(response?.message || "Application failed");
+          setError(humanizeApiError(response?.message));
         }
       }
 
       // ---------------- Personal Loan ----------------
       else {
-        if (!formData.requiredLoanAmount || !formData.netMonthlyIncome) {
-          setError("Loan amount and income are required");
+        const validationError = validatePersonalForm(formData);
+
+        if (validationError) {
+          setError(validationError);
           setLoanSubmitting(false);
           return;
         }
-
         const payload = {
           loanPurpose: "personal-loan",
           monthlyIncome: formData.netMonthlyIncome,
@@ -232,7 +238,9 @@ function ApplyNowContent() {
           if (response?.data?.loanOffers)
             setLoanOffer(response.data.loanOffers);
           setStep("success");
-        } else setError(response?.message || "Application failed");
+        } else {
+          setError(humanizeApiError(response?.message));
+        }
       }
     } catch (err: any) {
       setError(err.message || "An error occurred during submission.");
@@ -240,6 +248,78 @@ function ApplyNowContent() {
     } finally {
       setLoanSubmitting(false);
     }
+  };
+
+  const humanizeApiError = (message?: string) => {
+    if (!message) return "Something went wrong. Please try again.";
+
+    if (message.includes("registrationTypes")) {
+      return "Please select at least one business registration type.";
+    }
+
+    if (message.includes("registrationNumbers")) {
+      return "Please provide registration details for the selected types.";
+    }
+
+    if (message.includes("businessPincode")) {
+      return "Please enter a valid 6-digit business pincode.";
+    }
+
+    return "Unable to submit your application. Please check your details and try again.";
+  };
+
+  const validateBusinessForm = (
+    businessForm: any,
+    registrations: string[]
+  ): string | null => {
+    if (!businessForm.requiredLoanAmount) {
+      return "Please enter the required loan amount.";
+    }
+
+    if (!businessForm.businessName.trim()) {
+      return "Please enter your business name.";
+    }
+
+    if (!businessForm.annualTurnover) {
+      return "Please enter your annual turnover.";
+    }
+
+    if (!registrations.length) {
+      return "Please select at least one business registration type.";
+    }
+
+    if (
+      !businessForm.businessPincode ||
+      businessForm.businessPincode.length !== 6
+    ) {
+      return "Please enter a valid 6-digit business pincode.";
+    }
+
+    if (!businessForm.incorporationDate) {
+      return "Please select your business incorporation date.";
+    }
+
+    return null; // ✅ valid
+  };
+
+  const validatePersonalForm = (formData: any): string | null => {
+    if (!formData.requiredLoanAmount) {
+      return "Please enter the required loan amount.";
+    }
+
+    if (!formData.netMonthlyIncome) {
+      return "Please enter your net monthly income.";
+    }
+
+    if (!formData.companyOrBusinessName.trim()) {
+      return "Please enter your company name.";
+    }
+
+    if (!formData.companyPinCode || formData.companyPinCode.length !== 6) {
+      return "Please enter a valid 6-digit office pincode.";
+    }
+
+    return null; // ✅ valid
   };
 
   // ---------------------------------------
@@ -598,13 +678,22 @@ function ApplyNowContent() {
                       </h3>
                     </div>
 
-                    <a
-                      href={loanOffer.utmLink}
-                      target="_blank"
+                    <button
+                      onClick={() => {
+                        // 1. Open UTM link in new tab
+                        window.open(
+                          loanOffer.utmLink,
+                          "_blank",
+                          "noopener,noreferrer"
+                        );
+
+                        // 2. Redirect current tab to home
+                        router.replace("/");
+                      }}
                       className="block w-full bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl shadow-md"
                     >
                       View Bank Offer
-                    </a>
+                    </button>
                   </div>
                 )}
               </div>
