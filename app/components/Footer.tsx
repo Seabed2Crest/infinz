@@ -184,7 +184,7 @@ function Footer() {
                 />
                 <SocialIcon
                   icon={Youtube}
-                  href="https://www.youtube.com/@Cash_Mate"
+                  href="https://www.youtube.com/@1infinz"
                   delay={300}
                 />
               </div>

@@ -238,7 +238,7 @@ function ConnectWithUs() {
     {
       icon: Youtube,
       name: "YouTube",
-      url: "https://www.youtube.com/@Cash_Mate",
+      url: "https://www.youtube.com/@1infinz",
       color: "red",
     },
   ];
