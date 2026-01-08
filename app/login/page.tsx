@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import http from "../http.common";
 
 interface PersonalDetails {
   fullName: string;
@@ -46,7 +47,7 @@ function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Client-side mounting stateapplyData 
+  // Client-side mounting stateapplyData
   const [isClient, setIsClient] = useState(false);
 
   // State management
@@ -173,7 +174,23 @@ function Login() {
     return age;
   };
 
+  //   const createUserApi = async (payload: any) => {
+  //   const res = await fetch("/api/v1/users", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  //     },
+  //     body: JSON.stringify(payload),
+  //   });
 
+  //   if (!res.ok) {
+  //     const err = await res.json();
+  //     throw new Error(err.message || "Failed to save user");
+  //   }
+
+  //   return res.json();
+  // };
 
   const handleMobileSubmit = async (): Promise<void> => {
     setError("");
@@ -205,7 +222,6 @@ function Login() {
 
         // Transform keys to match backend
         const payload = {
-
           userName: personal.fullName,
           email: personal.email,
           dateOfBirth: personal.dob,
@@ -236,7 +252,6 @@ function Login() {
       setLoading(false);
     }
   };
-
 
   // Handle OTP resend
   const handleResendOtp = async (): Promise<void> => {
@@ -303,7 +318,7 @@ function Login() {
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-        "OTP verification failed. Please check the code and try again."
+          "OTP verification failed. Please check the code and try again."
       );
     } finally {
       setOtpLoading(false);
@@ -335,12 +350,10 @@ function Login() {
     }
   };
 
-
-
-
   // Inside handlePersonalSubmit in Login component
   const handlePersonalSubmit = async (): Promise<void> => {
     setError("");
+
     const { fullName, email, dob, panCard, pincode } = personal;
 
     if (!fullName || !email || !dob || !panCard || !pincode) {
@@ -349,27 +362,49 @@ function Login() {
     }
 
     setLoading(true);
+
     try {
-      // 1. Persist identity details for the ApplyNow page
-      localStorage.setItem("personalDetails", JSON.stringify({
+      const phoneNumber =
+        personal.phone ||
+        get10DigitMobile(localStorage.getItem("mobileNumber") || "");
+
+      // 🔹 API call inline (axios instance auto-attaches token)
+      await http.post("/api/v1/users", {
+        phoneNumber,
         fullName,
         email,
-        dob,
-        panCard,
-        pincode
-      }));
+        dateOfBirth: dob,
+        pancardNumber: panCard,
+        pinCode: pincode,
+        origin: "web",
+        authProvider: "phone-number",
+      });
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const loanParam = urlParams.get("loan");
+      // 🔹 Persist for Apply Now flow (existing logic)
+      localStorage.setItem(
+        "personalDetails",
+        JSON.stringify({
+          fullName,
+          email,
+          dob,
+          panCard,
+          pincode,
+        })
+      );
 
-      // 2. Direct redirect if loan type is known, otherwise show modal
+      const loanParam = searchParams.get("loan");
+
+      // 🔹 Continue flow
       if (loanParam === "personal" || loanParam === "business") {
         router.push(`/apply_now?loan=${loanParam}`);
       } else {
         setShowLoanModal(true);
       }
     } catch (err: any) {
-      setError("An error occurred. Please try again.");
+      setError(
+        err.response?.data?.message ||
+          "Failed to save personal details. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -405,8 +440,9 @@ function Login() {
         </h2>
         <p className="text-gray-500 text-sm mb-6 text-center">
           {isApplyFlow
-            ? `Enter your mobile number to continue your ${loan || "loan"
-            } application`
+            ? `Enter your mobile number to continue your ${
+                loan || "loan"
+              } application`
             : "Enter your 10-digit mobile number to continue"}
         </p>
 
