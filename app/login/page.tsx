@@ -54,6 +54,9 @@ function Login() {
   const [step, setStep] = useState<Step>("mobile");
   const [mobile, setMobile] = useState("");
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof PersonalDetails, string>>
+  >({});
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState<Token | null>(null);
@@ -63,6 +66,9 @@ function Login() {
   const [showLoanModal, setShowLoanModal] = useState(false);
   const [personalDetailsSaved, setPersonalDetailsSaved] = useState(false);
   const PAN_HOLDER_TYPES = ["P", "C", "H", "F", "A", "T", "B", "L", "J", "G"];
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const PINCODE_REGEX = /^[1-9][0-9]{5}$/; // Indian pincode (no leading 0)
+  const PAN_REGEX = /^[A-Z]{3}[PCHFABTLJG][A-Z][0-9]{4}[A-Z]$/;
 
   // Refs for OTP input management
   const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -75,6 +81,53 @@ function Login() {
     panCard: "",
     pincode: "",
   });
+
+  const validatePersonalDetails = (): boolean => {
+    const errors: Partial<Record<keyof PersonalDetails, string>> = {};
+
+    // Full Name
+    if (!personal.fullName.trim()) {
+      errors.fullName = "Full name is required";
+    } else if (personal.fullName.trim().length < 3) {
+      errors.fullName = "Full name must be at least 3 characters";
+    }
+
+    // Email
+    if (!personal.email.trim()) {
+      errors.email = "Email address is required";
+    } else if (!EMAIL_REGEX.test(personal.email)) {
+      errors.email = "Enter a valid email address";
+    }
+
+    // DOB (Age ≥ 21)
+    if (!personal.dob) {
+      errors.dob = "Date of birth is required";
+    } else {
+      const age = calculateAge(personal.dob);
+      if (age < 21) {
+        errors.dob = "You must be at least 21 years old";
+      } else if (age > 65) {
+        errors.dob = "Age must be below 65 years";
+      }
+    }
+
+    // PAN
+    if (!personal.panCard) {
+      errors.panCard = "PAN number is required";
+    } else if (!PAN_REGEX.test(personal.panCard)) {
+      errors.panCard = "Enter a valid PAN (e.g. AAAPA1234A)";
+    }
+
+    // Pincode
+    if (!personal.pincode) {
+      errors.pincode = "Pincode is required";
+    } else if (!PINCODE_REGEX.test(personal.pincode)) {
+      errors.pincode = "Enter a valid 6-digit Indian pincode";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   //handle PAN Changes
   const handlePanChange = (value: string) => {
@@ -396,6 +449,12 @@ function Login() {
   // Inside handlePersonalSubmit in Login component
   const handlePersonalSubmit = async (): Promise<void> => {
     setError("");
+    setFieldErrors({});
+
+    // ❌ STOP API if validation fails
+    if (!validatePersonalDetails()) {
+      return;
+    }
 
     const { fullName, email, dob, panCard, pincode } = personal;
 
@@ -467,6 +526,7 @@ function Login() {
       ...prev,
       [field]: value,
     }));
+    setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
   // Handle loan selection from modal
@@ -667,6 +727,11 @@ function Login() {
                   updatePersonalDetail("fullName", e.target.value)
                 }
               />
+              {fieldErrors.fullName && (
+                <p className="text-xs text-red-500 mt-1">
+                  {fieldErrors.fullName}
+                </p>
+              )}
             </div>
           </div>
 
@@ -686,6 +751,9 @@ function Login() {
                 value={personal.email}
                 onChange={(e) => updatePersonalDetail("email", e.target.value)}
               />
+              {fieldErrors.email && (
+                <p className="text-xs text-red-500 mt-1">{fieldErrors.email}</p>
+              )}
             </div>
           </div>
 
@@ -705,6 +773,9 @@ function Login() {
                   value={personal.dob}
                   onChange={(e) => updatePersonalDetail("dob", e.target.value)}
                 />
+                {fieldErrors.dob && (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.dob}</p>
+                )}
               </div>
             </div>
             <div>
@@ -725,6 +796,11 @@ function Login() {
                   className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5] uppercase"
                   autoComplete="off"
                 />
+                {fieldErrors.panCard && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {fieldErrors.panCard}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -751,6 +827,11 @@ function Login() {
                 }
                 maxLength={6}
               />
+              {fieldErrors.pincode && (
+                <p className="text-xs text-red-500 mt-1">
+                  {fieldErrors.pincode}
+                </p>
+              )}
             </div>
           </div>
 
