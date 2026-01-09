@@ -46,173 +46,86 @@ function ContactInfo({ onOpenModal }: ContactInfoProps) {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Details */}
+
+        {/* Section Heading */}
+        <h2 className="text-4xl font-bold text-gray-900 mb-10">
+          Contact Information
+        </h2>
+
+        {/* Two Column Layout */}
+        <div className="grid lg:grid-cols-2 gap-12 items-stretch">
+
+          {/* LEFT: Contact Card */}
           <div className="animate-slide-left">
-            <h2 className="text-4xl font-bold text-gray-900 mb-8">
-              Contact Information
-            </h2>
+            <div className="bg-gray-50 rounded-2xl p-6 h-full space-y-6">
+              <h3 className="text-2xl font-bold text-gray-900">
+                Head Office
+              </h3>
 
-            <div className="space-y-6">
-              <div className="bg-gray-50 rounded-2xl p-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  Head Office
-                </h3>
+              <div className="flex items-start gap-4">
+                <MapPin className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" />
+                <div>
+                  <p className="text-gray-900 font-semibold mb-1">Address</p>
+                  <p className="text-gray-600 leading-relaxed">
+                    No 338, 2nd Floor, Siddhiaiah Puranik road,
+                    <br />
+                    3rd stage, 4th Block, Basaveshwaranagar,
+                    <br />
+                    Bangalore North - 560079
+                  </p>
+                </div>
+              </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <MapPin className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <p className="text-gray-900 font-semibold mb-1">
-                        Address
-                      </p>
-                      <p className="text-gray-600 leading-relaxed">
-                        No 338, 2nd Floor, Siddhiaiah Puranik road,
-                        <br />
-                        3rd stage, 4th Block, Basaveshwaranagar,
-                        <br />
-                        Bangalore North - 560079
-                      </p>
-                    </div>
-                  </div>
+              <div className="flex items-center gap-4">
+                <Phone className="w-6 h-6 text-blue-600" />
+                <div>
+                  <p className="text-gray-900 font-semibold mb-1">Phone</p>
+                  <p className="text-gray-600">06366158631</p>
+                </div>
+              </div>
 
-                  <div className="flex items-center gap-4">
-                    <Phone className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                    <div>
-                      <p className="text-gray-900 font-semibold mb-1">Phone</p>
-                      <p className="text-gray-600">06366158631</p>
-                    </div>
-                  </div>
+              <div className="flex items-center gap-4">
+                <Mail className="w-6 h-6 text-blue-600" />
+                <div>
+                  <p className="text-gray-900 font-semibold mb-1">Email</p>
+                  <p className="text-gray-600">
+                    info@rakshithafinserve.com
+                  </p>
+                </div>
+              </div>
 
-                  <div className="flex items-center gap-4">
-                    <Mail className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                    <div>
-                      <p className="text-gray-900 font-semibold mb-1">Email</p>
-                      <p className="text-gray-600">
-                        info@rakshithafinserve.com
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <Globe className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                    <div>
-                      <p className="text-gray-900 font-semibold mb-1">
-                        Website
-                      </p>
-                      <p className="text-gray-600">www.1infinz.com</p>
-                    </div>
-                  </div>
-
-                  {/* Google Maps Embed */}
-                  <div className="mt-6 rounded-xl overflow-hidden shadow-lg">
-                    <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.5448892!2d77.5516!3d12.9996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU5JzU4LjYiTiA3N8KwMzMnMDUuOCJF!5e0!3m2!1sen!2sin!4v1234567890"
-                      width="100%"
-                      height="250"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title="Office Location"
-                    />
-                  </div>
+              <div className="flex items-center gap-4">
+                <Globe className="w-6 h-6 text-blue-600" />
+                <div>
+                  <p className="text-gray-900 font-semibold mb-1">Website</p>
+                  <p className="text-gray-600">www.1infinz.com</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Contact Form */}
+          {/* RIGHT: Map Card */}
           <div className="animate-slide-right">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                Get Expert Advice - Free Consultation
-              </h3>
-
-              <form className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mobile Number *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    placeholder="Enter your mobile number"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    placeholder="Enter your email address"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    placeholder="What's this about?"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
-                    placeholder="Tell us how we can help you..."
-                  />
-                </div>
-
-                <button
-                  onClick={onOpenModal}
-                  type="button"
-                  className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center justify-center"
-                >
-                  Submit
-                  <Send className="ml-2 h-5 w-5" />
-                </button>
-
-                <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <Clock className="w-4 h-4 text-blue-600" />
-                  <span>
-                    Our team will respond within 2 hours during business hours
-                  </span>
-                </div>
-              </form>
+            <div className="relative bg-gray-50 rounded-2xl h-full overflow-hidden shadow-lg">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.5448892!2d77.5516!3d12.9996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU5JzU4LjYiTiA3N8KwMzMnMDUuOCJF!5e0!3m2!1sen!2sin!4v1234567890"
+                className="absolute inset-0 w-full h-full"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Office Location"
+              />
             </div>
           </div>
+
         </div>
       </div>
     </section>
   );
 }
+
+
 
 // Connect With Us Section
 function ConnectWithUs() {
