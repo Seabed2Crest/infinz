@@ -53,7 +53,7 @@ function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden lg:flex space-x-8">
             {/* Home */}
             <button
               onClick={() => router.push("/")}
@@ -229,7 +229,7 @@ function Header() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (
@@ -242,7 +242,7 @@ function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
+          <div className="lg:hidden py-4 border-t max-w-md">
             <div className="flex flex-col space-y-4">
               <button
                 onClick={() => {
