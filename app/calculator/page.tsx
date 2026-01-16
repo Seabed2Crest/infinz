@@ -79,30 +79,28 @@ function EMICalculator() {
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (val === '' || /^\d+$/.test(val)) {
-      const numVal = val === '' ? params.minAmount : Math.min(Math.max(parseInt(val), params.minAmount), params.maxAmount);
-      setLoanAmount(numVal);
+      setLoanAmount(val === '' ? 0 : parseInt(val));
     }
   };
 
   const handleRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (val === '' || /^\d*\.?\d*$/.test(val)) {
-      if (val === '') {
-        setInterestRate(params.minRate);
-      } else {
-        const numVal = Math.min(Math.max(parseFloat(val), params.minRate), params.maxRate);
-        setInterestRate(numVal);
-      }
+      setInterestRate(val === '' ? 0 : parseFloat(val));
     }
   };
 
   const handleTenureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (val === '' || /^\d+$/.test(val)) {
-      const numVal = val === '' ? params.minTenure : Math.min(Math.max(parseInt(val), params.minTenure), params.maxTenure);
-      setTenure(numVal);
+      setTenure(val === '' ? 0 : parseInt(val));
     }
   };
+
+  // Validation checks
+  const isAmountValid = loanAmount >= params.minAmount && loanAmount <= params.maxAmount;
+  const isRateValid = interestRate >= params.minRate && interestRate <= params.maxRate;
+  const isTenureValid = tenure >= params.minTenure && tenure <= params.maxTenure;
 
   return (
     <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-blue-50">
@@ -157,11 +155,22 @@ function EMICalculator() {
               </label>
               <input
                 type="text"
-                value={loanAmount}
+                value={loanAmount || ''}
                 onChange={handleAmountChange}
-                className="w-full p-3 border-2 border-gray-300 rounded-lg text-gray-900 font-semibold mb-3 focus:outline-none focus:border-blue-500"
+                className={`w-full p-3 border-2 rounded-lg text-gray-900 font-semibold mb-2 focus:outline-none ${
+                  !isAmountValid && loanAmount > 0
+                    ? 'border-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:border-blue-500'
+                }`}
                 placeholder="Enter loan amount"
               />
+              {!isAmountValid && loanAmount > 0 && (
+                <div className="text-red-600 text-sm mb-2 font-medium">
+                  {loanAmount < params.minAmount
+                    ? `Minimum loan amount is ₹${params.minAmount.toLocaleString()}`
+                    : `Maximum loan amount is ₹${params.maxAmount.toLocaleString()}`}
+                </div>
+              )}
               <input
                 type="range"
                 min={params.minAmount}
@@ -184,11 +193,22 @@ function EMICalculator() {
               </label>
               <input
                 type="text"
-                value={interestRate}
+                value={interestRate || ''}
                 onChange={handleRateChange}
-                className="w-full p-3 border-2 border-gray-300 rounded-lg text-gray-900 font-semibold mb-3 focus:outline-none focus:border-blue-500"
+                className={`w-full p-3 border-2 rounded-lg text-gray-900 font-semibold mb-2 focus:outline-none ${
+                  !isRateValid && interestRate > 0
+                    ? 'border-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:border-blue-500'
+                }`}
                 placeholder="Enter interest rate"
               />
+              {!isRateValid && interestRate > 0 && (
+                <div className="text-red-600 text-sm mb-2 font-medium">
+                  {interestRate < params.minRate
+                    ? `Minimum interest rate is ${params.minRate}%`
+                    : `Maximum interest rate is ${params.maxRate}%`}
+                </div>
+              )}
               <input
                 type="range"
                 min={params.minRate}
@@ -211,11 +231,22 @@ function EMICalculator() {
               </label>
               <input
                 type="text"
-                value={tenure}
+                value={tenure || ''}
                 onChange={handleTenureChange}
-                className="w-full p-3 border-2 border-gray-300 rounded-lg text-gray-900 font-semibold mb-3 focus:outline-none focus:border-blue-500"
+                className={`w-full p-3 border-2 rounded-lg text-gray-900 font-semibold mb-2 focus:outline-none ${
+                  !isTenureValid && tenure > 0
+                    ? 'border-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:border-blue-500'
+                }`}
                 placeholder="Enter tenure in months"
               />
+              {!isTenureValid && tenure > 0 && (
+                <div className="text-red-600 text-sm mb-2 font-medium">
+                  {tenure < params.minTenure
+                    ? `Minimum tenure is ${params.minTenure} months`
+                    : `Maximum tenure is ${params.maxTenure} months`}
+                </div>
+              )}
               <input
                 type="range"
                 min={params.minTenure}
