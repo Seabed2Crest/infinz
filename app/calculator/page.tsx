@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import {
-  Calculator,
-  TrendingUp,
   User,
   Briefcase,
-  Info,
   CheckCircle,
   Clock,
+  Info,
 } from "lucide-react";
 
 // EMI Calculator Component with Tabs
@@ -26,19 +24,19 @@ function EMICalculator() {
   const [businessTenure, setBusinessTenure] = useState(24);
 
   // Tab-specific setter helpers
-  const setLoanAmount = (val) =>
+  const setLoanAmount = (val: number) =>
     activeTab === "personal"
       ? setPersonalLoanAmount(val)
       : setBusinessLoanAmount(val);
-  const setInterestRate = (val) =>
+  const setInterestRate = (val: number) =>
     activeTab === "personal"
       ? setPersonalInterestRate(val)
       : setBusinessInterestRate(val);
-  const setTenure = (val) =>
+  const setTenure = (val: number) =>
     activeTab === "personal" ? setPersonalTenure(val) : setBusinessTenure(val);
 
   // EMI Calculation
-  const calculateEMI = (amount, rate, tenureMonths) => {
+  const calculateEMI = (amount: number, rate: number, tenureMonths: number) => {
     const monthlyRate = rate / 12 / 100;
     const emi =
       (amount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
@@ -78,7 +76,7 @@ function EMICalculator() {
         };
 
   // Handle input changes with validation
-  const handleAmountChange = (e) => {
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (val === '' || /^\d+$/.test(val)) {
       const numVal = val === '' ? params.minAmount : Math.min(Math.max(parseInt(val), params.minAmount), params.maxAmount);
@@ -86,7 +84,7 @@ function EMICalculator() {
     }
   };
 
-  const handleRateChange = (e) => {
+  const handleRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (val === '' || /^\d*\.?\d*$/.test(val)) {
       if (val === '') {
@@ -98,7 +96,7 @@ function EMICalculator() {
     }
   };
 
-  const handleTenureChange = (e) => {
+  const handleTenureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (val === '' || /^\d+$/.test(val)) {
       const numVal = val === '' ? params.minTenure : Math.min(Math.max(parseInt(val), params.minTenure), params.maxTenure);
