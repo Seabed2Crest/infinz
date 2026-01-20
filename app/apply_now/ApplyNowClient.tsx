@@ -11,6 +11,7 @@ import {
   BusinessLoanService,
   PresignUrl,
   PersonalLoanApply,
+  LoanRequestService,
 } from "../services/data.service";
 
 interface PersonalDetails {
@@ -34,11 +35,13 @@ function ApplyNowContent() {
   const router = useRouter();
   const loanType = searchParams.get("loan") || "personal";
 
-  const [step, setStep] = useState<"form" | "success">("form");
+  // const [step, setStep] = useState<"form" | "success">("form");
   const [mobile, setMobile] = useState("");
   const [error, setError] = useState("");
   const [personal, setPersonal] = useState<PersonalDetails | null>(null);
   const [loanOffer, setLoanOffer] = useState<any>(null);
+  const [step, setStep] = useState<"form" | "success" | "pending" | "loading">("loading");
+   const [pendingLoan, setPendingLoan] = useState<any>(null);
 
   const [formData, setFormData] = useState({
     requiredLoanAmount: "",
@@ -70,6 +73,24 @@ function ApplyNowContent() {
   // Load personal data from previous steps
   // ---------------------------------------
   useEffect(() => {
+
+
+    const checkUserStatus = async () => {
+  try {
+    const res = await LoanRequestService.checkPendingStatus(); 
+    if (res.data?.hasPending) {
+      setPendingLoan(res.data.data);
+      setStep("pending");
+    } else {
+      setStep("form");
+    }
+  } catch (err) {
+    setStep("form");
+  }
+};
+
+  checkUserStatus();
+  
     const savedMobile = localStorage.getItem("mobileNumber");
     const savedPersonal = localStorage.getItem("personalDetails");
     const applyData = localStorage.getItem("applyData");
@@ -633,6 +654,59 @@ function ApplyNowContent() {
                 </div>
               </>
             )}
+            
+            {/* PENDING LOAN SCREEN */}
+{step === "pending" && (
+  <div className="space-y-6 text-center py-10 animate-in fade-in duration-500">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md">
+      <div className="flex justify-center mb-4">
+        {/* Using a simple Lucide icon for alert */}
+        <div className="bg-orange-100 p-4 rounded-full">
+           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+      </div>
+      
+      <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        Request in Progress!
+      </h2>
+      <p className="text-gray-600 mb-6">
+        You already have a <b className="text-gray-900">{pendingLoan?.loanPurpose || "Loan"}</b> request which is currently <b className="text-orange-600">Pending</b>.
+      </p>
+
+      {/* Details Box */}
+      <div className="flex items-center justify-center gap-4 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-100">
+        <div className="text-left">
+          <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Reference ID</p>
+          <p className="text-sm font-bold text-gray-800">#{pendingLoan?._id?.slice(-8).toUpperCase() || "N/A"}</p>
+        </div>
+        <div className="h-8 w-px bg-gray-300"></div>
+        <div className="text-left">
+          <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Status</p>
+          <p className="text-sm font-bold text-orange-600 capitalize">{pendingLoan?.status || "Pending"}</p>
+        </div>
+      </div>
+
+      <p className="text-sm text-gray-500 mb-6">
+        Once your current application is processed or approved, you can request a new loan.
+      </p>
+
+      <button
+        onClick={() => router.push("/")}
+        className="block w-full bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl shadow-md transition-all active:scale-95"
+      >
+        Go Back to Home
+      </button>
+    </div>
+  </div>
+)}
+
+{/* OPTIONAL: LOADING SPINNER while checking status */}
+{step === "loading" && (
+  <div className="flex flex-col items-center justify-center h-full py-20">
+    <Loader2 className="h-10 w-10 text-blue-600 animate-spin" />
+    <p className="mt-4 text-gray-500">Checking application status...</p>
+  </div>
+)}
 
             {/* SUCCESS SCREEN WITH BANK OFFER */}
             {step === "success" && (
@@ -715,6 +789,6 @@ export default function ApplyNowClient() {
       }
     >
       <ApplyNowContent />
-    </Suspense>
+    </Suspense> 
   );
 }

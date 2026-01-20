@@ -4,6 +4,10 @@ export const API_ROUTES = {
         VERIFY_OTP: "/api/v1/auth/verify-otp",
     },
 
+     LOAN: {
+        CHECK_PENDING: "/api/v1/loan/check-pending",
+    },
+
     BUSINESS: {
         CREATE: "/api/v1/business/create",
     },

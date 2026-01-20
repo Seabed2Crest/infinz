@@ -467,3 +467,12 @@ export const PresignUrl = {
   },
 };
 
+
+export const LoanRequestService = {
+  checkPendingStatus: async () => {
+    
+    return await http.get(API_ROUTES.LOAN.CHECK_PENDING);
+  }
+};
+
+

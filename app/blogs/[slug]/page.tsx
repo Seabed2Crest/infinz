@@ -33,20 +33,20 @@ export default function BlogDetailsPage() {
         </Link>
 
         {/* Hero */}
-        <motion.img
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          src={blog.thumbnail || ""}
-          className="w-full h-72 object-cover rounded-xl mt-6 shadow"
-        />
+        <div className="w-full overflow-hidden rounded-xl mt-6 shadow bg-gray-900">
+          <motion.img
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            src={blog.thumbnail || ""}
+            alt={blog.thumbnailAlt || blog.title}
+            className="w-full h-auto object-contain"
+          />
+        </div>
 
         {/* Title */}
         <h1 className="text-4xl md:text-5xl font-bold mt-8 leading-tight">
           {blog.title}
         </h1>
-
-
-
 
         {/* Category + Date */}
         <div className="flex items-center gap-4 text-gray-500 mt-3">
