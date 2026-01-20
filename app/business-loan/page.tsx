@@ -92,6 +92,7 @@ function BusinessLoanHero() {
         loanAmount,
         mobileNumber,
         emiTenure,
+        platform: "web",
       };
 
       // 1. Create the initial lead in the DB
