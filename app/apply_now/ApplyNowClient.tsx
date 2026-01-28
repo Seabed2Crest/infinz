@@ -249,6 +249,7 @@ function ApplyNowContent() {
           companyPinCode: formData.companyPinCode,
           employmentType: formData.employmentType,
           salarySlipUrl: salarySlipUrl || undefined,
+          platform: "web",
         };
 
         const response = await PersonalLoanApply.createPersonalLoan(

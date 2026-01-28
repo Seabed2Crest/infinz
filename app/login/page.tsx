@@ -185,6 +185,15 @@ function Login() {
     setIsClient(true);
   }, []);
 
+  // Auto-focus first OTP input when OTP step is reached
+  useEffect(() => {
+    if (step === "otp") {
+      setTimeout(() => {
+        otpRefs.current[0]?.focus();
+      }, 50);
+    }
+  }, [step]);
+
   // Helper to ensure we only deal with 10 digit strings
   const get10DigitMobile = (num: string): string => {
     return num.replace(/\D/g, "").slice(-10);
@@ -231,6 +240,11 @@ function Login() {
         const numericMobile = get10DigitMobile(storedMobile);
         await OtpService.sendOtp(numericMobile);
         setOtpResent(true);
+
+        // Focus the first OTP input after auto-sending OTP
+        setTimeout(() => {
+          otpRefs.current[0]?.focus();
+        }, 100);
 
         // Reset after 30 seconds
         setTimeout(() => setOtpResent(false), 30000);
@@ -355,6 +369,11 @@ function Login() {
       setOtp("");
       setError("");
       setOtpResent(true);
+
+      // Focus the first OTP input after OTP is resent
+      setTimeout(() => {
+        otpRefs.current[0]?.focus();
+      }, 100);
 
       // Reset OTP resent flag after 30 seconds
       setTimeout(() => setOtpResent(false), 30000);
