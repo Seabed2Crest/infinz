@@ -117,9 +117,11 @@ function PersonalLoanHero({ onOpenModal }: { onOpenModal: () => void }) {
       return;
     }
     if (typeof window !== "undefined" && formData.mobileNumber) {
+      // Store full form data like business loan does
+      localStorage.setItem("applyData", JSON.stringify(formData));
       localStorage.setItem("mobileNumber", formData.mobileNumber);
       console.log(
-        "📱 Mobile number saved in localStorage:",
+        "📱 Mobile number and apply data saved in localStorage:",
         formData.mobileNumber
       );
     }
