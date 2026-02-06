@@ -31,6 +31,8 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import http from "../http.common";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface PersonalDetails {
   fullName: string;
@@ -429,7 +431,7 @@ function Login() {
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-          "OTP verification failed. Please check the code and try again."
+        "OTP verification failed. Please check the code and try again."
       );
     } finally {
       setOtpLoading(false);
@@ -529,7 +531,7 @@ function Login() {
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-          "Failed to save personal details. Please try again."
+        "Failed to save personal details. Please try again."
       );
     } finally {
       setLoading(false);
@@ -567,9 +569,8 @@ function Login() {
         </h2>
         <p className="text-gray-500 text-sm mb-6 text-center">
           {isApplyFlow
-            ? `Enter your mobile number to continue your ${
-                loan || "loan"
-              } application`
+            ? `Enter your mobile number to continue your ${loan || "loan"
+            } application`
             : "Enter your 10-digit mobile number to continue"}
         </p>
 
@@ -777,26 +778,48 @@ function Login() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Date of Birth *
               </label>
-              <div className="relative">
+
+              <div className="relative w-full">
+                {/* Left Calendar Icon */}
                 <CalendarDays
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10"
                   size={18}
                 />
-                <input
-                  type="date"
-                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5]"
-                  value={personal.dob}
-                  onChange={(e) => updatePersonalDetail("dob", e.target.value)}
+
+                <DatePicker
+                  selected={personal.dob ? new Date(personal.dob) : null}
+                  onChange={(date: Date | null) => {
+                    if (!date) return;
+
+                    updatePersonalDetail(
+                      "dob",
+                      date.toISOString().split("T")[0]
+                    );
+                  }}
+                  dateFormat="dd-MMM-yyyy"
+                  placeholderText="dd/mm/yyyy"
+
+                  showYearDropdown
+                  showMonthDropdown
+                  dropdownMode="select"
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={100}
+
+                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg 
+      focus:outline-none focus:ring-2 focus:ring-[#0080E5]"
                 />
+
                 {fieldErrors.dob && (
                   <p className="text-xs text-red-500 mt-1">{fieldErrors.dob}</p>
                 )}
               </div>
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 PAN Card *
