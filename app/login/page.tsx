@@ -740,7 +740,7 @@ function Login() {
               <input
                 type="text"
                 className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5]"
-                placeholder="Enter your full name"
+                placeholder="Enter Name As Per PAN Card"
                 value={personal.fullName}
                 onChange={(e) =>
                   updatePersonalDetail("fullName", e.target.value)
