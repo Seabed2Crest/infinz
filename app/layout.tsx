@@ -6,18 +6,17 @@ import Footer from "./components/Footer";
 
 import Script from "next/script";
 import SeoSchema from "./components/SeoSchema";
+import MetaPixelTracker from "./components/MetaPixelTracker";
 
 export const metadata: Metadata = {
   title: "Infinz – Industry-Focused Learning & Professional Training",
   description:
     "Infinz provides industry-focused courses and professional training programs designed to build real-world skills and career growth.",
 
-  /* ✅ Canonical Tag */
   alternates: {
     canonical: "https://www.1infinz.com/",
   },
 
-  /* ✅ Open Graph Tags */
   openGraph: {
     type: "website",
     siteName: "Infinz",
@@ -28,7 +27,6 @@ export const metadata: Metadata = {
     images: ["https://www.1infinz.com/logo_colour.png"],
   },
 
-  /* ✅ Twitter Card Tags */
   twitter: {
     card: "summary_large_image",
     title: "Infinz – Industry-Focused Learning & Professional Training",
@@ -39,8 +37,6 @@ export const metadata: Metadata = {
 
   icons: {
     icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
   },
 };
 
@@ -51,19 +47,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* ✅ Meta Pixel Script */}
+      <body className="min-h-screen bg-white">
+        {/* ✅ Meta Pixel Script MUST be in body */}
         <Script
           id="meta-pixel"
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               !function(f,b,e,v,n,t,s)
               {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
               n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
+              if(!f._fbq)f._fbq=n;
+              n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];
+              t=b.createElement(e);t.async=!0;
+              t.src=v;
+              s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}
               (window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
@@ -74,11 +73,6 @@ export default function RootLayout({
           }}
         />
 
-        {/* ✅ SEO Schema Component */}
-        <SeoSchema />
-      </head>
-
-      <body className="min-h-screen bg-white">
         {/* ✅ NoScript fallback */}
         <noscript>
           <img
@@ -89,6 +83,12 @@ export default function RootLayout({
             alt=""
           />
         </noscript>
+
+        {/* ✅ Tracks PageView on every route change */}
+        <MetaPixelTracker />
+
+        {/* ✅ SEO Schema */}
+        <SeoSchema />
 
         <Header />
         <main>{children}</main>
