@@ -5,10 +5,37 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 import Script from "next/script";
+import SeoSchema from "./components/SeoSchema";
 
 export const metadata: Metadata = {
-  title: "Infinz - Your Financial Partner",
-  description: "Get the best loan rates and financial services with Infinz",
+  title: "Infinz – Industry-Focused Learning & Professional Training",
+  description:
+    "Infinz provides industry-focused courses and professional training programs designed to build real-world skills and career growth.",
+
+  /* ✅ Canonical Tag */
+  alternates: {
+    canonical: "https://www.1infinz.com/",
+  },
+
+  /* ✅ Open Graph Tags */
+  openGraph: {
+    type: "website",
+    siteName: "Infinz",
+    url: "https://www.1infinz.com/",
+    title: "Infinz – Industry-Focused Learning & Professional Training",
+    description:
+      "Infinz provides industry-focused courses and professional training programs designed to build real-world skills and career growth.",
+    images: ["https://www.1infinz.com/logo_colour.png"],
+  },
+
+  /* ✅ Twitter Card Tags */
+  twitter: {
+    card: "summary_large_image",
+    title: "Infinz – Industry-Focused Learning & Professional Training",
+    description:
+      "Infinz offers career-oriented courses and professional training programs to help learners gain industry-ready skills.",
+    images: ["https://www.1infinz.com/assets/images/og-image.jpg"],
+  },
 
   icons: {
     icon: "/favicon.ico",
@@ -25,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* ✅ Meta Pixel Script (Marketing Requirement: Inside Head) */}
+        {/* ✅ Meta Pixel Script */}
         <Script
           id="meta-pixel"
           strategy="afterInteractive"
@@ -46,6 +73,9 @@ export default function RootLayout({
             `,
           }}
         />
+
+        {/* ✅ SEO Schema Component */}
+        <SeoSchema />
       </head>
 
       <body className="min-h-screen bg-white">
