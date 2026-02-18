@@ -16,7 +16,7 @@ const heroSlides = [
       { value: "100 CR", label: "Loans Facilitated" },
       { value: "98%", label: "Approval Rate" },
     ],
-      buttonText: "Check & Apply",
+    buttonText: "Check & Apply",
     lottiePath: "/lottie/Animation - financial.json", // 👈 slide-specific Lottie
   },
   {
@@ -82,9 +82,11 @@ function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
             <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animate-delay-300">
               <button
                 onClick={() => {
+                  console.log("btn clicked");
+                  
                   if (typeof window !== "undefined" && typeof (window as any).fbq === "function") {
-        (window as any).fbq("track", "InitiateCheckout");
-      }
+                    (window as any).fbq("track", "InitiateCheckout");
+                  }
                   router.push("/login");
                 }}
                 className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg inline-flex items-center justify-center"
@@ -136,11 +138,10 @@ function Hero({ onOpenModal, onOpenLeadForm }: HeroProps) {
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    currentSlide === index
+                  className={`h-2 rounded-full transition-all duration-300 ${currentSlide === index
                       ? "w-6 bg-blue-600"
                       : "w-2 bg-gray-300 hover:bg-gray-400"
-                  }`}
+                    }`}
                 />
               ))}
             </div>
