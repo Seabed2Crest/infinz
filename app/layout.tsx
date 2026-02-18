@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   description:
     "Infinz provides industry-focused courses and professional training programs designed to build real-world skills and career growth.",
 
+  other: {
+    "facebook-domain-verification": "gtbpf36jgkptgouwyuc0b0m13hfxjo",
+  },
+
   alternates: {
     canonical: "https://www.1infinz.com/",
   },
@@ -89,7 +93,7 @@ export default function RootLayout({
 
         {/* ✅ SEO Schema */}
         <SeoSchema />
-<meta name="facebook-domain-verification" content="gtbpf36jgkptgouwyuc0b0m13hfxjo" />
+
         <Header />
         <main>{children}</main>
         <Footer />
