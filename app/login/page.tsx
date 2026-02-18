@@ -674,7 +674,13 @@ function Login() {
           )}
 
           <button
-            onClick={handleOtpSubmit}
+          onClick={() => {
+    // Meta Pixel - Lead event on OTP verification
+    if (typeof window !== "undefined" && typeof (window as any).fbq === "function") {
+      (window as any).fbq("track", "Lead");
+    }
+    handleOtpSubmit();
+  }}
             disabled={otp.length !== 6 || otpLoading}
             className="w-full py-3 rounded-xl font-semibold transition duration-200 bg-[#0080E5] hover:bg-[#0066B3] text-white disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed shadow-md"
           >
@@ -903,7 +909,13 @@ function Login() {
           )}
 
           <button
-            onClick={handlePersonalSubmit}
+           onClick={() => {
+    // Meta Pixel - CompleteRegistration event on personal info submit
+    if (typeof window !== "undefined" && typeof (window as any).fbq === "function") {
+      (window as any).fbq("track", "CompleteRegistration");
+    }
+    handlePersonalSubmit();
+  }}
             disabled={loading}
             className="w-full bg-[#0080E5] hover:bg-[#0066B3] text-white font-semibold py-3 rounded-xl transition duration-200 shadow-md disabled:opacity-50"
           >
