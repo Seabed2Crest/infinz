@@ -89,7 +89,7 @@ export default function RootLayout({
 
         {/* ✅ SEO Schema */}
         <SeoSchema />
-
+<meta name="facebook-domain-verification" content="gtbpf36jgkptgouwyuc0b0m13hfxjo" />
         <Header />
         <main>{children}</main>
         <Footer />
