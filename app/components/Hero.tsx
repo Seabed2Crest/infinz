@@ -20,7 +20,7 @@ const heroSlides = [
     lottiePath: "/lottie/Animation - financial.json", // 👈 slide-specific Lottie
   },
   {
-    title: "Get an instant loan up to 1 Cr.",
+    title: "Get an instant loan up to 1 Crore.",
     subtitle: "in just 5 minutes",
     description:
       "Skip the paperwork and long waits. Get quick approvals and disbursal within 3 days for your urgent financial needs with Our digital-first process",

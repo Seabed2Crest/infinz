@@ -361,7 +361,7 @@ function ApplyNowContent() {
               priority
             />
             <h2 className="text-2xl font-bold mt-4 text-center">
-              Instant Loan up to ₹1Cr
+              Instant Loan up to ₹1 Crore
             </h2>
             <p className="opacity-90 text-center mt-2">
               Fast approvals • Digital process

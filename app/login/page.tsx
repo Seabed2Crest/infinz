@@ -865,7 +865,7 @@ function Login() {
               <input
                 type="text"
                 className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0080E5]"
-                placeholder="Enter 6-digit pincode"
+                placeholder="Enter 6-digit PIN Code"
                 value={personal.pincode}
                 onChange={(e) =>
                   updatePersonalDetail(
@@ -1036,7 +1036,7 @@ function Login() {
             <h2 className="text-2xl font-bold mt-6 mb-2 text-center">
               {apply === "true"
                 ? "Complete Your Application"
-                : "Instant Loan up to ₹1Cr"}
+                : "Instant Loan up to ₹1 Crore"}
             </h2>
             <p className="opacity-90 text-center">
               Fast approvals • Best rates
