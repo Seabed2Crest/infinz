@@ -565,7 +565,7 @@ function Login() {
     return (
       <div className="w-full max-w-sm mx-auto p-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-center">
-          {isApplyFlow ? "Continue Your Application" : "Welcome Back"}
+          {isApplyFlow ? "Continue Your Application" : "Welcome To Infinz"}
         </h2>
         <p className="text-gray-500 text-sm mb-6 text-center">
           {isApplyFlow
