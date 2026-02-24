@@ -6,7 +6,7 @@ import axios, {
 
 // 🔗 Backend Base URL
 // export const BASE_URL = "http://localhost:8085";
-export const BASE_URL = "https://backend.infinz.seabed2crest.com";
+export const BASE_URL = "https://api.infinz.backend.1infinz.com";
 
 // 🔑 Token storage key (single source of truth)
 const AUTH_TOKEN_KEY = "accessToken";
