@@ -108,7 +108,7 @@ function EMICalculator() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            <span className="text-blue-600">EMI Calculator</span>
+            <span className="text-blue-600">Calculate Your Loan EMI Instantly Online</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Get the total repayment and EMI amount and plan your finances
