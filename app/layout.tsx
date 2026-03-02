@@ -12,7 +12,6 @@ export const metadata: Metadata = {
   title: "Fast & Reliable Loan Partner in India | Infinz",
   description:
     "Infinz is your trusted financial and loan partner helping you compare offers from 50+ lenders. Get instant approvals, better rates, and quick fund transfer.",
-
   other: {
     "facebook-domain-verification": "gtbpf36jgkptgouwyuc0b0m13hfxjo",
   },
