@@ -200,7 +200,7 @@ function Testimonials({ onOpenModal }: TestimonialsProps) {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const res = await fetch("https://backend.infinz.seabed2crest.com/api/v1/testimonials", {
+        const res = await fetch("https://api.infinz.backend.1infinz.com/api/v1/testimonials", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

@@ -9,9 +9,9 @@ import SeoSchema from "./components/SeoSchema";
 import MetaPixelTracker from "./components/MetaPixelTracker";
 
 export const metadata: Metadata = {
-  title: "Infinz – Industry-Focused Learning & Professional Training",
+  title: "Fast & Reliable Loan Partner in India | Infinz",
   description:
-    "Infinz provides industry-focused courses and professional training programs designed to build real-world skills and career growth.",
+    "Infinz is your trusted financial and loan partner helping you compare offers from 50+ lenders. Get instant approvals, better rates, and quick fund transfer.",
 
   other: {
     "facebook-domain-verification": "gtbpf36jgkptgouwyuc0b0m13hfxjo",
