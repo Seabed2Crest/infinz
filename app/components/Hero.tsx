@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 const heroSlides = [
   {
-    title: "Your Reliable Loan Partner for Every Financial Need",
+    title: "Your Reliable Loan Partner for Every",
     subtitle: "financial needs",
     description:
       "Get personalized loan offers from 30+ trusted lending partners - the best rates, terms, and features that match your unique requirements",
