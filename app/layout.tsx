@@ -109,7 +109,7 @@ export default function RootLayout({
 
         {/* ✅ Tracks PageView on every route change */}
         <MetaPixelTracker />
-        {/* <GoogleAnalyticsTracker /> */}
+        <GoogleAnalyticsTracker />
 
         {/* ✅ SEO Schema */}
         <SeoSchema />
