@@ -94,6 +94,7 @@ export default function RootLayout({
             });
           `}
         </Script>
+        
 
         {/* ✅ NoScript fallback */}
         <noscript>
