@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import Script from "next/script";
 import SeoSchema from "./components/SeoSchema";
 import MetaPixelTracker from "./components/MetaPixelTracker";
+import GoogleAnalyticsTracker from "./components/GoogleAnalyticsTracker";
 
 export const metadata: Metadata = {
   title: "Fast & Reliable Loan Partner in India | Infinz",
@@ -76,6 +77,24 @@ export default function RootLayout({
           }}
         />
 
+        {/* ✅ Google Analytics (GA4) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-B5039X5VSP"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('config', 'G-B5039X5VSP', {
+              send_page_view: false
+            });
+          `}
+        </Script>
+
         {/* ✅ NoScript fallback */}
         <noscript>
           <img
@@ -89,6 +108,7 @@ export default function RootLayout({
 
         {/* ✅ Tracks PageView on every route change */}
         <MetaPixelTracker />
+        <GoogleAnalyticsTracker />
 
         {/* ✅ SEO Schema */}
         <SeoSchema />
