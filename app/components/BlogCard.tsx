@@ -29,7 +29,7 @@ export default function BlogCard({ blog, index }: any) {
           </h2>
 
           <p className="text-gray-600 line-clamp-3 text-sm mb-4 flex-1">
-            {blog.content.slice(0, 120)}...
+            {blog.content.replace(/<[^>]+>/g, "")}
           </p>
 
           <span className="text-blue-600 font-medium hover:underline">
