@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Fast & Reliable Loan Partner in India | Infinz",
   description:
     "Infinz is your trusted financial and loan partner helping you compare offers from 50+ lenders. Get instant approvals, better rates, and quick fund transfer.",
+
   other: {
     "facebook-domain-verification": "gtbpf36jgkptgouwyuc0b0m13hfxjo",
   },
@@ -25,17 +26,24 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Infinz",
     url: "https://www.1infinz.com/",
-    title: "Infinz – Industry-Focused Learning & Professional Training",
+    title: "Fast & Reliable Loan Partner in India | Infinz",
     description:
-      "Infinz provides industry-focused courses and professional training programs designed to build real-world skills and career growth.",
-    images: ["https://www.1infinz.com/logo_colour.png"],
+      "Infinz is your trusted financial and loan partner helping you compare offers from 50+ lenders. Get instant approvals, better rates, and quick fund transfer.",
+    images: [
+      {
+        url: "https://www.1infinz.com/logo_colour.png",
+        width: 1200,
+        height: 630,
+        alt: "Infinz",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Infinz – Industry-Focused Learning & Professional Training",
+    title: "Fast & Reliable Loan Partner in India | Infinz",
     description:
-      "Infinz offers career-oriented courses and professional training programs to help learners gain industry-ready skills.",
+      "Infinz is your trusted financial and loan partner helping you compare offers from 50+ lenders. Get instant approvals, better rates, and quick fund transfer.",
     images: ["https://www.1infinz.com/assets/images/og-image.jpg"],
   },
 
