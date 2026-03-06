@@ -61,8 +61,9 @@ export default function BlogDetailsPage() {
           animate={{ opacity: 1 }}
           className="prose prose-lg max-w-none mt-10"
         >
-          {blog.content}
+          <div dangerouslySetInnerHTML={{ __html: blog.content }} />
         </motion.div>
+
       </div>
     </>
   );
