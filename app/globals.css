@@ -157,3 +157,29 @@
 .animate-delay-500 {
   animation-delay: 0.5s;
 }
+
+.blog-content-receiver h2 {
+  font-size: 36px;
+  line-height: 1.3;
+  margin-bottom: 16px;
+  margin-top: 24px;
+  color: #000;
+}
+
+.blog-content-receiver h3 {
+  font-size: 24px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  margin-top: 12px;
+  color: #000;
+}
+
+.blog-content-receiver ul {
+  list-style-position: inside;
+  list-style: disc;
+  padding-left: 30px;
+}
+
+.blog-content-receiver-main h1 {
+  line-height: 1.3;
+}

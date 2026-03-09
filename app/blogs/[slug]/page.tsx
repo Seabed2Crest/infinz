@@ -27,7 +27,7 @@ export default function BlogDetailsPage() {
         <meta name="description" content={blog.content.slice(0, 150)} />
       </Head>
 
-      <div className="max-w-4xl mx-auto px-4 py-10">
+      <div className="max-w-4xl mx-auto px-4 py-10 blog-content-receiver-main">
         <Link href="/blogs" className="text-blue-600 hover:underline">
           ← Back to Blogs
         </Link>
@@ -59,7 +59,7 @@ export default function BlogDetailsPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="prose prose-lg max-w-none mt-10"
+          className="blog-content-receiver prose prose-lg max-w-none mt-10"
         >
           <div dangerouslySetInnerHTML={{ __html: blog.content }} />
         </motion.div>
