@@ -183,3 +183,8 @@
 .blog-content-receiver-main h1 {
   line-height: 1.3;
 }
+
+.blog-content-receiver a {
+  color: #2563eb !important;
+  background-color: #fff !important; 
+}
