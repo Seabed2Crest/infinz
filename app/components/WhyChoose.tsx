@@ -32,9 +32,9 @@ const milestones = [
   {
     id: 1,
     icon: Building2,
-    title: "Multiple Offers from Top NBFCs & Banks",
+    title: "Multiple Options from Top NBFCs & Banks",
     description:
-      "Compare loan offers from over 50+ leading NBFCs and banks, including HDFC, ICICI, Bajaj Finserv, and more.",
+      "Multiple loan offers from over 50+ leading NBFCs and banks, including HDFC, ICICI, Bajaj Finserv, and more.",
     delay: 0,
   },
   {
