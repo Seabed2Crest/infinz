@@ -8,6 +8,7 @@ import Script from "next/script";
 import SeoSchema from "./components/SeoSchema";
 import MetaPixelTracker from "./components/MetaPixelTracker";
 import GoogleAnalyticsTracker from "./components/GoogleAnalyticsTracker";
+import LayoutWrapper from "./LayoutWrapper";
 
 export const metadata: Metadata = {
   title: "Fast & Reliable Loan Partner in India | Infinz",
@@ -122,9 +123,9 @@ export default function RootLayout({
         {/* ✅ SEO Schema */}
         <SeoSchema />
 
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <LayoutWrapper>
+          <main>{children}</main>
+        </LayoutWrapper>
       </body>
     </html>
   );

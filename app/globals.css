@@ -10,6 +10,11 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 140px;
+}
+
 @layer utilities {
   .perspective-1000 {
     perspective: 1000px;
@@ -187,4 +192,10 @@
 .blog-content-receiver a {
   color: #2563eb !important;
   background-color: #fff !important; 
+}
+
+.hl-header.hl-header-custom {
+  position: fixed !important;
+  top: 0 !important;
+  width: 100% !important;
 }
