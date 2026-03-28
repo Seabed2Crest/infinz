@@ -95,8 +95,8 @@ export const ContactForm = () => {
     setLoading(true);
 
     emailjs.send(
-      "service_1bm5ojp",      // Updated Service ID
-      "template_c7cfd9q",     // Updated Template ID
+      "service_tvyn95s",      // Updated Service ID
+      "template_2depdrh",     // Updated Template ID
       {
         fullName: form.fullName,
         phone: form.phone,
@@ -104,7 +104,7 @@ export const ContactForm = () => {
         loanAmount: form.loanAmount,
         propertyType: form.propertyType,
       },
-      "RIvv9pK9iogfbQevC"     // Updated Public Key
+      "y6w9aSG2g8QYYwm1b"     // Updated Public Key
     )
     .then(() => {
       setLoading(false);
